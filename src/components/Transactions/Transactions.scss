@@ -1,0 +1,57 @@
+.transactions {
+    &__header {
+        font-size: var(--font-size-16);
+        font-weight: var(--font-weight-500);
+    }
+    &__grid{
+        padding: 16px 0px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid var(--border-primary);
+        &-icon{
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            background: var(--surfaces-disabled);
+            margin-right: 15px;
+        }
+        &-group{
+            flex: 1;
+            &--name{
+                color: var(--text-primary);
+                font-weight: var(--font-weight-600);
+                font-size: var(--font-size-18);
+                margin-bottom: var(--spacing-xxs);
+            }
+            &--date{
+                color: var(--text-disabled);
+                font-size: var(--font-size-12);
+                font-weight: var(--font-weight-500);
+            }
+        }
+        &-amount{
+            font-weight: var(--font-weight-600);
+            color: var(--text-error);
+            font-size: var(--font-size-18);
+        }
+        &:last-child{
+            border-bottom: 0px;
+        }
+    }
+    &__search{
+        display: flex;
+        align-items: center;
+        &-input{
+            width: 100%;
+            input{
+                font-family: var(--font-family);
+            }
+        }
+        &-filter{
+            margin-left: 20px;
+            svg{
+                font-size: var(--font-size-22);
+            }
+        }
+    }
+}

@@ -1,0 +1,13 @@
+.loginWrapper{
+    padding: 20px 16px;
+    
+    &__label{
+        display: flex;
+        justify-content: space-between;
+    }
+    &__errorMsg{
+        color: var(--text-error);
+        font-size: var(--font-size-14);
+        margin-top: 5px;
+    }
+}

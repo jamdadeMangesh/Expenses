@@ -1,0 +1,42 @@
+html,
+body {
+    height: -moz-available;
+    height: -webkit-fill-available;
+    height: fill-available;
+    height: 100%;
+    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
+    margin: 0;
+    -webkit-overflow-scrolling: touch;
+}
+html{
+    min-height: calc(100% + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+#root{
+    font-family: var(--font-family);
+    height: 100%;
+}
+.App {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.desktopAlert{
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+// Common css
+input.form-control {
+    padding: 0.75rem 0.75rem;
+}
+.divider__common{
+    height: 1px;
+    background-color: var(--border-primary);
+    margin: 1.5rem 0px;
+}
+.btn.buttonHeight{
+    padding: 0.75rem 0.75rem;
+}
