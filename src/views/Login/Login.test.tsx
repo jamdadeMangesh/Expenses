@@ -44,9 +44,11 @@ describe("Should render Login component without crashing", () => {
 		expect(getByText("Email")).toBeInTheDocument();
 	});
 
-    test("should render login form email input", () => {
+	test("should render login form email input", () => {
 		renderComponent();
-		const loginWrapper__inputEmail = screen.getByTestId("loginWrapper__inputEmail");
+		const loginWrapper__inputEmail = screen.getByTestId(
+			"loginWrapper__inputEmail"
+		);
 		expect(loginWrapper__inputEmail).toBeInTheDocument();
 	});
 
@@ -61,9 +63,11 @@ describe("Should render Login component without crashing", () => {
 		expect(getByText("Password")).toBeInTheDocument();
 	});
 
-    test("should render login form password input", () => {
+	test("should render login form password input", () => {
 		renderComponent();
-		const loginWrapper__inputPassword = screen.getByTestId("loginWrapper__inputPassword");
+		const loginWrapper__inputPassword = screen.getByTestId(
+			"loginWrapper__inputPassword"
+		);
 		expect(loginWrapper__inputPassword).toBeInTheDocument();
 	});
 
@@ -78,9 +82,11 @@ describe("Should render Login component without crashing", () => {
 		expect(getByText("Login Code")).toBeInTheDocument();
 	});
 
-    test("should render login form login code input", () => {
+	test("should render login form login code input", () => {
 		renderComponent();
-		const loginWrapper__inputLoginCode = screen.getByTestId("loginWrapper__inputLoginCode");
+		const loginWrapper__inputLoginCode = screen.getByTestId(
+			"loginWrapper__inputLoginCode"
+		);
 		expect(loginWrapper__inputLoginCode).toBeInTheDocument();
 	});
 
@@ -95,13 +101,13 @@ describe("Should render Login component without crashing", () => {
 		expect(getByText("Forgot password?")).toBeInTheDocument();
 	});
 
-    test("should render login form submit button", () => {
+	test("should render login form submit button", () => {
 		renderComponent();
 		const loginWrapper__loginBtn = screen.getByTestId("loginWrapper__loginBtn");
 		expect(loginWrapper__loginBtn).toBeInTheDocument();
 	});
 
-    test("should render login form don't have account text", () => {
+	test("should render login form don't have account text", () => {
 		renderComponent();
 		const loginWrapper__accountText = screen.getByTestId(
 			"loginWrapper__accountText"
@@ -112,9 +118,11 @@ describe("Should render Login component without crashing", () => {
 		expect(getByText("Don't have an account?")).toBeInTheDocument();
 	});
 
-    test("should render login form register button", () => {
+	test("should render login form register button", () => {
 		renderComponent();
-		const loginWrapper__registerBtn = screen.getByTestId("loginWrapper__registerBtn");
+		const loginWrapper__registerBtn = screen.getByTestId(
+			"loginWrapper__registerBtn"
+		);
 		expect(loginWrapper__registerBtn).toBeInTheDocument();
 	});
 });

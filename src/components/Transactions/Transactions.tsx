@@ -1,74 +1,52 @@
 import React from "react";
 import "./Transactions.scss";
-import { LuIndianRupee } from "react-icons/lu";
+import { LuIndianRupee, LuDot } from "react-icons/lu";
+import { useNavigate } from "react-router-dom";
 
-export const Transactions = () => {
+type TransactionType = {
+	data: any;
+};
+export const Transactions = ({ data }: TransactionType) => {
+	const navigate = useNavigate();
+	const onClickTransaction = () => {
+		navigate("/expenseDetails/" + data.id);
+	};
 	return (
 		<>
-			<div className="transactions__grid">
-				<div className="transactions__grid-icon"></div>
+			<div
+				className="transactions__grid"
+				key={data.id}
+				onClick={onClickTransaction}
+				data-testid="transactions__grid"
+			>
+				<div
+					className="transactions__grid-icon"
+					data-testid="transactions__grid_icon"
+				></div>
 				<div className="transactions__grid-group">
-					<div className="transactions__grid-group--name">Snacks</div>
-					<div className="transactions__grid-group--date">15th Feb 2024</div>
+					<div
+						className="transactions__grid-group--name"
+						data-testid="transactions__grid_category"
+					>
+						{data.category}
+					</div>
+					<div
+						className="transactions__grid-group--date"
+					>
+						<span data-testid="transactions__grid_name">
+							{data.personName !== "" && data.personName}{" "}
+						</span>
+						<span data-testid="transactions__grid_spentDate">
+							{data.personName !== "" && <LuDot />} {data.spentDate}
+						</span>
+					</div>
 				</div>
-				<div className="transactions__grid-amount">
+				<div
+					className="transactions__grid-amount"
+					data-testid="transactions__grid_amount"
+				>
 					-<LuIndianRupee />
-					800.00
-				</div>
-			</div>
-			<div className="transactions__grid">
-				<div className="transactions__grid-icon"></div>
-				<div className="transactions__grid-group">
-					<div className="transactions__grid-group--name">Travel</div>
-					<div className="transactions__grid-group--date">1st Feb 2024</div>
-				</div>
-				<div className="transactions__grid-amount">
-					-<LuIndianRupee />
-					3500.00
-				</div>
-			</div>
-			<div className="transactions__grid">
-				<div className="transactions__grid-icon"></div>
-				<div className="transactions__grid-group">
-					<div className="transactions__grid-group--name">Materials</div>
-					<div className="transactions__grid-group--date">15th Jan 2024</div>
-				</div>
-				<div className="transactions__grid-amount">
-					-<LuIndianRupee />
-					5000.00
-				</div>
-			</div>
-			<div className="transactions__grid">
-				<div className="transactions__grid-icon"></div>
-				<div className="transactions__grid-group">
-					<div className="transactions__grid-group--name">Snacks</div>
-					<div className="transactions__grid-group--date">15th Feb 2024</div>
-				</div>
-				<div className="transactions__grid-amount">
-					-<LuIndianRupee />
-					800.00
-				</div>
-			</div>
-			<div className="transactions__grid">
-				<div className="transactions__grid-icon"></div>
-				<div className="transactions__grid-group">
-					<div className="transactions__grid-group--name">Travel</div>
-					<div className="transactions__grid-group--date">1st Feb 2024</div>
-				</div>
-				<div className="transactions__grid-amount">
-					-<LuIndianRupee />
-					3500.00
-				</div>
-			</div>
-			<div className="transactions__grid">
-				<div className="transactions__grid-icon"></div>
-				<div className="transactions__grid-group">
-					<div className="transactions__grid-group--name">Materials</div>
-					<div className="transactions__grid-group--date">15th Jan 2024</div>
-				</div>
-				<div className="transactions__grid-amount">
-					-<LuIndianRupee />
-					5000.00
+					{data.amount}
 				</div>
 			</div>
 		</>

@@ -5,13 +5,14 @@ import { RiChatHistoryFill } from "react-icons/ri";
 import { IoIosAddCircle } from "react-icons/io";
 import { Transactions } from "../../components/Transactions/Transactions";
 import { useNavigate } from "react-router-dom";
+import { transactionsData } from "../../shared/data";
+import { Greetings } from "../../shared/constant";
 
 export const Dashboard = () => {
-    const navigate = useNavigate();
+	const navigate = useNavigate();
 	return (
 		<>
-			<div className="dashboardWrapper" data-testid="dashboardWrapper">
-				<div
+        <div
 					className="dashboard__greeting"
 					data-testid="dashboardWrapper__greeting"
 				>
@@ -25,9 +26,11 @@ export const Dashboard = () => {
 						className="dashboard__greeting-subTitle"
 						data-testid="dashboard__greeting_subtitle"
 					>
-						Good morning
+						{Greetings()}
 					</div>
 				</div>
+			<div className="dashboardWrapper" data-testid="dashboardWrapper">
+				
 				<div className="dashboard__stats blob-layer  text-center shadow-sm">
 					<div
 						className="dashboard__stats-title"
@@ -54,14 +57,17 @@ export const Dashboard = () => {
 				<div className="dashboard__controls shadow">
 					<div
 						className="dashboard__controls-grid"
-						onClick={() => console.log("Add new clicked")}
+						onClick={() => navigate("/addExpense")}
 					>
 						<div className="dashboard__controls-grid--icon">
 							<IoIosAddCircle />
 						</div>
 						<div className="dashboard__controls-grid--text mt-2">Add New</div>
 					</div>
-					<div className="dashboard__controls-grid" onClick={() => navigate("/transactionsList")}>
+					<div
+						className="dashboard__controls-grid"
+						onClick={() => navigate("/transactionsList")}
+					>
 						<div className="dashboard__controls-grid--icon">
 							<RiChatHistoryFill />
 						</div>
@@ -72,7 +78,9 @@ export const Dashboard = () => {
 					<div className="transactions">
 						<div className="transactions__header mb-3">Last 5 transactions</div>
 
-						<Transactions />
+						{transactionsData.slice(0,5).map((item: any) => (
+							<Transactions data={item} key={item.id}/>
+						))}
 					</div>
 				</div>
 			</div>

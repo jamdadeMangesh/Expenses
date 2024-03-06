@@ -19,7 +19,7 @@ export const Home = () => {
 						data-testid="homeWrapper__logo"
 					/>
 				</div>
-				<div className="homeWrapper__content pt-5 p-3">
+				<div className="homeWrapper__content p-3">
 					<p className="text-center mb-5" data-testid="homeWrapper__subtext">
 						Please login using following options
 					</p>

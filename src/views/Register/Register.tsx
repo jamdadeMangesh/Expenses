@@ -1,11 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 
 import "./Register.scss";
-import { Button, Form, Overlay, Tooltip } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { CgAsterisk } from "react-icons/cg";
-import { FcInfo } from "react-icons/fc";
 import { useHeaderContext } from "../../context/HeaderContext";
 
 export const Register = () => {
@@ -17,9 +16,6 @@ export const Register = () => {
 	}, []);
 
 	const navigate = useNavigate();
-
-	const [show, setShow] = useState(false);
-	const target = useRef(null);
 
 	const {
 		register,
@@ -39,6 +35,33 @@ export const Register = () => {
 		<>
 			<div className="loginWrapper">
 				<form onSubmit={handleSubmit(onSubmit)} className="appWrapper__form">
+					<Form.Group className="mb-3" controlId="name">
+						<Form.Label>
+							Name{" "}
+							<sup>
+								<span>
+									<CgAsterisk style={{ color: "#D82C0D" }} />
+								</span>
+							</sup>
+						</Form.Label>
+						<Form.Control
+							type="text"
+							placeholder="Enter your name"
+							{...register("name", {
+								required: "Please enter your name",
+								pattern: {
+									value: /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/,
+									message: "Please enter a valid name",
+								},
+							})}
+                            autoComplete="off"
+						/>
+						{errors.name && (
+							<p className="loginWrapper__errorMsg">
+								{errors?.name?.message?.toString()}
+							</p>
+						)}
+					</Form.Group>
 					<Form.Group className="mb-3" controlId="email">
 						<Form.Label>
 							Email{" "}

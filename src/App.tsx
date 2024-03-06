@@ -11,6 +11,9 @@ import { Alert } from "react-bootstrap";
 import { Dashboard } from "./views/Dashboard/Dashboard";
 import { AppNav } from "./components/AppNav/AppNav";
 import { TransactionsList } from "./views/TransactionsList/TransactionsList";
+import { AddExpense } from "./views/AddNew/AddExpense";
+import { Profile } from "./views/Profile/Profile";
+import { ExpenseDetails } from "./views/ExpenseDetails/ExpenseDetails";
 
 function App() {
 	const [width, setWidth] = useState(window.innerWidth);
@@ -63,6 +66,27 @@ function App() {
 										?.route
 								}
 								Component={TransactionsList}
+							/>
+							<Route
+								path={
+									routes.find((r) => r.page === ApplicationPages.AddExpense)
+										?.route
+								}
+								Component={AddExpense}
+							/>
+							<Route
+								path={
+									routes.find((r) => r.page === ApplicationPages.Profile)
+										?.route
+								}
+								Component={Profile}
+							/>
+							<Route
+								path={
+									routes.find((r) => r.page === ApplicationPages.ExpenseDetails)
+										?.route + "/:id"
+								}
+								Component={ExpenseDetails}
 							/>
 						</Routes>
 						<AppNav />

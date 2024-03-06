@@ -3,6 +3,7 @@
     padding: 15px 16px;
     box-shadow: 0 -3px 6px rgba(32, 32, 35, 0.08);
     justify-content: space-between;
+    background-color: var(--surfaces-primary);
     &__grid{
         display: flex;
         flex-direction: column;

@@ -10,4 +10,8 @@
         font-size: var(--font-size-14);
         margin-top: 5px;
     }
+    &__submit{
+        display: flex;
+        gap: 20px;
+    }
 }

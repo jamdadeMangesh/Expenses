@@ -1,0 +1,39 @@
+@import "../../App.scss";
+
+.profileWrapper{
+    @extend .pageWrapper;
+    background-color: var(--surfaces-secondary);
+}
+.userWrapper{
+    height: 100%;
+    &__section{
+        margin-bottom: 15px;
+        background-color: var(--surfaces-primary);
+        border-radius: var(--spacing-xxs);
+        &-header{
+            position: relative;
+            span{
+                background-color: #fff;
+                padding: 5px 5px 5px 0px;
+                position: relative;
+                z-index: 1;
+                font-size: var(--font-size-18);
+                font-weight: var(--font-wight-500);
+            }
+        }    
+    }
+    &__grid{
+        align-items: center;
+        padding: 10px 0px;
+        font-size: 14px;
+        word-break: break-all;
+
+        &-header{
+            color: var(--text-disabled);
+        }
+        &-description{
+            color: var(--text-primary);
+            line-height: 30px;
+        }
+    }
+}

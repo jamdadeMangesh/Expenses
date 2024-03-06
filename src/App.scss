@@ -29,8 +29,11 @@ html{
     align-items: center;
 }
 // Common css
-input.form-control {
+input.form-control, select.form-select {
     padding: 0.75rem 0.75rem;
+}
+.form-label{
+    font-weight: var(--font-weight-500);
 }
 .divider__common{
     height: 1px;
@@ -39,4 +42,9 @@ input.form-control {
 }
 .btn.buttonHeight{
     padding: 0.75rem 0.75rem;
+}
+.pageWrapper{
+    height: 100%;
+    padding: 20px 16px;
+    overflow: auto;
 }

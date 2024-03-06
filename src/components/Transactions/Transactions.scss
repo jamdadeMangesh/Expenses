@@ -19,7 +19,7 @@
             flex: 1;
             &--name{
                 color: var(--text-primary);
-                font-weight: var(--font-weight-600);
+                font-weight: var(--font-weight-500);
                 font-size: var(--font-size-18);
                 margin-bottom: var(--spacing-xxs);
             }
@@ -51,6 +51,24 @@
             margin-left: 20px;
             svg{
                 font-size: var(--font-size-22);
+            }
+        }
+    }
+    &__appliedFilter{
+        display: flex;
+        align-items: center;
+        justify-content:space-between;
+        &-list{
+            span{
+                font-size: var(--font-size-12);
+                padding: 5px 10px;
+                background-color: var(--surfaces-disabled);
+                border-radius: 5px;
+                margin: 2px;
+                display: inline-block;
+            }
+            svg{
+                fill: var(--icon-primary);
             }
         }
     }

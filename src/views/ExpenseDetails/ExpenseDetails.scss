@@ -1,0 +1,37 @@
+@import "../../App.scss";
+
+.expenseDetailsWrapper{
+    @extend .pageWrapper;
+}
+.expenseDetails{
+    height: 100%;
+    &__section{
+        margin-bottom: 15px;
+        background-color: var(--surfaces-primary);
+        border-radius: var(--spacing-xxs);
+        display: flex;
+        gap: 20px;
+        &-header{
+            position: relative;
+        }    
+    }
+    &__grid{
+        align-items: center;
+        margin-bottom: 10px;
+        font-size: 14px;
+        word-break: break-all;
+        &-header{
+            color: var(--text-disabled);
+        }
+        &-description{
+            color: var(--text-primary);
+            font-size: var(--font-size-18);
+            line-height: 30px;
+        }
+    }
+}
+.expenseDetailsDelete{
+    padding: 20px 16px;
+    background-color: var(--surfaces-primary);
+    box-shadow: 0 -2px 6px rgba(32, 32, 35, 0.08);
+}
