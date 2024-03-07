@@ -1,9 +1,9 @@
 .appHeader{
-    padding: 20px 16px;
+    padding: var(--spacing-n) var(--spacing-m);
     display: flex;
     box-shadow: 0 3px 6px rgba(32, 32, 35, 0.08);
     &__backArrow{
-        margin-right: 15px;
+        margin-right: var(--spacing-m);
     }
     &__title{
         font-size: var(--headingFontSize);

@@ -7,7 +7,7 @@
 .userWrapper{
     height: 100%;
     &__section{
-        margin-bottom: 15px;
+        margin-bottom: var(--spacing-m);
         background-color: var(--surfaces-primary);
         border-radius: var(--spacing-xxs);
         &-header{
@@ -24,8 +24,8 @@
     }
     &__grid{
         align-items: center;
-        padding: 10px 0px;
-        font-size: 14px;
+        padding: var(--spacing-s) 0px;
+        font-size: var(--font-size-14);
         word-break: break-all;
 
         &-header{
@@ -34,6 +34,7 @@
         &-description{
             color: var(--text-primary);
             line-height: 30px;
+            font-weight: var(--font-weight-400);
         }
     }
 }

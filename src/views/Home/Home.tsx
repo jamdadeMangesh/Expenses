@@ -2,7 +2,6 @@ import React from "react";
 import { Button } from "react-bootstrap";
 import "./Home.scss";
 import logo from "../../assets/logo.png";
-import { LiaUserShieldSolid, LiaUserSolid } from "react-icons/lia";
 import { useNavigate } from "react-router-dom";
 
 
@@ -20,29 +19,17 @@ export const Home = () => {
 					/>
 				</div>
 				<div className="homeWrapper__content p-3">
-					<p className="text-center mb-5" data-testid="homeWrapper__subtext">
-						Please login using following options
-					</p>
-
+					<h3 className="text-center mb-4" data-testid="homeWrapper__subtext">
+						Welcome to Vajra Expenses
+					</h3>
 					<div className="loginOptions__grid">
 						<Button
 							variant="primary"
-							data-testid="homeWrapper__superAdminBtn"
-							onClick={() => navigate("/login", {state: {isUserLogin: false}})}
-						>
-							<LiaUserShieldSolid /> Super Admin
-						</Button>
-					</div>
-					<div className="divider__login m-3">
-						<span>OR</span>
-					</div>
-					<div className="loginOptions__grid">
-						<Button
-							variant="danger"
 							data-testid="homeWrapper__userBtn"
+                            className="buttonHeight"
 							onClick={() => navigate("/login", {state: {isUserLogin: true}})}
 						>
-							<LiaUserSolid /> User
+							 Login to continue
 						</Button>
 					</div>
 				</div>

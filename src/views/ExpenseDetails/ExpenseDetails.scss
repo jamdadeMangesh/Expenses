@@ -6,32 +6,32 @@
 .expenseDetails{
     height: 100%;
     &__section{
-        margin-bottom: 15px;
+        margin-bottom: var(--spacing-s);
         background-color: var(--surfaces-primary);
         border-radius: var(--spacing-xxs);
         display: flex;
-        gap: 20px;
+        gap: var(--spacing-n);
         &-header{
             position: relative;
         }    
     }
     &__grid{
         align-items: center;
-        margin-bottom: 10px;
-        font-size: 14px;
+        margin-bottom: var(--spacing-xxs);
         word-break: break-all;
         &-header{
             color: var(--text-disabled);
+            font-size: var(--font-size-13);
         }
         &-description{
             color: var(--text-primary);
-            font-size: var(--font-size-18);
+            font-size: var(--font-size-16);
             line-height: 30px;
         }
     }
 }
 .expenseDetailsDelete{
-    padding: 20px 16px;
+    padding: var(--spacing-n) var(--spacing-m);
     background-color: var(--surfaces-primary);
     box-shadow: 0 -2px 6px rgba(32, 32, 35, 0.08);
 }

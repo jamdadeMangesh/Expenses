@@ -4,7 +4,7 @@
 }
 .dashboard {
 	&__greeting {
-		padding: 20px 16px;
+		padding: var(--spacing-n) var(--spacing-m);
 		&-title {
 			font-size: var(--font-size-22);
 			font-weight: var(--font-weight-500);
@@ -16,10 +16,9 @@
 	}
 	&__stats {
 		margin: 0px var(--spacing-m);
-		border-radius: 10px;
-		//background-color: var(--surfaces-theme-bg);
+		border-radius: var(--spacing-xs);
 		background-color: #0071fe;
-		padding: 25px 16px;
+		padding: var(--spacing-l) var(--spacing-m);
 		color: var(--surfaces-s-000);
 		overflow: hidden;
 		z-index: 1;
@@ -43,13 +42,11 @@
 		}
 	}
 	&__controls {
-		//width: 80%;
-		//margin: 0 auto;
 		position: relative;
 		top: -10px;
-		padding: 30px 16px;
+		padding: var(--spacing-xl) var(--spacing-m);
 		margin: 0px var(--spacing-m);
-		border-radius: 0px 0px 10px 10px;
+		border-radius: 0px 0px var(--spacing-xs) var(--spacing-xs);
 		display: flex;
 		background-color: #121826;
 		color: var(--surfaces-s-000);
@@ -71,23 +68,6 @@
 		}
 	}
 	&__content {
-		padding: 20px 16px;
+		padding: var(--spacing-n) var(--spacing-m);
 	}
-	// &__totalCard{
-	//     background: var(--surfaces-s-000);
-	//     padding: var(--spacing-s);
-	//     border-radius: 4px;
-	//     color: var(--text-primary);
-	//     width: 50%;
-	//     display: flex;
-	//     align-items: center;
-	//     &-icon{
-	//         font-size: 50px;
-	//         margin-right: 16px;
-	//         margin-top: -10px;
-	//     }
-	//     &-text{
-	//         font-size: 20px;
-	//     }
-	// }
 }

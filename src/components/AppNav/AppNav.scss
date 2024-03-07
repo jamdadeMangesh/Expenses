@@ -1,6 +1,6 @@
 .AppNavWrapper{
     display: flex;
-    padding: 15px 16px;
+    padding: var(--spacing-m);
     box-shadow: 0 -3px 6px rgba(32, 32, 35, 0.08);
     justify-content: space-between;
     background-color: var(--surfaces-primary);
@@ -17,7 +17,7 @@
         }
         &-text{
             font-size: var(--font-size-14);
-            margin-top: 5px;
+            margin-top: var(--spacing-xxs);
         }
         &-active{
             color: var(--text-primary);

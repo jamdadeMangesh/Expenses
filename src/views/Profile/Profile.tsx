@@ -3,10 +3,13 @@ import "./Profile.scss";
 import { useHeaderContext } from "../../context/HeaderContext";
 import { Button } from "react-bootstrap";
 import { Logout } from "../../components/Logout/Logout";
+import { useNavigate } from "react-router-dom";
 
 export const Profile = () => {
 	const { setTitle, setShowBackArrow } = useHeaderContext();
     const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const navigate = useNavigate();
+
 	React.useEffect(() => {
 		setTitle("Profile");
 		setShowBackArrow(false);
@@ -39,6 +42,35 @@ export const Profile = () => {
 						<div className="userWrapper__grid-description">0.0.0.1</div>
 					</div>
 				</div>
+                <div className="userWrapper__section shadow-sm px-3 py-2">
+					<div className="userWrapper__grid">
+						<div className="userWrapper__grid-header">Users (For admin only)</div>
+						<div className="userWrapper__grid-description">
+							<Button
+								variant="success"
+								className="mt-2"
+                                size="sm"
+                                onClick={() => navigate("/register")}
+							>
+								Add New User
+							</Button>
+						</div>
+					</div>
+				</div>
+                <div className="userWrapper__section shadow-sm px-3 py-2">
+					<div className="userWrapper__grid">
+						<div className="userWrapper__grid-header">Passwords</div>
+						<div className="userWrapper__grid-description">
+							<Button
+								variant="secondary"
+								className="mt-2"
+                                size="sm"
+                            >
+								Reset Password
+							</Button>
+						</div>
+					</div>
+				</div>
 				<div className="userWrapper__section shadow-sm px-3 py-2">
 					<div className="userWrapper__grid">
 						<div className="userWrapper__grid-header">Account</div>
@@ -46,6 +78,7 @@ export const Profile = () => {
 							<Button
 								variant="danger"
 								className="mt-2"
+                                size="sm"
                                 onClick={() => setShowLogoutModal(true)}
 							>
 								Logout

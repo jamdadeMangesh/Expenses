@@ -4,23 +4,23 @@
         font-weight: var(--font-weight-500);
     }
     &__grid{
-        padding: 16px 0px;
+        padding: var(--spacing-m) 0px;
         display: flex;
         align-items: center;
         border-bottom: 1px solid var(--border-primary);
         &-icon{
             width: 60px;
             height: 60px;
-            border-radius: 10px;
+            border-radius: var(--spacing-s);
             background: var(--surfaces-disabled);
-            margin-right: 15px;
+            margin-right: var(--spacing-m);
         }
         &-group{
             flex: 1;
             &--name{
                 color: var(--text-primary);
                 font-weight: var(--font-weight-500);
-                font-size: var(--font-size-18);
+                font-size: var(--font-size-16);
                 margin-bottom: var(--spacing-xxs);
             }
             &--date{
@@ -32,7 +32,7 @@
         &-amount{
             font-weight: var(--font-weight-600);
             color: var(--text-error);
-            font-size: var(--font-size-18);
+            font-size: var(--font-size-16);
         }
         &:last-child{
             border-bottom: 0px;
@@ -48,7 +48,7 @@
             }
         }
         &-filter{
-            margin-left: 20px;
+            margin-left: var(--spacing-n);
             svg{
                 font-size: var(--font-size-22);
             }
@@ -61,9 +61,9 @@
         &-list{
             span{
                 font-size: var(--font-size-12);
-                padding: 5px 10px;
+                padding: var(--spacing-xxs) var(--spacing-xs);
                 background-color: var(--surfaces-disabled);
-                border-radius: 5px;
+                border-radius: var(--spacing-xxs);
                 margin: 2px;
                 display: inline-block;
             }

@@ -1,6 +1,6 @@
 .loginWrapper{
-    padding: 20px 16px;
-    
+    height: 100%;
+    overflow-y: auto;
     &__label{
         display: flex;
         justify-content: space-between;
@@ -12,6 +12,27 @@
     }
     &__submit{
         display: flex;
-        gap: 20px;
+        gap: var(--spacing-n);
+        background-color: var(--surface-primary);
+        padding: var(--spacing-n) var(--spacing-m);
+        box-shadow: 0 -3px 6px rgba(32, 32, 35, 0.08);
+        &-grid{
+            display: flex;
+            gap: var(--spacing-n);
+        }
+    }
+    &__loginWrapper{
+        height: 100%;
+    }
+    &__form{
+        height: calc(100% - 50px);
+        &-content{
+            height: calc(100% - 40px);
+            overflow: auto;
+        }
+        &-group{
+            padding: 0px var(--spacing-m);
+            margin-top: 1rem;
+        }
     }
 }

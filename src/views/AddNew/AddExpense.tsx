@@ -155,7 +155,7 @@ export const AddExpense = () => {
 					</Form.Group>
 
 					<div className="divider__common"></div>
-					<div className="loginWrapper__submit">
+					<div className="loginWrapper__submit-grid">
 						<Button
 							variant="outline-danger"
 							type="button"

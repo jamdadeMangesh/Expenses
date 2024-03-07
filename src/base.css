@@ -34,6 +34,7 @@
 
 	/** BORDERS **/
 	--border-primary: #e8eaec;
+	--border-error: var(--text-error);
 
     /** ICONS **/
      --icon-primary: var(--surfaces-s-050);
@@ -44,6 +45,7 @@
 	--spacing-xs: 8px;
 	--spacing-s: 12px;
 	--spacing-m: 16px;
+    --spacing-n: 20px;
 	--spacing-l: 24px;
 	--spacing-xl: 32px;
 	--spacing-xxl: 40px;
@@ -66,6 +68,7 @@
     --font-size-14: 14px;
     --font-size-15: 15px;
     --font-size-16: 16px;
+    --font-size-20: 20px;
     --font-size-18: 18px;
     --font-size-22: 22px;
     --font-size-25: 25px;

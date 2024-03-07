@@ -1,178 +1,176 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 
 import "./Register.scss";
 import { Button, Form } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { CgAsterisk } from "react-icons/cg";
 import { useHeaderContext } from "../../context/HeaderContext";
+import { GoCopy } from "react-icons/go";
 
 export const Register = () => {
 	const { setTitle, setShowBackArrow } = useHeaderContext();
+	const [showCopyToClipboard, setShowCopyToClipboard] = useState(false);
 	React.useEffect(() => {
-		setTitle("Register");
+		setTitle("Create a new user");
 		setShowBackArrow(true);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const navigate = useNavigate();
 
 	const {
 		register,
 		handleSubmit,
-		formState: { errors },
+		formState: { errors, isSubmitting },
 		watch,
-        getValues
 	} = useForm();
 
 	const password = useRef({});
 	password.current = watch("password", "");
-
 	const onSubmit = (data: any) => {
 		console.log(data);
+		if (data) {
+			setShowCopyToClipboard(true);
+		}
 	};
 	return (
 		<>
 			<div className="loginWrapper">
-				<form onSubmit={handleSubmit(onSubmit)} className="appWrapper__form">
-					<Form.Group className="mb-3" controlId="name">
-						<Form.Label>
-							Name{" "}
-							<sup>
-								<span>
-									<CgAsterisk style={{ color: "#D82C0D" }} />
-								</span>
-							</sup>
-						</Form.Label>
-						<Form.Control
-							type="text"
-							placeholder="Enter your name"
-							{...register("name", {
-								required: "Please enter your name",
-								pattern: {
-									value: /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/,
-									message: "Please enter a valid name",
-								},
-							})}
-                            autoComplete="off"
-						/>
-						{errors.name && (
-							<p className="loginWrapper__errorMsg">
-								{errors?.name?.message?.toString()}
-							</p>
+				<form onSubmit={handleSubmit(onSubmit)} className="loginWrapper__form">
+					<div className="loginWrapper__form-content">
+						<Form.Group className="loginWrapper__form-group" controlId="name">
+							<Form.Label>
+								Name{" "}
+								<sup>
+									<span>
+										<CgAsterisk style={{ color: "#D82C0D" }} />
+									</span>
+								</sup>
+							</Form.Label>
+							<Form.Control
+								type="text"
+								placeholder="Enter your name"
+								{...register("name", {
+									required: "Please enter your name",
+									pattern: {
+										value: /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/,
+										message: "Please enter a valid name",
+									},
+								})}
+								autoComplete="off"
+							/>
+							{errors.name && (
+								<p className="loginWrapper__errorMsg">
+									{errors?.name?.message?.toString()}
+								</p>
+							)}
+						</Form.Group>
+						<Form.Group className="loginWrapper__form-group" controlId="email">
+							<Form.Label>
+								Email{" "}
+								<sup>
+									<span>
+										<CgAsterisk style={{ color: "#D82C0D" }} />
+									</span>
+								</sup>
+							</Form.Label>
+							<Form.Control
+								type="email"
+								placeholder="exampple@mail.com"
+								{...register("email", {
+									required: "Please enter your email",
+									pattern: {
+										value: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
+										message: "Please enter a valid email",
+									},
+								})}
+								autoComplete="off"
+							/>
+							{errors.email && (
+								<p className="loginWrapper__errorMsg">
+									{errors?.email?.message?.toString()}
+								</p>
+							)}
+						</Form.Group>
+						<Form.Group
+							className="loginWrapper__form-group"
+							controlId="mobileNumber"
+						>
+							<Form.Label>
+								Mobile Number
+								<sup>
+									<span>
+										<CgAsterisk style={{ color: "#D82C0D" }} />
+									</span>
+								</sup>
+							</Form.Label>
+							<Form.Control
+								type="number"
+								placeholder="9876543210"
+								{...register("mobileNumber", {
+									required: "Please enter your mobile number",
+									pattern: {
+										value: /^[6-9]\d{9}$/,
+										message: "Please enter valid mobile number",
+									},
+								})}
+							/>
+							{errors.mobileNumber && (
+								<p className="loginWrapper__errorMsg">
+									{errors?.mobileNumber?.message?.toString()}
+								</p>
+							)}
+						</Form.Group>
+						<Form.Group className="loginWrapper__form-group" controlId="role">
+							<Form.Label>Role</Form.Label>
+							<div>
+								<Form.Check
+									type="radio"
+									label="Admin"
+									value="admin"
+									inline
+									{...register("role", {
+										required: "Please select role",
+									})}
+								/>
+								<Form.Check
+									type="radio"
+									label="User"
+									value="user"
+									inline
+									{...register("role")}
+								/>
+							</div>
+							{errors.role && (
+								<p className="loginWrapper__errorMsg">
+									{errors.role.message?.toString()}
+								</p>
+							)}
+						</Form.Group>
+						{showCopyToClipboard && (
+							<div className="loginWrapper__form-group">
+								<div className="divider__common"></div>
+                                <p>Plase copy this credentials and share it to user.</p>
+								<Button
+									variant="success"
+									className="w-100 buttonHeight"
+								>
+									<GoCopy className="iconSize20"/> Copy to clipboard
+								</Button>
+							</div>
 						)}
-					</Form.Group>
-					<Form.Group className="mb-3" controlId="email">
-						<Form.Label>
-							Email{" "}
-							<sup>
-								<span>
-									<CgAsterisk style={{ color: "#D82C0D" }} />
-								</span>
-							</sup>
-						</Form.Label>
-						<Form.Control
-							type="email"
-							placeholder="Enter your email"
-							{...register("email", {
-								required: "Please enter your email",
-								pattern: {
-									value: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
-									message: "Please enter a valid email",
-								},
-							})}
-                            autoComplete="off"
-						/>
-						{errors.email && (
-							<p className="loginWrapper__errorMsg">
-								{errors?.email?.message?.toString()}
-							</p>
-						)}
-					</Form.Group>
-					<Form.Group className="mb-3" controlId="password">
-						<Form.Label>
-							Password
-							<sup>
-								<span>
-									<CgAsterisk style={{ color: "#D82C0D" }} />
-								</span>
-							</sup>
-						</Form.Label>
-						<Form.Control
-							type="password"
-							placeholder="*****"
-							{...register("password", {
-								required: "Please enter your password",
-								pattern: {
-									value:
-										/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
-									message:
-										"Password must have atleast a symbol, upper & lower case letter and number",
-								},
-								minLength: {
-									value: 8,
-									message: "Password must have at least 8 characters",
-								},
-							})}
-						/>
-						{errors.password && (
-							<p className="loginWrapper__errorMsg">
-								{errors?.password?.message?.toString()}
-							</p>
-						)}
-					</Form.Group>
-					<Form.Group className="mb-3" controlId="confirmPassword">
-						<Form.Label>
-							Confirm Password
-							<sup>
-								<span>
-									<CgAsterisk style={{ color: "#D82C0D" }} />
-								</span>
-							</sup>
-						</Form.Label>
-						<Form.Control
-							type="password"
-							placeholder="*****"
-							{...register("confirm_password", {
-								required: "Please re enter your password",
-								validate: (value) => {
-                                    const { password } = getValues();
-                                    return password === value || "Password must be same";
-                                  }
-							})}
-						/>
-						{errors.confirm_password && (
-							<p className="loginWrapper__errorMsg">
-								{errors?.confirm_password?.message?.toString()}
-							</p>
-						)}
-					</Form.Group>
-
-					<div className="login__submit">
+					</div>
+					<div className="loginWrapper__submit">
 						<Button
 							variant="primary"
 							type="submit"
 							className="w-100 buttonHeight"
+							disabled={isSubmitting}
 							//onClick={() => logInWithEmailAndPassword(email, password)}
 						>
-							Register
+							{isSubmitting ? "Adding new user..." : "Register"}
 						</Button>
 					</div>
-					<div className="divider__common"></div>
 				</form>
-
-				<div className="login__register my-3">
-					<div className="text-center mb-3">Already have an account? </div>
-					<Button
-						variant="outline-primary"
-						type="submit"
-						className="w-100 buttonHeight"
-						onClick={() => navigate("/login")}
-						//onClick={() => logInWithEmailAndPassword(email, password)}
-					>
-						Login
-					</Button>
-				</div>
 			</div>
 		</>
 	);

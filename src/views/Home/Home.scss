@@ -5,13 +5,14 @@
 	//background-color: var(--surfaces-secondary);
 	&__logo {
 		position: relative;
-		height: 50%;
+		height: 80%;
 		background-color: var(--surfaces-theme-bg);
-		padding: 20px;
+		padding: var(--spacing-n);
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		overflow: hidden;
+        border-radius: 0px 0px 10px 10px;
 		&-img {
 			width: 200px;
 		}
@@ -40,7 +41,7 @@
 	span {
 		text-align: center;
 		background: #fff;
-		padding: 0px 15px;
+		padding: 0px var(--spacing-m);
 		z-index: 1;
 		position: relative;
 		left: 50%;
@@ -64,9 +65,9 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        width: 100%;
 		svg {
-			font-size: 22px;
-            margin-top: -5px;
+			font-size: var(--font-size-22);
             margin-right: 5px;
 		}
 	}
