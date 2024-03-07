@@ -1,0 +1,88 @@
+/** 
+ * This lists all the colours from the design system
+ * You should use the variables from theme in your app and not these
+ */
+:root {
+    /** SURFACES **/
+     --surfaces-s-100: #050607;
+     --surfaces-s-095: #14161a;
+     --surfaces-s-090: #202227;
+     --surfaces-s-080: #292d35;
+     --surfaces-s-070: #333842;
+     --surfaces-s-060: #4a555f;
+     --surfaces-s-050: #63717e;
+     --surfaces-s-040: #73808b;
+     --surfaces-s-020: #b1b8bf;
+     --surfaces-s-030: #828d98;
+     --surfaces-s-010: #d8dbdf;
+     --surfaces-s-005: #e8eaec;
+     --surfaces-s-003: #f9f9fa;
+     --surfaces-s-000: #fff;
+     --surfaces-theme: #532226;
+
+	/** background **/
+	--surfaces-disabled: #e8eaec;
+	--surfaces-secondary: #f9f9fa;
+	--surfaces-primary: #fff;
+    --surfaces-theme-bg: #532226;
+
+	/** TEXT **/
+	--text-primary: var(--surfaces-s-090);
+	--text-secondary: var(--surfaces-s-050);
+	--text-disabled: var(--surfaces-s-020);
+    --text-error: #D82C0D;
+
+	/** BORDERS **/
+	--border-primary: #e8eaec;
+	--border-error: var(--text-error);
+
+    /** ICONS **/
+     --icon-primary: var(--surfaces-s-050);
+     --icon-primary-theme: var(--surfaces-theme);
+
+	/** Spacing **/
+	--spacing-xxs: 4px;
+	--spacing-xs: 8px;
+	--spacing-s: 12px;
+	--spacing-m: 16px;
+    --spacing-n: 20px;
+	--spacing-l: 24px;
+	--spacing-xl: 32px;
+	--spacing-xxl: 40px;
+
+	/**FONTS FAMILIES**/
+	/** Base font **/
+	--font-family: "Roboto", sans-serif;
+
+    /**FONTS WEIGHT**/
+    --font-weight-300: 300;
+    --font-weight-400: 400;
+    --font-weight-500: 500;
+    --font-weight-600: 600;
+    --font-weight-700: 700;
+    --font-weight-800: 800;
+
+    /**FONTS SIZES**/
+    --font-size-12: 12px;
+    --font-size-13: 13px;
+    --font-size-14: 14px;
+    --font-size-15: 15px;
+    --font-size-16: 16px;
+    --font-size-20: 20px;
+    --font-size-18: 18px;
+    --font-size-22: 22px;
+    --font-size-25: 25px;
+
+	/** FONTS STYLES **/
+	/** Heading **/
+	--headingFontSize: 18px;
+	--headingFontWeight: bold;
+
+	/** Primary **/
+	--primaryFontSize: 15px;
+	--primaryFontWeight: bold;
+
+	/** Secondary **/
+	--secondaryFontSize: 12px;
+	--secondaryFontWeight: normal;
+}

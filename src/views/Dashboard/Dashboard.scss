@@ -1,0 +1,73 @@
+.dashboardWrapper {
+	height: 100%;
+	overflow: auto;
+}
+.dashboard {
+	&__greeting {
+		padding: var(--spacing-n) var(--spacing-m);
+		&-title {
+			font-size: var(--font-size-22);
+			font-weight: var(--font-weight-500);
+		}
+		&-subTitle {
+			font-size: var(--font-size-16);
+			font-weight: var(--font-weight-400);
+		}
+	}
+	&__stats {
+		margin: 0px var(--spacing-m);
+		border-radius: var(--spacing-xs);
+		background-color: #0071fe;
+		padding: var(--spacing-l) var(--spacing-m);
+		color: var(--surfaces-s-000);
+		overflow: hidden;
+		z-index: 1;
+		&-title {
+			font-size: var(--font-size-16);
+			font-weight: var(--font-weight-300);
+		}
+		&-amount {
+			font-size: 30px;
+			font-weight: var(--font-weight-600);
+			svg {
+				margin-top: -5px;
+			}
+		}
+		&-monthlyAmount {
+			font-size: var(--font-size-14);
+			font-weight: var(--font-weight-300);
+			span {
+				font-weight: var(--font-weight-600);
+			}
+		}
+	}
+	&__controls {
+		position: relative;
+		top: -10px;
+		padding: var(--spacing-xl) var(--spacing-m);
+		margin: 0px var(--spacing-m);
+		border-radius: 0px 0px var(--spacing-xs) var(--spacing-xs);
+		display: flex;
+		background-color: #121826;
+		color: var(--surfaces-s-000);
+
+		&-grid {
+			display: flex;
+			justify-content: center;
+			flex-direction: column;
+			align-items: center;
+			width: 50%;
+			&--icon {
+				svg {
+					font-size: var(--font-size-25);
+				}
+			}
+			&--text {
+				font-size: var(--font-size-16);
+			}
+		}
+	}
+	&__content {
+		padding: var(--spacing-n) var(--spacing-m);
+	}
+}

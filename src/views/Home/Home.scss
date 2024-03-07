@@ -1,0 +1,97 @@
+.homeWrapper {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	//background-color: var(--surfaces-secondary);
+	&__logo {
+		position: relative;
+		height: 80%;
+		background-color: var(--surfaces-theme-bg);
+		padding: var(--spacing-n);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		overflow: hidden;
+        border-radius: 0px 0px 10px 10px;
+		&-img {
+			width: 200px;
+		}
+		&-bgWave {
+			width: 100%;
+			position: absolute;
+			bottom: 0px;
+			right: 0px;
+			opacity: 0.1;
+			background-size: cover;
+		}
+	}
+	&__content {
+		height: 50%;
+		position: relative;
+		z-index: 1;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+}
+.divider__login {
+	position: relative;
+	width: 100%;
+	span {
+		text-align: center;
+		background: #fff;
+		padding: 0px var(--spacing-m);
+		z-index: 1;
+		position: relative;
+		left: 50%;
+		transform: translateX(-50%);
+		display: inline-block;
+	}
+	&::after {
+		content: "";
+		height: 1px;
+		background-color: var(--border-primary);
+		width: 100%;
+		position: absolute;
+		top: 50%;
+		left: 0px;
+	}
+}
+.loginOptions {
+	display: flex;
+	width: 100%;
+	&__grid {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+		svg {
+			font-size: var(--font-size-22);
+            margin-right: 5px;
+		}
+	}
+}
+.circles {
+	width: 250px;
+	height: 200px;
+	background-color: var(--surfaces-primary);
+	opacity: 0.05;
+	position: absolute;
+	border-radius: 50% 40% 60% 100%;
+}
+.blob-layer {
+	position: relative;
+	&::before {
+		content: "";
+		top: -114px;
+		right: -78px;
+		@extend .circles;
+	}
+	&::after {
+		content: "";
+		top: -61px;
+		right: -150px;
+		@extend .circles;
+	}
+}

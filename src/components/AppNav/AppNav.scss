@@ -1,0 +1,26 @@
+.AppNavWrapper{
+    display: flex;
+    padding: var(--spacing-m);
+    box-shadow: 0 -3px 6px rgba(32, 32, 35, 0.08);
+    justify-content: space-between;
+    background-color: var(--surfaces-primary);
+    &__grid{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 25%;
+        color: var(--text-disabled);
+        &-icon{
+            svg{
+                font-size: var(--font-size-22);
+            }
+        }
+        &-text{
+            font-size: var(--font-size-14);
+            margin-top: var(--spacing-xxs);
+        }
+        &-active{
+            color: var(--text-primary);
+        }
+    }
+}
