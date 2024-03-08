@@ -53,7 +53,7 @@ export const ApplicationRoutes: ApplicationRoutesOptions[] = [
         page: ApplicationPages.AddExpense,
         route: "/addExpense",
         showHeader: true,
-        showNav: true
+        showNav: false
     },
     {
         page: ApplicationPages.ExpenseDetails,

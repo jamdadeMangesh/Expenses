@@ -52,7 +52,8 @@
 
 	/**FONTS FAMILIES**/
 	/** Base font **/
-	--font-family: "Roboto", sans-serif;
+	/* --font-family: "Roboto", sans-serif; */
+	--font-family: "Montserrat", sans-serif;
 
     /**FONTS WEIGHT**/
     --font-weight-300: 300;

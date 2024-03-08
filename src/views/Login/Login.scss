@@ -9,6 +9,7 @@
         color: var(--text-error);
         font-size: var(--font-size-14);
         margin-top: 5px;
+        font-weight: var(--font-weight-500);
     }
     &__submit{
         display: flex;
@@ -33,6 +34,9 @@
         &-group{
             padding: 0px var(--spacing-m);
             margin-top: 1rem;
+            label{
+                font-size: var(--font-size-15);
+            }
         }
     }
 }
