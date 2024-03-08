@@ -14,7 +14,10 @@ export const AppNav = () => {
 	const splitUrl = "/" + location.pathname.split("/")[1];
 	const showNav =
 		routes.find((r) =>
-			splitUrl === "/" || splitUrl === "/login" || splitUrl === "/register" || splitUrl === "/expenseDetails"
+			splitUrl === "/" ||
+			splitUrl === "/login" ||
+			splitUrl === "/register" ||
+			splitUrl === "/expenseDetails"
 				? r.route === splitUrl
 				: r.route === location.pathname
 		)?.showNav ?? true;
@@ -25,7 +28,7 @@ export const AppNav = () => {
 				<div className="AppNavWrapper">
 					<div
 						className={`AppNavWrapper__grid ${
-							splitUrl === "/dashboard" && "AppNavWrapper__grid-active"
+							splitUrl === "/dashboard" ? "AppNavWrapper__grid-active" : ""
 						}`}
 						onClick={() => navigate("/dashboard")}
 					>
@@ -36,7 +39,7 @@ export const AppNav = () => {
 					</div>
 					<div
 						className={`AppNavWrapper__grid ${
-							splitUrl === "/addExpense" && "AppNavWrapper__grid-active"
+							splitUrl === "/addExpense" ? "AppNavWrapper__grid-active" : ""
 						}`}
 						onClick={() => navigate("/addExpense")}
 					>
@@ -51,7 +54,9 @@ export const AppNav = () => {
 					</div>
 					<div
 						className={`AppNavWrapper__grid ${
-							splitUrl === "/transactionsList" && "AppNavWrapper__grid-active"
+							splitUrl === "/transactionsList"
+								? "AppNavWrapper__grid-active"
+								: ""
 						}`}
 						onClick={() => navigate("/transactionsList")}
 					>
@@ -66,7 +71,7 @@ export const AppNav = () => {
 					</div>
 					<div
 						className={`AppNavWrapper__grid ${
-							splitUrl === "/profile" && "AppNavWrapper__grid-active"
+							splitUrl === "/profile" ? "AppNavWrapper__grid-active" : ""
 						}`}
 						onClick={() => navigate("/profile")}
 					>

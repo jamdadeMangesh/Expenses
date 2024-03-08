@@ -79,16 +79,16 @@ export const Login = () => {
 								placeholder="*****"
 								{...register("password", {
 									required: "Please enter your password",
-									pattern: {
-										value:
-											/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
-										message:
-											"Password must have atleast a symbol, upper & lower case letter and number",
-									},
-									minLength: {
-										value: 8,
-										message: "Password must have at least 8 characters",
-									},
+									// pattern: {
+									// 	value:
+									// 		/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
+									// 	message:
+									// 		"Password must have atleast a symbol, upper & lower case letter and number",
+									// },
+									// minLength: {
+									// 	value: 8,
+									// 	message: "Password must have at least 8 characters",
+									// },
 								})}
 								data-testid="loginWrapper__inputPassword"
 								className={errors.password && "inputError"}

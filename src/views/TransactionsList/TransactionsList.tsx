@@ -13,7 +13,7 @@ export const TransactionsList = () => {
 	const { setTitle, setShowBackArrow } = useHeaderContext();
 	React.useEffect(() => {
 		setTitle("All transactions");
-		setShowBackArrow(true);
+		setShowBackArrow(false);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 	return (

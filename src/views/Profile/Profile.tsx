@@ -37,18 +37,17 @@ export const Profile = () => {
 					</div>
 				</div>
 				<div className="userWrapper__section shadow-sm px-3 py-2">
-					<div className="userWrapper__grid">
+					<div className="userWrapper__grid d-flex justify-content-between">
 						<div className="userWrapper__grid-header">App version</div>
 						<div className="userWrapper__grid-description">0.0.0.1</div>
 					</div>
 				</div>
                 <div className="userWrapper__section shadow-sm px-3 py-2">
-					<div className="userWrapper__grid">
+					<div className="userWrapper__grid d-flex justify-content-between">
 						<div className="userWrapper__grid-header">Users (For admin only)</div>
 						<div className="userWrapper__grid-description">
 							<Button
 								variant="success"
-								className="mt-2"
                                 size="sm"
                                 onClick={() => navigate("/register")}
 							>
@@ -58,13 +57,12 @@ export const Profile = () => {
 					</div>
 				</div>
                 <div className="userWrapper__section shadow-sm px-3 py-2">
-					<div className="userWrapper__grid">
+					<div className="userWrapper__grid d-flex justify-content-between">
 						<div className="userWrapper__grid-header">Passwords</div>
 						<div className="userWrapper__grid-description">
 							<Button
 								variant="secondary"
-								className="mt-2"
-                                size="sm"
+								size="sm"
                             >
 								Reset Password
 							</Button>
@@ -72,13 +70,12 @@ export const Profile = () => {
 					</div>
 				</div>
 				<div className="userWrapper__section shadow-sm px-3 py-2">
-					<div className="userWrapper__grid">
+					<div className="userWrapper__grid d-flex justify-content-between">
 						<div className="userWrapper__grid-header">Account</div>
 						<div className="userWrapper__grid-description">
 							<Button
 								variant="danger"
-								className="mt-2"
-                                size="sm"
+								size="sm"
                                 onClick={() => setShowLogoutModal(true)}
 							>
 								Logout
