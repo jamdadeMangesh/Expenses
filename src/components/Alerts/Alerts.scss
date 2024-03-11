@@ -1,0 +1,11 @@
+.errorAlert{
+    &__text{
+        font-size: var(--font-size-15);
+        font-weight: var(--font-weight-500);
+        display: block;
+        text-align: left;
+    }
+    .btn-close{
+        font-size: 11px;
+    }
+}

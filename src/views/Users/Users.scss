@@ -1,0 +1,55 @@
+.usersList {
+	display: flex;
+	align-items: center;
+	border-bottom: 1px solid #e7dfdf;
+	padding: 20px 16px;
+    &__image {
+		padding: 0px 10px;
+		border: 1px solid #dfd8d8;
+		height: 53px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-right: 10px;
+		border-radius: 10px;
+		img {
+			width: 40px;
+			border-radius: 100%;
+			filter: grayscale(100);
+		}
+	}
+	&__grid {
+		flex: 1;
+		&-right {
+			text-align: right;
+		}
+	}
+	&__role {
+		font-size: var(--font-size-12);
+        
+        padding: var(--spacing-xxs) var(--spacing-xs);
+        border-radius: var(--spacing-xxs);
+        color: var(--surfaces-primary);
+        &-admin{
+            background-color: var(--surfaces-info);
+        }
+        &-user{
+            background-color: var(--surfaces-success);
+        }
+	}
+	&__name {
+		font-size: var(--font-size-14);
+		font-weight: var(--font-weight-500);
+	}
+	&__mobile {
+		font-size: var(--font-size-12);
+		line-height: 25px;
+		font-weight: var(--font-weight-500);
+		color: var(--text-secondary);
+	}
+	&__preference {
+		padding-right: 10px;
+		margin-top: var(--spacing-xxs);
+		font-size: var(--font-size-12);
+	}
+}

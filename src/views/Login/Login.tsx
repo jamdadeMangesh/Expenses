@@ -1,21 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import "./Login.scss";
 import { Button, Form } from "react-bootstrap";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { CgAsterisk } from "react-icons/cg";
 import { useHeaderContext } from "../../context/HeaderContext";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { authentication } from "../../shared/firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { Alerts } from "../../components/Alerts/Alerts";
+import { authenticationErrors } from "../../shared/constant";
+import { useDispatch } from "react-redux";
 
 export const Login = () => {
 	const navigate = useNavigate();
+    const [showErrors, setShowErrors] = useState(false);
+    const [firebaseErrors, setFirebaseErrors] = useState<string>("");
 
+	const [user, loading] = useAuthState(authentication);
 	const { setTitle, setShowBackArrow } = useHeaderContext();
+
 	React.useEffect(() => {
 		setTitle("Sign In");
 		setShowBackArrow(true);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+    useEffect(() => {
+        if (user) navigate("/dashboard");
+    }, [user]);
+	console.log("user::::::", user);
+	console.log("loading::::::", loading);
 
 	const {
 		register,
@@ -23,10 +39,22 @@ export const Login = () => {
 		formState: { errors },
 	} = useForm();
 
-	const onSubmit = (data: any) => {
+	const onSubmit = async (data: any) => {
 		console.log(data);
 		if (data) {
-			navigate("/dashboard");
+			try {
+				await signInWithEmailAndPassword(
+					authentication,
+					data?.email,
+					data?.password
+				);
+			} catch (err: any) {
+				if (err) {
+                    setFirebaseErrors(authenticationErrors(err.code) as string);
+                    setShowErrors(true);
+					console.log("errors:", err);
+				}
+			}
 		}
 	};
 	return (
@@ -34,6 +62,14 @@ export const Login = () => {
 			<div className="loginWrapper" data-testid="loginWrapper">
 				<form onSubmit={handleSubmit(onSubmit)} className="loginWrapper__form">
 					<div className="loginWrapper__form-content">
+						<div className="loginWrapper__form-group">
+							<Alerts
+								errors={firebaseErrors}
+								show={showErrors}
+								setShow={() => setShowErrors(false)}
+								isSuccess={false}
+							/>
+						</div>
 						<Form.Group className="loginWrapper__form-group" controlId="email">
 							<Form.Label data-testid="loginWrapper__labelEmail">
 								Email{" "}

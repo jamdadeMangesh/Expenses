@@ -7,7 +7,8 @@ export enum ApplicationPages {
     AddExpense = "AddExpense",
     TransactionsList = "TransactionsList",
     ExpenseDetails = "ExpenseDetails",
-    Profile = "Profile"
+    Profile = "Profile",
+    Users = "Users"
 }
 
 // Interface to define route options
@@ -60,12 +61,19 @@ export const ApplicationRoutes: ApplicationRoutesOptions[] = [
         route: "/expenseDetails",
         showHeader: true,
         showNav: false
-    },{
+    },
+    {
         page: ApplicationPages.Profile,
         route: "/profile",
         showHeader: true,
         showNav: true
     },
+    {
+        page: ApplicationPages.Users,
+        route: "/users",
+        showHeader: true,
+        showNav: true
+    }
 ]
 //Get greeting message according to time
 export const Greetings = () => {
@@ -82,3 +90,26 @@ export const Greetings = () => {
     
     return "Good " + greet
 }
+
+//firebase authentication error code
+export const authenticationErrors = (errorCode: string) => {
+    switch (errorCode) {
+        case "auth/invalid-credential":
+            return "Invalid credentials. Please try again!"
+
+        case "auth/invalid-email":
+            return "Invalid email id";
+
+        case "auth/missing-password":
+            return "Password is required";
+
+        case "auth/weak-password":
+            return "Password should be at least 6 characters";
+
+        case "auth/missing-email":
+            return  "Email id is required";
+
+        case "auth/email-already-in-use":
+            return "Email id already exists."
+    }
+};

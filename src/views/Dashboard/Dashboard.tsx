@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./Dashboard.scss";
 import { LuIndianRupee } from "react-icons/lu";
 import { RiChatHistoryFill } from "react-icons/ri";
@@ -7,9 +7,16 @@ import { Transactions } from "../../components/Transactions/Transactions";
 import { useNavigate } from "react-router-dom";
 import { transactionsData } from "../../shared/data";
 import { Greetings } from "../../shared/constant";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { authentication } from "../../shared/firebase";
 
 export const Dashboard = () => {
+    const [user, loading] = useAuthState(authentication);
 	const navigate = useNavigate();
+    useEffect(() => {
+        if(!user) navigate("/login");
+    })
+    console.log('loadingloading:', loading);
 	return (
 		<>
         <div
