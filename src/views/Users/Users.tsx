@@ -2,37 +2,49 @@ import React, { useEffect, useState } from "react";
 import "./Users.scss";
 import { useHeaderContext } from "../../context/HeaderContext";
 import { PiUserDuotone } from "react-icons/pi";
-import { getDocs, collection } from "firebase/firestore";
-import { database } from "../../shared/firebase";
+import { authentication} from "../../shared/firebase";
+import { getAllUsers } from "../../shared/constant";
+import { onAuthStateChanged } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 export const Users = () => {
 	const { setTitle, setShowBackArrow } = useHeaderContext();
 	const [usersData, setUsersData] = useState([]);
-	React.useEffect(() => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+		onAuthStateChanged(authentication, (user) => {
+			if (user) {
+				navigate("/users");
+			} else {
+				navigate("/login");
+			}
+		});
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useEffect(() => {
 		setTitle("All Users");
 		setShowBackArrow(true);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
-		getAllUsers();
+		getAllUsersInfo();
 	}, []);
-	const getAllUsers = async () => {
-		const doc_refs = await getDocs(collection(database, "users"));
-
+	const getAllUsersInfo = async () => {
 		const res: any = [];
-
-		doc_refs.forEach((item) => {
-			res.push({
-				id: item.id,
-				...item.data(),
-			});
-		});
-
-		setUsersData(res);
-		return res;
+        getAllUsers()
+        .then((result) => {
+            result.forEach((item) => {
+                res.push({
+                    id: item.id,
+                    ...item.data(),
+                });
+            });
+            setUsersData(res);
+        })
 	};
-	console.log("result:", usersData);
 
 	return (
 		<>

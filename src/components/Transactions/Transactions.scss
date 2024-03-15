@@ -74,5 +74,9 @@
                 fill: var(--icon-primary);
             }
         }
+        &-total{
+            font-size: var(--font-size-16);
+            font-weight: var(--font-weight-600);
+        }
     }
 }

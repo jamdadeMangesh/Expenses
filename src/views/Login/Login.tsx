@@ -6,32 +6,38 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { CgAsterisk } from "react-icons/cg";
 import { useHeaderContext } from "../../context/HeaderContext";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { authentication } from "../../shared/firebase";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { Alerts } from "../../components/Alerts/Alerts";
 import { authenticationErrors } from "../../shared/constant";
-import { useDispatch } from "react-redux";
 
 export const Login = () => {
 	const navigate = useNavigate();
-    const [showErrors, setShowErrors] = useState(false);
-    const [firebaseErrors, setFirebaseErrors] = useState<string>("");
+	const [showErrors, setShowErrors] = useState(false);
+	const [firebaseErrors, setFirebaseErrors] = useState<string>("");
 
-	const [user, loading] = useAuthState(authentication);
 	const { setTitle, setShowBackArrow } = useHeaderContext();
 
+    useEffect(() => {
+		onAuthStateChanged(authentication, (user) => {
+			if (user) {
+				navigate("/dashboard");
+			} else {
+				navigate("/login");
+			}
+		});
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+    
 	React.useEffect(() => {
 		setTitle("Sign In");
 		setShowBackArrow(true);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-    useEffect(() => {
-        if (user) navigate("/dashboard");
-    }, [user]);
-	console.log("user::::::", user);
-	console.log("loading::::::", loading);
+	// useEffect(() => {
+	// 	if (user) navigate("/dashboard");
+	// }, [user]);
 
 	const {
 		register,
@@ -50,8 +56,8 @@ export const Login = () => {
 				);
 			} catch (err: any) {
 				if (err) {
-                    setFirebaseErrors(authenticationErrors(err.code) as string);
-                    setShowErrors(true);
+					setFirebaseErrors(authenticationErrors(err.code) as string);
+					setShowErrors(true);
 					console.log("errors:", err);
 				}
 			}

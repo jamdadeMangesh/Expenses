@@ -55,3 +55,11 @@ input.inputError{
     font-size: var(--font-size-20);
     margin: 0px var(--spacing-s);
 }
+.Toastify__toast-container.Toastify__toast-container--bottom-center {
+    width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    bottom: 100px;
+    padding: 0px 16px;
+}

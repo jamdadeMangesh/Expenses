@@ -2,14 +2,20 @@ import React from "react";
 import "./Transactions.scss";
 import { LuIndianRupee, LuDot } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectUserData } from "../../views/Login/LoginSlice";
+import {DateTime} from "luxon";
+
 
 type TransactionType = {
 	data: any;
+    transactionId: string;
 };
-export const Transactions = ({ data }: TransactionType) => {
+export const Transactions = ({ data, transactionId }: TransactionType) => {
+    const { role } = useSelector(selectUserData);
 	const navigate = useNavigate();
 	const onClickTransaction = () => {
-		navigate("/expenseDetails/" + data.id);
+		navigate("/expenseDetails/" + transactionId, {state:{data}});
 	};
 	return (
 		<>
@@ -33,11 +39,11 @@ export const Transactions = ({ data }: TransactionType) => {
 					<div
 						className="transactions__grid-group--date"
 					>
-						<span data-testid="transactions__grid_name">
+						{role === "admin" && <span data-testid="transactions__grid_name">
 							{data.personName !== "" && data.personName}{" "}
-						</span>
+						</span>}
 						<span data-testid="transactions__grid_spentDate">
-							{data.personName !== "" && <LuDot />} {data.spentDate}
+							{(data.personName!== "" && role === "admin")  && <LuDot />} {DateTime.fromISO(data.transactionDate).toFormat("dd MMM yyyy")}
 						</span>
 					</div>
 				</div>

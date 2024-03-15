@@ -4,6 +4,7 @@ import {
 	getAuth,
 	signOut,
 } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -20,8 +21,10 @@ const app = initializeApp(firebaseConfig);
 const authentication = getAuth(app);
 const database = getFirestore(app);
 
+const storage = getStorage(app);
+
 const logout = () => {
     signOut(authentication);
 }
 
-export { logout, authentication, database};
+export { logout, authentication, database, storage};

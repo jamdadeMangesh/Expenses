@@ -50,7 +50,7 @@ export const Register = () => {
                     setCopyData("email: " +data.email+ ", password: " +password);
                     console.log(copyData);
                     setShowCopyToClipboard(true);
-                    signOut(authentication);
+                    //signOut(authentication);
 				})
 				.catch((error) => {
                     if (error) {

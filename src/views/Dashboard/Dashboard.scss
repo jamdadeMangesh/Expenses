@@ -12,7 +12,21 @@
 		&-subTitle {
 			font-size: var(--font-size-16);
 			font-weight: var(--font-weight-400);
+            display: flex;
+            justify-content: space-between;
 		}
+        &-role{
+            font-size: var(--font-size-12);
+            color: var(--surfaces-primary);
+            padding: var(--spacing-xxs) var(--spacing-xs);
+            border-radius: var(--spacing-xxs);
+            &--user{
+                background-color: var(--surfaces-success);
+            }
+            &--admin{
+                background-color: var(--surfaces-info);
+            }
+        }
 	}
 	&__stats {
 		margin: 0px var(--spacing-m);

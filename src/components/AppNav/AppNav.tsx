@@ -1,13 +1,20 @@
 import React from "react";
 import { HiHome, HiOutlineHome, HiUserGroup } from "react-icons/hi";
 import { IoMdAddCircle, IoMdAddCircleOutline } from "react-icons/io";
-import { HiOutlineQueueList, HiQueueList, HiOutlineUserGroup } from "react-icons/hi2";
+import {
+	HiOutlineQueueList,
+	HiQueueList,
+	HiOutlineUserGroup,
+} from "react-icons/hi2";
 import { RiUser2Fill, RiUser2Line } from "react-icons/ri";
 import "./AppNav.scss";
 import { ApplicationRoutes } from "../../shared/constant";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectUserData } from "../../views/Login/LoginSlice";
 
 export const AppNav = () => {
+	const { role } = useSelector(selectUserData);
 	const routes = ApplicationRoutes;
 	const location = useLocation();
 	const navigate = useNavigate();
@@ -69,17 +76,23 @@ export const AppNav = () => {
 						</div>
 						<div className="AppNavWrapper__grid-text">List</div>
 					</div>
-                    <div
-						className={`AppNavWrapper__grid ${
-							splitUrl === "/users" ? "AppNavWrapper__grid-active" : ""
-						}`}
-						onClick={() => navigate("/users")}
-					>
-						<div className="AppNavWrapper__grid-icon">
-							{splitUrl === "/users" ? <HiUserGroup  /> : <HiOutlineUserGroup />}
+					{role === "admin" && (
+						<div
+							className={`AppNavWrapper__grid ${
+								splitUrl === "/users" ? "AppNavWrapper__grid-active" : ""
+							}`}
+							onClick={() => navigate("/users")}
+						>
+							<div className="AppNavWrapper__grid-icon">
+								{splitUrl === "/users" ? (
+									<HiUserGroup />
+								) : (
+									<HiOutlineUserGroup />
+								)}
+							</div>
+							<div className="AppNavWrapper__grid-text">Users</div>
 						</div>
-						<div className="AppNavWrapper__grid-text">Users</div>
-					</div>
+					)}
 					<div
 						className={`AppNavWrapper__grid ${
 							splitUrl === "/profile" ? "AppNavWrapper__grid-active" : ""
@@ -91,7 +104,6 @@ export const AppNav = () => {
 						</div>
 						<div className="AppNavWrapper__grid-text">Profile</div>
 					</div>
-					
 				</div>
 			)}
 		</>

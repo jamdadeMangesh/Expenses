@@ -1,43 +1,95 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./Dashboard.scss";
 import { LuIndianRupee } from "react-icons/lu";
 import { RiChatHistoryFill } from "react-icons/ri";
 import { IoIosAddCircle } from "react-icons/io";
 import { Transactions } from "../../components/Transactions/Transactions";
 import { useNavigate } from "react-router-dom";
-import { transactionsData } from "../../shared/data";
-import { Greetings } from "../../shared/constant";
-import { useAuthState } from "react-firebase-hooks/auth";
+import {
+	Greetings,
+	getAllTransactions,
+	totalExpenses,
+} from "../../shared/constant";
 import { authentication } from "../../shared/firebase";
 
+import { useSelector } from "react-redux";
+import { selectUserData } from "../Login/LoginSlice";
+import { onAuthStateChanged } from "firebase/auth";
+
 export const Dashboard = () => {
-    const [user, loading] = useAuthState(authentication);
+	const { name, role } = useSelector(selectUserData);
+	const [transactionsData, setTransactionsData] = useState([]);
 	const navigate = useNavigate();
-    useEffect(() => {
-        if(!user) navigate("/login");
-    })
-    console.log('loadingloading:', loading);
+	useEffect(() => {
+		onAuthStateChanged(authentication, (user) => {
+			if (user) {
+				navigate("/dashboard");
+			} else {
+				navigate("/login");
+			}
+		});
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useEffect(() => {
+		getAllUsers();
+	}, [name]);
+	const getAllUsers = async () => {
+		//const doc_refs = await query(collection(database, "transactions"), where("personName", "==", name));
+		let filteredAdminData: any = [];
+		let filteredData: any = [];
+		getAllTransactions().then((res) => {
+			filteredAdminData = res?.sort(function (a: any, b: any) {
+				return (
+					+new Date(b?.data?.transactionDate) -
+					+new Date(a.data?.transactionDate)
+				);
+			});
+
+			filteredData = res
+				?.filter((item: any) => item?.data?.personName === name)
+				.sort(function (a: any, b: any) {
+					return (
+						+new Date(b?.data?.transactionDate) -
+						+new Date(a.data?.transactionDate)
+					);
+				});
+			setTransactionsData(role === "admin" ? filteredAdminData : filteredData);
+		});
+	};
+
+	const total = totalExpenses(transactionsData);
+
 	return (
 		<>
-        <div
-					className="dashboard__greeting"
-					data-testid="dashboardWrapper__greeting"
+			<div
+				className="dashboard__greeting"
+				data-testid="dashboardWrapper__greeting"
+			>
+				<div
+					className="dashboard__greeting-title"
+					data-testid="dashboard__greeting_title"
 				>
+					Welcome {name}
+				</div>
+				<div
+					className="dashboard__greeting-subTitle"
+					data-testid="dashboard__greeting_subtitle"
+				>
+					{Greetings()}
+
 					<div
-						className="dashboard__greeting-title"
-						data-testid="dashboard__greeting_title"
+						className={`dashboard__greeting-role ${
+							role === "admin"
+								? "dashboard__greeting-role--admin"
+								: "dashboard__greeting-role--user"
+						}`}
 					>
-						Welcome Mangesh
-					</div>
-					<div
-						className="dashboard__greeting-subTitle"
-						data-testid="dashboard__greeting_subtitle"
-					>
-						{Greetings()}
+						{role === "admin" ? "Admin" : "User"}
 					</div>
 				</div>
+			</div>
 			<div className="dashboardWrapper" data-testid="dashboardWrapper">
-				
 				<div className="dashboard__stats blob-layer  text-center shadow-sm">
 					<div
 						className="dashboard__stats-title"
@@ -49,7 +101,7 @@ export const Dashboard = () => {
 						className="dashboard__stats-amount mt-1"
 						data-testid="dashboard__stats_amount"
 					>
-						<LuIndianRupee /> 5000.00
+						<LuIndianRupee /> {total}
 					</div>
 					<div
 						className="dashboard__stats-monthlyAmount mt-3"
@@ -85,8 +137,12 @@ export const Dashboard = () => {
 					<div className="transactions">
 						<div className="transactions__header mb-3">Last 5 transactions</div>
 
-						{transactionsData.slice(0,5).map((item: any) => (
-							<Transactions data={item} key={item.id}/>
+						{transactionsData.slice(0, 5).map((item: any) => (
+							<Transactions
+								data={item?.data}
+								key={item.id}
+								transactionId={item.id}
+							/>
 						))}
 					</div>
 				</div>
