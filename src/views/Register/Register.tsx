@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { CgAsterisk } from "react-icons/cg";
 import { useHeaderContext } from "../../context/HeaderContext";
 import { GoCopy } from "react-icons/go";
-import { createUserWithEmailAndPassword, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { authentication, database } from "../../shared/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { Alerts } from "../../components/Alerts/Alerts";
@@ -35,7 +35,6 @@ export const Register = () => {
 	const password = useRef({});
 	password.current = watch("password", "");
 
-    //let copyData = "";
 	const onSubmit = (data: any) => {
 		console.log(data);
 		var password = Math.random().toString(36).slice(-10);
@@ -50,7 +49,6 @@ export const Register = () => {
                     setCopyData("email: " +data.email+ ", password: " +password);
                     console.log(copyData);
                     setShowCopyToClipboard(true);
-                    //signOut(authentication);
 				})
 				.catch((error) => {
                     if (error) {
@@ -204,7 +202,6 @@ export const Register = () => {
 							type="submit"
 							className="w-100 buttonHeight"
 							disabled={isSubmitting}
-							//onClick={() => logInWithEmailAndPassword(email, password)}
 						>
 							{isSubmitting ? "Adding new user..." : "Register"}
 						</Button>
