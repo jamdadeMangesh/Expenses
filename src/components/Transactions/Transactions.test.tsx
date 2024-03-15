@@ -6,7 +6,7 @@ import { Transactions } from "./Transactions";
 const renderComponent = () =>
 	render(
 		<HeaderContextProvider>
-			<Transactions data={data} />
+			<Transactions data={data} transactionId={'123'}/>
 		</HeaderContextProvider>
 	);
 
@@ -31,7 +31,7 @@ describe("Should render transactions component without crashing", () => {
 		expect(() =>
 			render(
 				<HeaderContextProvider>
-					<Transactions data={data} />
+					<Transactions data={data} transactionId={'123'}/>
 				</HeaderContextProvider>
 			)
 		).not.toThrow();

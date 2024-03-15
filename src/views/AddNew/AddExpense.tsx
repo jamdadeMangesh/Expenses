@@ -1,15 +1,51 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./AddExpense.scss";
 import { useHeaderContext } from "../../context/HeaderContext";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { CgAsterisk } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
+import { LuImagePlus } from "react-icons/lu";
+import { authentication, database, storage } from "../../shared/firebase";
+import { addDoc, collection } from "firebase/firestore";
+import { useSelector } from "react-redux";
+import { selectUserData } from "../Login/LoginSlice";
+import { DateTime } from "luxon";
+import { FiTrash2 } from "react-icons/fi";
+import {
+	deleteObject,
+	getDownloadURL,
+	ref,
+	uploadBytesResumable,
+} from "firebase/storage";
+import { ToastContainer, toast } from "react-toastify";
+import { onAuthStateChanged } from "firebase/auth";
 
 export const AddExpense = () => {
+	const { name } = useSelector(selectUserData);
 	const navigate = useNavigate();
 	const { setTitle, setShowBackArrow } = useHeaderContext();
-	React.useEffect(() => {
+	const [file, setFile] = useState<any>("");
+	const [imageUrl, setImageUrl] = useState("");
+
+	const hiddenFileInput: any = useRef(null); // ADDED
+
+	const handleClick = () => {
+		hiddenFileInput && hiddenFileInput?.current?.click(); // ADDED
+	};
+
+    useEffect(() => {
+		onAuthStateChanged(authentication, (user) => {
+			if (user) {
+				navigate("/addExpense");
+			} else {
+				navigate("/login");
+			}
+		});
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useEffect(() => {
 		setTitle("Add new transaction");
 		setShowBackArrow(true);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -22,18 +58,77 @@ export const AddExpense = () => {
 		reset,
 	} = useForm();
 
-	const onSubmit = (data: any) => {
-		data["currentDate"] = new Date();
-		data["personName"] = "Mangesh";
-		console.log(data);
-		if (data) {
-			reset();
-			navigate("/dashboard");
-		}
-	};
 	const onClearAddExpense = () => {
 		reset();
 	};
+
+	const onChangeFileUpload = (event: any) => {
+		setFile(event?.target.files[0]);
+	};
+	const handleUpload = () => {
+		console.log("file:", file?.name);
+		if (file) {
+			const storageRef = ref(
+				storage,
+				`/files/${
+					name.replace(/ /g, "_") + "_" + DateTime.now().toUnixInteger()
+				}`
+			);
+			console.log("storageref:", storageRef);
+
+			const uploadTask = uploadBytesResumable(storageRef, file);
+
+			uploadTask.on(
+				"state_changed",
+				(err) => console.log(err),
+				() => {
+					getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+						console.log("url:", url);
+						setImageUrl(url);
+					});
+				}
+			);
+		}
+	};
+
+	const onDeleteImage = () => {
+		if (imageUrl) {
+			const desertRef = ref(storage, imageUrl);
+
+			deleteObject(desertRef)
+				.then(() => {
+					setFile("");
+					setImageUrl("");
+				})
+				.catch((error) => {
+					console.log("delete Error:", error);
+				});
+		}
+	};
+
+	const onSubmit = async (data: any) => {
+		data["createdAt"] = DateTime.now().toISO();
+		data["personName"] = name;
+		data["receipt"] = imageUrl ? imageUrl : "";
+		data["amount"] = data?.amount as number;
+		console.log(data);
+		if (data) {
+			await addDoc(collection(database, "transactions"), { data })
+				.then((res) => {
+					reset();
+					toast.success("New transaction created successfully!", {
+						autoClose: 4000,
+					});
+					setTimeout(() => {
+						navigate("/transactionsList");
+					}, 5000);
+				})
+				.catch((error: any) => {
+					console.error("Error adding document: ", error);
+				});
+		}
+	};
+
 	return (
 		<>
 			<div className="addExpenseWrapper">
@@ -54,7 +149,7 @@ export const AddExpense = () => {
 								{...register("amount", {
 									required: "Please enter amount",
 									pattern: {
-										value: /^\d{0,10}(\.\d{0,2})?$/,
+										value: /^(0|[1-9]\d*)(\.\d+)?$/,
 										message: "Please enter a valid amount",
 									},
 								})}
@@ -66,7 +161,10 @@ export const AddExpense = () => {
 								</p>
 							)}
 						</Form.Group>
-						<Form.Group className="loginWrapper__form-group" controlId="category">
+						<Form.Group
+							className="loginWrapper__form-group"
+							controlId="category"
+						>
 							<Form.Label>
 								Category{" "}
 								<sup>
@@ -93,7 +191,10 @@ export const AddExpense = () => {
 								</p>
 							)}
 						</Form.Group>
-						<Form.Group className="loginWrapper__form-group" controlId="password">
+						<Form.Group
+							className="loginWrapper__form-group"
+							controlId="password"
+						>
 							<Form.Label>
 								Transaction date
 								<sup>
@@ -108,16 +209,6 @@ export const AddExpense = () => {
 								max={new Date().toISOString().slice(0, 10)}
 								{...register("transactionDate", {
 									required: "Please enter transaction date",
-									// pattern: {
-									// 	value:
-									// 		/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
-									// 	message:
-									// 		"Password must have atleast a symbol, upper & lower case letter and number",
-									// },
-									// minLength: {
-									// 	value: 8,
-									// 	message: "Password must have at least 8 characters",
-									// },
 								})}
 							/>
 							{errors.transactionDate && (
@@ -126,7 +217,10 @@ export const AddExpense = () => {
 								</p>
 							)}
 						</Form.Group>
-						<Form.Group className="loginWrapper__form-group" controlId="Description">
+						<Form.Group
+							className="loginWrapper__form-group"
+							controlId="Description"
+						>
 							<Form.Label>Description </Form.Label>
 							<Form.Control
 								as="textarea"
@@ -141,13 +235,45 @@ export const AddExpense = () => {
 								</p>
 							)}
 						</Form.Group>
-						<Form.Group className="loginWrapper__form-group mb-4" controlId="password">
+						<Form.Group
+							className="loginWrapper__form-group mb-4"
+							controlId="password"
+						>
 							<Form.Label>Receipt</Form.Label>
-							<Form.Control
-								type="file"
-								placeholder="Enter transaction date"
-								{...register("receipt")}
-							/>
+							<div className="d-flex  gap-3">
+								<Form.Control
+									type="file"
+									placeholder="Enter transaction date"
+									{...register("receipt")}
+									className="mr-2 d-none"
+									onChange={onChangeFileUpload}
+									ref={hiddenFileInput}
+									accept="image/*"
+								/>
+								<div className="customImageUploader">
+									<div
+										className="customImageUploader__text"
+										onClick={handleClick}
+									>
+										{file ? file?.name : "Upload image"}
+									</div>
+									<div
+										className="customImageUploader__delete"
+										onClick={onDeleteImage}
+									>
+										{imageUrl && <FiTrash2 style={{ color: "#d82c0d" }} />}
+									</div>
+								</div>
+								<Button
+									variant="primary"
+									className="buttonHeight ml-3 px-3"
+									disabled={!file}
+									onClick={handleUpload}
+								>
+									<LuImagePlus />
+								</Button>
+							</div>
+							<Form.Text muted>Upload only jpeg, png format images</Form.Text>
 							{errors.receipt && (
 								<p className="loginWrapper__errorMsg">
 									{errors?.receipt?.message?.toString()}
@@ -176,6 +302,7 @@ export const AddExpense = () => {
 					</div>
 				</form>
 			</div>
+			<ToastContainer position="bottom-center" autoClose={false} />
 		</>
 	);
 };

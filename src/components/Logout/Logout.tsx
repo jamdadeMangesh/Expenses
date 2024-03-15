@@ -1,6 +1,7 @@
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { logout } from "../../shared/firebase";
 type LogoutModal = {
     showModal: boolean;
     hideModal: () => void;
@@ -8,7 +9,8 @@ type LogoutModal = {
 export const Logout = ({showModal, hideModal}: LogoutModal) => {
     const navigate = useNavigate();
     const onLogout = () => {    
-		navigate("/");
+        logout();
+		navigate("/login");
 	};
 	return (
 		<>

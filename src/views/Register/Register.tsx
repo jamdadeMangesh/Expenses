@@ -6,16 +6,24 @@ import { useForm } from "react-hook-form";
 import { CgAsterisk } from "react-icons/cg";
 import { useHeaderContext } from "../../context/HeaderContext";
 import { GoCopy } from "react-icons/go";
+import { createUserWithEmailAndPassword, signOut } from "firebase/auth";
+import { authentication, database } from "../../shared/firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { Alerts } from "../../components/Alerts/Alerts";
+import { authenticationErrors } from "../../shared/constant";
 
 export const Register = () => {
 	const { setTitle, setShowBackArrow } = useHeaderContext();
 	const [showCopyToClipboard, setShowCopyToClipboard] = useState(false);
+    const [showErrors, setShowErrors] = useState(false);
+    const [copyData, setCopyData] = useState("");
+    const [firebaseErrors, setFirebaseErrors] = useState<string>("");
+
 	React.useEffect(() => {
 		setTitle("Create a new user");
 		setShowBackArrow(true);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-
 
 	const {
 		register,
@@ -26,17 +34,51 @@ export const Register = () => {
 
 	const password = useRef({});
 	password.current = watch("password", "");
+
+    //let copyData = "";
 	const onSubmit = (data: any) => {
 		console.log(data);
+		var password = Math.random().toString(36).slice(-10);
+		console.log("randomstring:", password);
 		if (data) {
-			setShowCopyToClipboard(true);
+			createUserWithEmailAndPassword(authentication, data?.email, password)
+				.then((userCredential) => {
+					const user = userCredential.user;
+					console.log("user:", user);
+					setDoc(doc(database, "users", userCredential.user.uid), { data });
+					console.log('successful');
+                    setCopyData("email: " +data.email+ ", password: " +password);
+                    console.log(copyData);
+                    setShowCopyToClipboard(true);
+                    //signOut(authentication);
+				})
+				.catch((error) => {
+                    if (error) {
+                        setFirebaseErrors(authenticationErrors(error.code) as string);
+                        setShowErrors(true);
+                        console.log("errors:", error);
+                    }
+					console.log('Error code:',error.code, 'Error message:', error.message);
+				});
+			
 		}
 	};
+
+    console.log('copyData:', copyData);
+    
 	return (
 		<>
 			<div className="loginWrapper">
 				<form onSubmit={handleSubmit(onSubmit)} className="loginWrapper__form">
 					<div className="loginWrapper__form-content">
+                    <div className="loginWrapper__form-group">
+							<Alerts
+								errors={firebaseErrors}
+								show={showErrors}
+								setShow={() => setShowErrors(false)}
+								isSuccess={false}
+							/>
+						</div>
 						<Form.Group className="loginWrapper__form-group" controlId="name">
 							<Form.Label>
 								Name{" "}
@@ -149,12 +191,9 @@ export const Register = () => {
 						{showCopyToClipboard && (
 							<div className="loginWrapper__form-group">
 								<div className="divider__common"></div>
-                                <p>Plase copy this credentials and share it to user.</p>
-								<Button
-									variant="success"
-									className="w-100 buttonHeight"
-								>
-									<GoCopy className="iconSize20"/> Copy to clipboard
+								<p>Plase copy this credentials and share it to user.</p>
+								<Button variant="success" className="w-100 buttonHeight" onClick={() =>  navigator.clipboard.writeText(copyData)}>
+									<GoCopy className="iconSize20" /> Copy to clipboard
 								</Button>
 							</div>
 						)}

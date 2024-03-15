@@ -14,13 +14,34 @@ import { TransactionsList } from "./views/TransactionsList/TransactionsList";
 import { AddExpense } from "./views/AddNew/AddExpense";
 import { Profile } from "./views/Profile/Profile";
 import { ExpenseDetails } from "./views/ExpenseDetails/ExpenseDetails";
+import { doc, getDoc } from "firebase/firestore";
+import { authentication, database } from "./shared/firebase";
+import { SET_USER_DATA } from "./views/Login/LoginSlice";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useDispatch } from "react-redux";
+import { Users } from "./views/Users/Users";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
 	const [width, setWidth] = useState(window.innerWidth);
+	const [user] = useAuthState(authentication);
+
+	const dispatch = useDispatch();
 	const updateDimensions = () => {
 		setWidth(window.innerWidth);
 	};
 
+	useEffect(() => {
+		if (user) {
+			(async () => {
+				const doc_refs = await getDoc(doc(database, "users", user.uid));
+                dispatch(SET_USER_DATA(doc_refs?.data()?.data));
+			})();
+			return () => {
+				// this now gets called when the component unmounts
+			};
+		}
+	}, [dispatch, user]);
 	useEffect(() => {
 		window.addEventListener("resize", updateDimensions);
 		return () => window.removeEventListener("resize", updateDimensions);
@@ -62,8 +83,9 @@ function App() {
 							/>
 							<Route
 								path={
-									routes.find((r) => r.page === ApplicationPages.TransactionsList)
-										?.route
+									routes.find(
+										(r) => r.page === ApplicationPages.TransactionsList
+									)?.route
 								}
 								Component={TransactionsList}
 							/>
@@ -76,8 +98,7 @@ function App() {
 							/>
 							<Route
 								path={
-									routes.find((r) => r.page === ApplicationPages.Profile)
-										?.route
+									routes.find((r) => r.page === ApplicationPages.Profile)?.route
 								}
 								Component={Profile}
 							/>
@@ -87,6 +108,13 @@ function App() {
 										?.route + "/:id"
 								}
 								Component={ExpenseDetails}
+							/>
+							<Route
+								path={
+									routes.find((r) => r.page === ApplicationPages.Users)
+										?.route
+								}
+								Component={Users}
 							/>
 						</Routes>
 						<AppNav />

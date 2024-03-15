@@ -6,6 +6,8 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { HeaderContextProvider } from "./context/HeaderContext";
+import { Provider } from "react-redux";
+import { store } from "./store/store";
 
 const root = ReactDOM.createRoot(
 	document.getElementById("root") as HTMLElement
@@ -13,7 +15,9 @@ const root = ReactDOM.createRoot(
 root.render(
 	<React.StrictMode>
 		<HeaderContextProvider>
-			<App />
+			<Provider store={store}>
+				<App />
+			</Provider>
 		</HeaderContextProvider>
 	</React.StrictMode>
 );
