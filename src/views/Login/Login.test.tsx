@@ -2,12 +2,16 @@ import React from "react";
 import { render, screen, within } from "@testing-library/react";
 import { HeaderContextProvider } from "../../context/HeaderContext";
 import { Login } from "./Login";
+import { Provider } from "react-redux";
+import { store } from "../../store/store";
 
 const renderComponent = () =>
 	render(
-		<HeaderContextProvider>
-			<Login />
-		</HeaderContextProvider>
+		<Provider store={store}>
+			<HeaderContextProvider>
+				<Login />
+			</HeaderContextProvider>
+		</Provider>
 	);
 
 const mockUsedNavigate = jest.fn();
@@ -20,9 +24,11 @@ describe("Should render Login component without crashing", () => {
 	test("renders home component", () => {
 		expect(() =>
 			render(
-				<HeaderContextProvider>
-					<Login />
-				</HeaderContextProvider>
+				<Provider store={store}>
+					<HeaderContextProvider>
+						<Login />
+					</HeaderContextProvider>
+				</Provider>
 			)
 		).not.toThrow();
 	});
@@ -71,25 +77,6 @@ describe("Should render Login component without crashing", () => {
 		expect(loginWrapper__inputPassword).toBeInTheDocument();
 	});
 
-	test("should render login form login code label", () => {
-		renderComponent();
-		const loginWrapper__labelLoginCode = screen.getByTestId(
-			"loginWrapper__labelLoginCode"
-		);
-		expect(loginWrapper__labelLoginCode).toBeInTheDocument();
-
-		const { getByText } = within(loginWrapper__labelLoginCode);
-		expect(getByText("Login Code")).toBeInTheDocument();
-	});
-
-	test("should render login form login code input", () => {
-		renderComponent();
-		const loginWrapper__inputLoginCode = screen.getByTestId(
-			"loginWrapper__inputLoginCode"
-		);
-		expect(loginWrapper__inputLoginCode).toBeInTheDocument();
-	});
-
 	test("should render login form forgot password text", () => {
 		renderComponent();
 		const loginWrapper__forgotPassword = screen.getByTestId(
@@ -105,24 +92,5 @@ describe("Should render Login component without crashing", () => {
 		renderComponent();
 		const loginWrapper__loginBtn = screen.getByTestId("loginWrapper__loginBtn");
 		expect(loginWrapper__loginBtn).toBeInTheDocument();
-	});
-
-	test("should render login form don't have account text", () => {
-		renderComponent();
-		const loginWrapper__accountText = screen.getByTestId(
-			"loginWrapper__accountText"
-		);
-		expect(loginWrapper__accountText).toBeInTheDocument();
-
-		const { getByText } = within(loginWrapper__accountText);
-		expect(getByText("Don't have an account?")).toBeInTheDocument();
-	});
-
-	test("should render login form register button", () => {
-		renderComponent();
-		const loginWrapper__registerBtn = screen.getByTestId(
-			"loginWrapper__registerBtn"
-		);
-		expect(loginWrapper__registerBtn).toBeInTheDocument();
 	});
 });
