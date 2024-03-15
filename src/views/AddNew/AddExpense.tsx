@@ -27,6 +27,8 @@ export const AddExpense = () => {
 	const { setTitle, setShowBackArrow } = useHeaderContext();
 	const [file, setFile] = useState<any>("");
 	const [imageUrl, setImageUrl] = useState("");
+	const [percent, setPercent] = useState(0);
+	const [imageLoading, setImageLoading] = useState(false);
 
 	const hiddenFileInput: any = useRef(null); // ADDED
 
@@ -34,7 +36,7 @@ export const AddExpense = () => {
 		hiddenFileInput && hiddenFileInput?.current?.click(); // ADDED
 	};
 
-    useEffect(() => {
+	useEffect(() => {
 		onAuthStateChanged(authentication, (user) => {
 			if (user) {
 				navigate("/addExpense");
@@ -42,7 +44,7 @@ export const AddExpense = () => {
 				navigate("/login");
 			}
 		});
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
@@ -66,7 +68,7 @@ export const AddExpense = () => {
 		setFile(event?.target.files[0]);
 	};
 	const handleUpload = () => {
-		console.log("file:", file?.name);
+		
 		if (file) {
 			const storageRef = ref(
 				storage,
@@ -74,12 +76,19 @@ export const AddExpense = () => {
 					name.replace(/ /g, "_") + "_" + DateTime.now().toUnixInteger()
 				}`
 			);
-			console.log("storageref:", storageRef);
 
 			const uploadTask = uploadBytesResumable(storageRef, file);
 
 			uploadTask.on(
 				"state_changed",
+				(snapshot) => {
+					const percent = Math.round(
+						(snapshot.bytesTransferred / snapshot.totalBytes) * 100
+					);
+					setImageLoading(true);
+					// update progress
+					setPercent(percent);
+				},
 				(err) => console.log(err),
 				() => {
 					getDownloadURL(uploadTask.snapshot.ref).then((url) => {
@@ -99,6 +108,7 @@ export const AddExpense = () => {
 				.then(() => {
 					setFile("");
 					setImageUrl("");
+                    setImageLoading(false);
 				})
 				.catch((error) => {
 					console.log("delete Error:", error);
@@ -116,6 +126,8 @@ export const AddExpense = () => {
 			await addDoc(collection(database, "transactions"), { data })
 				.then((res) => {
 					reset();
+                    setFile("");
+                    setImageLoading(false);
 					toast.success("New transaction created successfully!", {
 						autoClose: 4000,
 					});
@@ -249,6 +261,7 @@ export const AddExpense = () => {
 									onChange={onChangeFileUpload}
 									ref={hiddenFileInput}
 									accept="image/*"
+                                    disabled={imageLoading}
 								/>
 								<div className="customImageUploader">
 									<div
@@ -267,13 +280,16 @@ export const AddExpense = () => {
 								<Button
 									variant="primary"
 									className="buttonHeight ml-3 px-3"
-									disabled={!file}
+									disabled={!file || imageLoading}
 									onClick={handleUpload}
 								>
 									<LuImagePlus />
 								</Button>
 							</div>
-							<Form.Text muted>Upload only jpeg, png format images</Form.Text>
+                            <div className="d-flex justify-content-between  gap-3">
+							    <Form.Text muted>Upload only jpeg, png format images</Form.Text>
+                                <div className="pt-1">{imageLoading && percent+"%"}</div>
+                            </div>
 							{errors.receipt && (
 								<p className="loginWrapper__errorMsg">
 									{errors?.receipt?.message?.toString()}
