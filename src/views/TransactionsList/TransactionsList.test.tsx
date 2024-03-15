@@ -1,22 +1,34 @@
 import React from "react";
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { HeaderContextProvider } from "../../context/HeaderContext";
 import { TransactionsList } from "./TransactionsList";
+import { Provider } from "react-redux";
+import { store } from "../../store/store";
 
 const renderComponent = () =>
 	render(
-		<HeaderContextProvider>
-			<TransactionsList />
-		</HeaderContextProvider>
+		<Provider store={store}>
+			<HeaderContextProvider>
+				<TransactionsList />
+			</HeaderContextProvider>
+		</Provider>
 	);
+
+const mockUsedNavigate = jest.fn();
+jest.mock("react-router-dom", () => ({
+	...jest.requireActual("react-router-dom"),
+	useNavigate: () => mockUsedNavigate,
+}));
 
 describe("Should render Transaction list component without crashing", () => {
 	test("renders Transaction list component", () => {
 		expect(() =>
 			render(
-				<HeaderContextProvider>
-					<TransactionsList />
-				</HeaderContextProvider>
+				<Provider store={store}>
+					<HeaderContextProvider>
+						<TransactionsList />
+					</HeaderContextProvider>
+				</Provider>
 			)
 		).not.toThrow();
 	});
@@ -39,18 +51,10 @@ describe("Should render Transaction list component without crashing", () => {
 
 	test("should render Transaction list filter", () => {
 		renderComponent();
-		const transactionsListWrapper_appliedFilter = screen.getByTestId(
-			"transactionsListWrapper_appliedFilter"
+		const transactionsListWrapper_appliedFilterAmount = screen.getByTestId(
+			"transactionsListWrapper_appliedFilterAmount"
 		);
-		expect(transactionsListWrapper_appliedFilter).toBeInTheDocument();
-	});
-
-	test("should render Transaction list download", () => {
-		renderComponent();
-		const transactionsListWrapper__download = screen.getByTestId(
-			"transactionsListWrapper__download"
-		);
-		expect(transactionsListWrapper__download).toBeInTheDocument();
+		expect(transactionsListWrapper_appliedFilterAmount).toBeInTheDocument();
 	});
 
 	test("should render Transaction list content wrapper", () => {

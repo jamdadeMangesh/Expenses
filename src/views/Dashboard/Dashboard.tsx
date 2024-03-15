@@ -33,6 +33,7 @@ export const Dashboard = () => {
 
 	useEffect(() => {
 		getAllUsers();
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [name]);
 	const getAllUsers = async () => {
 		//const doc_refs = await query(collection(database, "transactions"), where("personName", "==", name));

@@ -25,7 +25,7 @@ export const TransactionsList = () => {
 	const [openFilter, setOpenFilter] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>("");
 
-	const { selectedFilteredUsername, filterType, selectedCategoryList } = useSelector(selectFilterData);
+	const { selectedFilteredUsername } = useSelector(selectFilterData);
 	const navigate = useNavigate();
     useEffect(() => {
 		onAuthStateChanged(authentication, (user) => {
@@ -167,7 +167,7 @@ export const TransactionsList = () => {
 				</div>
 				<div
 					className="transactions__appliedFilter mb-3"
-					data-testid="transactionsListWrapper_appliedFilter"
+					data-testid="transactionsListWrapper_appliedFilterAmount"
 				>
 					<div className="transactions__appliedFilter-total">
 						Total Amount : <LuIndianRupee />

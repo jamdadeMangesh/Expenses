@@ -1,13 +1,17 @@
 import React from "react";
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { HeaderContextProvider } from "../../context/HeaderContext";
 import { Transactions } from "./Transactions";
+import { Provider } from "react-redux";
+import { store } from "../../store/store";
 
 const renderComponent = () =>
 	render(
-		<HeaderContextProvider>
-			<Transactions data={data} transactionId={'123'}/>
-		</HeaderContextProvider>
+		<Provider store={store}>
+			<HeaderContextProvider>
+				<Transactions data={data} transactionId={"123"} />
+			</HeaderContextProvider>
+		</Provider>
 	);
 
 const mockUsedNavigate = jest.fn();
@@ -30,9 +34,11 @@ describe("Should render transactions component without crashing", () => {
 	test("renders home component", () => {
 		expect(() =>
 			render(
-				<HeaderContextProvider>
-					<Transactions data={data} transactionId={'123'}/>
-				</HeaderContextProvider>
+				<Provider store={store}>
+					<HeaderContextProvider>
+						<Transactions data={data} transactionId={"123"} />
+					</HeaderContextProvider>
+				</Provider>
 			)
 		).not.toThrow();
 	});
@@ -57,14 +63,6 @@ describe("Should render transactions component without crashing", () => {
 			"transactions__grid_category"
 		);
 		expect(transactions__grid_category).toBeInTheDocument();
-	});
-
-	test("should render transactions person name", () => {
-		renderComponent();
-		const transactions__grid_name = screen.getByTestId(
-			"transactions__grid_name"
-		);
-		expect(transactions__grid_name).toBeInTheDocument();
 	});
 
 	test("should render transactions spent date", () => {

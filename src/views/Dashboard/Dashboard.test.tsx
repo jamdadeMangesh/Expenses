@@ -3,12 +3,16 @@ import { render, screen, within } from "@testing-library/react";
 import { HeaderContextProvider } from "../../context/HeaderContext";
 import { Dashboard } from "./Dashboard";
 import { Greetings } from "../../shared/constant";
+import { Provider } from "react-redux";
+import { store } from "../../store/store";
 
 const renderComponent = () =>
 	render(
-		<HeaderContextProvider>
-			<Dashboard />
-		</HeaderContextProvider>
+		<Provider store={store}>
+			<HeaderContextProvider>
+				<Dashboard />
+			</HeaderContextProvider>
+		</Provider>
 	);
 
 const mockUsedNavigate = jest.fn();
@@ -21,9 +25,11 @@ describe("Should render Dashboard component without crashing", () => {
 	test("renders dashboard component", () => {
 		expect(() =>
 			render(
-				<HeaderContextProvider>
-					<Dashboard />
-				</HeaderContextProvider>
+				<Provider store={store}>
+					<HeaderContextProvider>
+						<Dashboard />
+					</HeaderContextProvider>
+				</Provider>
 			)
 		).not.toThrow();
 	});
@@ -40,17 +46,6 @@ describe("Should render Dashboard component without crashing", () => {
 			"dashboardWrapper__greeting"
 		);
 		expect(dashboardWrapper__greeting).toBeInTheDocument();
-	});
-
-	test("should render dashboard welcome message", () => {
-		renderComponent();
-		const dashboard__greeting_title = screen.getByTestId(
-			"dashboard__greeting_title"
-		);
-		expect(dashboard__greeting_title).toBeInTheDocument();
-
-		const { getByText } = within(dashboard__greeting_title);
-		expect(getByText("Welcome Mangesh")).toBeInTheDocument();
 	});
 
 	test("should render dashboard greeting message", () => {

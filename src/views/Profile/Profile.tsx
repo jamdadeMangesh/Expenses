@@ -24,7 +24,7 @@ export const Profile = () => {
 	const [showLogoutModal, setShowLogoutModal] = useState(false);
 	const [showUpdatePasswordModal, setShowUpdatePasswordModal] = useState(false);
 	const [showErrors, setShowErrors] = useState(false);
-	const [firebaseErrors, _setFirebaseErrors] = useState<string>("");
+	const [firebaseErrors, setFirebaseErrors] = useState<string>("");
 	const navigate = useNavigate();
 	const { name, email, mobileNumber, role } = useSelector(selectUserData);
 	const [user, loading] = useAuthState(authentication);
@@ -85,6 +85,7 @@ export const Profile = () => {
 						})
 						.catch((error) => {
 							console.log(error);
+                            setFirebaseErrors("Something went wrong!");
 							toast.error("Something went wrong!");
 						});
 				})

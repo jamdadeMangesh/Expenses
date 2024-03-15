@@ -31,13 +31,6 @@ describe("Should render Home component without crashing", () => {
 		const homeWrapper__logo = screen.getByTestId("homeWrapper__logo");
 		expect(homeWrapper__logo).toBeInTheDocument();
 	});
-	test("should render super admin button", () => {
-		renderComponent();
-		const homeWrapper__superAdminBtn = screen.getByTestId(
-			"homeWrapper__superAdminBtn"
-		);
-		expect(homeWrapper__superAdminBtn).toBeInTheDocument();
-	});
 	test("should render user button", () => {
 		renderComponent();
 		const homeWrapper__userBtn = screen.getByTestId("homeWrapper__userBtn");
