@@ -25,8 +25,6 @@ export const FilterData = ({ openFilter, setOpenFilter }: FilterDataProps) => {
 	const dispatch = useDispatch();
 	const { selectedFilteredUsername, selectedCategoryList } =
 		useSelector(selectFilterData);
-	console.log("selectedUsername in filter:", selectedFilteredUsername);
-	console.log("selectedCategoryList in filter:", selectedCategoryList);
 	//const { year, preferenceValues } = useSelector(selectFilterData);
 
 	useEffect(() => {

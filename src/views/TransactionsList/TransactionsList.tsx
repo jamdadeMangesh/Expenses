@@ -57,7 +57,6 @@ export const TransactionsList = () => {
 		});
 	}, []);
 
-	console.log("transactionsData:", transactionsData);
 
 	// const filteredValues = useMemo(() => {
 	// 	let filteredDataArray: any = [];
@@ -132,8 +131,6 @@ export const TransactionsList = () => {
     }, [name, role, searchTerm, transactionsData]);
 
 	const total = totalExpenses(filteredValues);
-
-	console.log("filteredValues:", filteredValues);
 
     const filterBySearch = (event: any) => {
 		setSearchTerm(event);
