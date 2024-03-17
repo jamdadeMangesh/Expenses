@@ -5,8 +5,6 @@ import { Button, Form } from "react-bootstrap";
 import { FiFilter } from "react-icons/fi";
 import { Transactions } from "../../components/Transactions/Transactions";
 import { FiDownload } from "react-icons/fi";
-import { FaTag, FaUser } from "react-icons/fa";
-import { LuDot } from "react-icons/lu";
 import { useSelector } from "react-redux";
 import { selectUserData } from "../Login/LoginSlice";
 import { getAllTransactions, totalExpenses } from "../../shared/constant";
@@ -17,17 +15,17 @@ import { ToastContainer } from "react-toastify";
 import { onAuthStateChanged } from "firebase/auth";
 import { authentication } from "../../shared/firebase";
 import { useNavigate } from "react-router-dom";
-
+import noResult from "../../../src/assets/icons/no-results.png";
 export const TransactionsList = () => {
 	const { setTitle, setShowBackArrow } = useHeaderContext();
 	const { name, role } = useSelector(selectUserData);
 	const [transactionsData, setTransactionsData] = useState([]);
 	const [openFilter, setOpenFilter] = useState<boolean>(false);
-    const [searchTerm, setSearchTerm] = useState<string>("");
+	const [searchTerm, setSearchTerm] = useState<string>("");
 
-	const { selectedFilteredUsername } = useSelector(selectFilterData);
+	const { financialYear } = useSelector(selectFilterData);
 	const navigate = useNavigate();
-    useEffect(() => {
+	useEffect(() => {
 		onAuthStateChanged(authentication, (user) => {
 			if (user) {
 				navigate("/transactionsList");
@@ -35,10 +33,10 @@ export const TransactionsList = () => {
 				navigate("/login");
 			}
 		});
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-    
-    useEffect(() => {
+
+	useEffect(() => {
 		setTitle("All transactions");
 		setShowBackArrow(false);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -57,7 +55,6 @@ export const TransactionsList = () => {
 		});
 	}, []);
 
-
 	// const filteredValues = useMemo(() => {
 	// 	let filteredDataArray: any = [];
 	// 	let filteredData: any = [];
@@ -68,28 +65,28 @@ export const TransactionsList = () => {
 	// 			);
 	// 			return filteredDataArray;
 	// 		}
-    //         case "category": {
-    //             // filteredDataArray = transactionsData?.filter(
+	//         case "category": {
+	//             // filteredDataArray = transactionsData?.filter(
 	// 			// 	(item: any) => item?.category?.includes(selectedCategoryList)
 	// 			// );
-    //             // filteredDataArray = transactionsData.filter(
-    //             //     function(e) {
-    //             //       return selectedCategoryList.indexOf(e) < 0;
-    //             //     }
-    //             // );
-                
-    //             filteredDataArray = transactionsData.filter((itemX: any) => selectedCategoryList.includes(itemX?.data.category));
+	//             // filteredDataArray = transactionsData.filter(
+	//             //     function(e) {
+	//             //       return selectedCategoryList.indexOf(e) < 0;
+	//             //     }
+	//             // );
+
+	//             filteredDataArray = transactionsData.filter((itemX: any) => selectedCategoryList.includes(itemX?.data.category));
 	// 			return filteredDataArray;
-    //         }
+	//         }
 	// 		default: {
-    //             if(searchTerm) {
-    //                 const lowercasedValue = searchTerm.toLowerCase().trim();
-    //                 return transactionsData.filter((item: any) => {
-    //                     const searchByName = item?.data?.personName.toLowerCase().includes(lowercasedValue);
-    //                     const searchByCategory = item?.data?.category.toLowerCase().includes(lowercasedValue);
-    //                     return searchByName || searchByCategory;
-    //                 })
-    //             }
+	//             if(searchTerm) {
+	//                 const lowercasedValue = searchTerm.toLowerCase().trim();
+	//                 return transactionsData.filter((item: any) => {
+	//                     const searchByName = item?.data?.personName.toLowerCase().includes(lowercasedValue);
+	//                     const searchByCategory = item?.data?.category.toLowerCase().includes(lowercasedValue);
+	//                     return searchByName || searchByCategory;
+	//                 })
+	//             }
 	// 			filteredData = transactionsData?.filter(
 	// 				(item: any) => item?.data?.personName === name
 	// 			);
@@ -98,43 +95,61 @@ export const TransactionsList = () => {
 	// 			} else {
 	// 				return filteredData;
 	// 			}
-    //         }
+	//         }
 	// 	}
 	// }, [filterType, selectedFilteredUsername, transactionsData, searchTerm, selectedCategoryList]);
 
-    const filteredValues = useMemo(() => {
-        let filteredData: any = [];
-        if(searchTerm) {
-            const lowercasedValue = searchTerm.toLowerCase().trim();
-            if(role === "admin") {
-                return transactionsData.filter((item: any) => {
-                    const searchByName = item?.data?.personName.toLowerCase().includes(lowercasedValue);
-                    const searchByCategory = item?.data?.category.toLowerCase().includes(lowercasedValue);
-                    return searchByName || searchByCategory;
-                })
-            } else {
-                return transactionsData.filter((item: any) => {
-                    const searchByCategory = item?.data?.personName === name && item?.data?.category.toLowerCase().includes(lowercasedValue);
-                    return searchByCategory;
-                })
-            }
-            
-        }
-        filteredData = transactionsData?.filter(
-            (item: any) => item?.data?.personName === name
-        );
-        if (role === "admin") {
-            return transactionsData;
-        } else {
-            return filteredData;
-        }
-    }, [name, role, searchTerm, transactionsData]);
+	const filteredValues = useMemo(() => {
+		let filteredData: any = [];
+		if (financialYear !== "") {
+			const getMinYear = financialYear.split("-")[0];
+			const getMaxYear = financialYear.split("-")[1];
+			const yearStartDate = getMinYear + "-04-01";
+			const yearEndDate = getMaxYear + "-03-31";
+
+			return transactionsData?.filter(
+				(item: any) =>
+					item?.data?.transactionDate >= yearStartDate &&
+					item?.data?.transactionDate <= yearEndDate
+			);
+		}
+		if (searchTerm) {
+			const lowercasedValue = searchTerm.toLowerCase().trim();
+			if (role === "admin") {
+				return transactionsData.filter((item: any) => {
+					const searchByName = item?.data?.personName
+						.toLowerCase()
+						.includes(lowercasedValue);
+					const searchByCategory = item?.data?.category
+						.toLowerCase()
+						.includes(lowercasedValue);
+					return searchByName || searchByCategory;
+				});
+			} else {
+				return transactionsData.filter((item: any) => {
+					const searchByCategory =
+						item?.data?.personName === name &&
+						item?.data?.category.toLowerCase().includes(lowercasedValue);
+					return searchByCategory;
+				});
+			}
+		}
+		filteredData = transactionsData?.filter(
+			(item: any) => item?.data?.personName === name
+		);
+		if (role === "admin") {
+			return transactionsData;
+		} else {
+			return filteredData;
+		}
+	}, [financialYear, name, role, searchTerm, transactionsData]);
 
 	const total = totalExpenses(filteredValues);
 
-    const filterBySearch = (event: any) => {
+	const filterBySearch = (event: any) => {
 		setSearchTerm(event);
 	};
+
 	return (
 		<>
 			<div
@@ -151,7 +166,7 @@ export const TransactionsList = () => {
 								type="text"
 								placeholder="Search"
 								data-testid="transactionsListWrapper_searchInput"
-                                onChange={(e) => filterBySearch(e.target.value)}
+								onChange={(e) => filterBySearch(e.target.value)}
 							/>
 						</Form.Group>
 					</div>
@@ -181,7 +196,7 @@ export const TransactionsList = () => {
 						</div>
 					)}
 				</div>
-				<div
+				{/* <div
 					className="transactions__appliedFilter mb-3"
 					data-testid="transactionsListWrapper_appliedFilter"
 				>
@@ -195,14 +210,39 @@ export const TransactionsList = () => {
 						)}
 						<FaTag /> <span>Snacks</span> <span>Travel</span>
 					</div>
-				</div>
+				</div> */}
 				<div
 					className="transactions__content"
 					data-testid="transactionsListWrapper_content"
 				>
-					{filteredValues?.map((item: any) => (
-						<Transactions data={item?.data} key={item.id} transactionId={item.id} />
-					))}
+					{filteredValues.length === 0 ? (
+						<div className="transactions__content-noData">
+							<img src={noResult} alt="no results" />
+							Data not found. Add new data or search with different keywords!
+						</div>
+					) : (
+						filteredValues?.map((item: any) => (
+							<Transactions
+								data={item?.data}
+								key={item.id}
+								transactionId={item.id}
+							/>
+						))
+					)}
+					{/* {filteredValues?.map((item: any) =>
+						filteredValues.length > 0 ? (
+							<Transactions
+								data={item?.data}
+								key={item.id}
+								transactionId={item.id}
+							/>
+						) : (
+							<div className="transactions__content-noData">
+								<img src={noResult} alt="no results" />
+								Data not found. Add new data or search with different keywords!
+							</div>
+						)
+					)} */}
 				</div>
 			</div>
 			{openFilter && (
@@ -217,7 +257,7 @@ export const TransactionsList = () => {
 					/>
 				</>
 			)}
-            <ToastContainer position="bottom-center" autoClose={false} />
+			<ToastContainer position="bottom-center" autoClose={false} />
 		</>
 	);
 };

@@ -20,6 +20,7 @@ import {
 } from "firebase/storage";
 import { ToastContainer, toast } from "react-toastify";
 import { onAuthStateChanged } from "firebase/auth";
+import { categories } from "../../shared/constant";
 
 export const AddExpense = () => {
 	const { name } = useSelector(selectUserData);
@@ -192,9 +193,9 @@ export const AddExpense = () => {
 								autoComplete="off"
 							>
 								<option value="">Select category</option>
-								<option value="Snacks">Snacks</option>
-								<option value="Travel">Travel</option>
-								<option value="Materials">Materials</option>
+                                {categories.map((category: string) => (
+                                    <option key={category} value={category}>{category}</option>    
+                                ))}
 							</Form.Select>
 
 							{errors.category && (
@@ -304,6 +305,7 @@ export const AddExpense = () => {
 							type="button"
 							className="w-100 buttonHeight"
 							onClick={() => onClearAddExpense()}
+                            size="sm"
 						>
 							Clear
 						</Button>
@@ -312,6 +314,7 @@ export const AddExpense = () => {
 							type="submit"
 							className="w-100 buttonHeight"
 							disabled={isSubmitting}
+                            size="sm"
 						>
 							{isSubmitting ? "Sending data..." : "Submit"}
 						</Button>

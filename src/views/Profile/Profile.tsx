@@ -27,9 +27,7 @@ export const Profile = () => {
 	const [firebaseErrors, setFirebaseErrors] = useState<string>("");
 	const navigate = useNavigate();
 	const { name, email, mobileNumber, role } = useSelector(selectUserData);
-	const [user, loading] = useAuthState(authentication);
-	console.log("name;:::", name);
-	console.log("loading;:::", loading);
+	const [user] = useAuthState(authentication);
 
 	const {
 		register,
@@ -60,12 +58,8 @@ export const Profile = () => {
 	}, []);
 
 	const onSubmit = async (data: any) => {
-		console.log("data", data);
-		console.log("update password clicked");
-
 		if (data) {
 			const reauthenticate = (currentPassword: any) => {
-				//var user = authentication.currentUser;
 				var cred = EmailAuthProvider.credential(email, currentPassword);
 				return reauthenticateWithCredential(
 					authentication.currentUser as any,
@@ -75,7 +69,6 @@ export const Profile = () => {
 
 			reauthenticate(data?.currentPassword)
 				.then(() => {
-					//var user = firebase.auth().currentUser;
 					updatePassword(user as any, data?.newPassword)
 						.then(() => {
 							console.log("Password updated!");

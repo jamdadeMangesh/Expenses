@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const filterDataInitialState = {
-	year: "",
+	financialYear: "",
 	preferenceValues: "",
     selectedFilteredUsername: "",
     filterType: "",
@@ -14,9 +14,8 @@ export const FilterDataSlice = createSlice({
         SET_USERNAME:(state, action) => {
             state.selectedFilteredUsername = action?.payload
         },
-		ADD_FILTER_DATA: (state, action) => {
-			state.year = action.payload.year;
-			state.preferenceValues = action.payload.preferenceValues;
+		SET_FINANCIAL_YEAR: (state, action) => {
+			state.financialYear = action.payload;
 		},
         SET_FILTER_TYPE: (state, action) => {
             state.filterType = action.payload;
@@ -28,6 +27,6 @@ export const FilterDataSlice = createSlice({
 	},
 });
 
-export const { ADD_FILTER_DATA, SET_USERNAME, SET_FILTER_TYPE, SET_CATEGORY_LIST } = FilterDataSlice.actions;
+export const { SET_FINANCIAL_YEAR, SET_USERNAME, SET_FILTER_TYPE, SET_CATEGORY_LIST } = FilterDataSlice.actions;
 export const selectFilterData = (state: any) => state.FilterData;
 export default FilterDataSlice.reducer;

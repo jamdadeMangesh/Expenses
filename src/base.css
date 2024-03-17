@@ -26,6 +26,7 @@
 	--surfaces-secondary: #f9f9fa;
 	--surfaces-primary: #fff;
 	--surfaces-theme-bg: #532226;
+	--surfaces-icon-bg: #cfd2d4;
 
 	/** TEXT **/
 	--text-primary: var(--surfaces-s-090);
