@@ -6,11 +6,11 @@
 	&__greeting {
 		padding: var(--spacing-n) var(--spacing-m);
 		&-title {
-			font-size: var(--font-size-22);
+			font-size: var(--font-size-18);
 			font-weight: var(--font-weight-500);
 		}
 		&-subTitle {
-			font-size: var(--font-size-16);
+			font-size: var(--font-size-15);
 			font-weight: var(--font-weight-400);
             display: flex;
             justify-content: space-between;
@@ -38,7 +38,7 @@
 		z-index: 1;
 		&-title {
 			font-size: var(--font-size-16);
-			font-weight: var(--font-weight-300);
+			font-weight: var(--font-weight-500);
 		}
 		&-amount {
 			font-size: 30px;
@@ -58,7 +58,7 @@
 	&__controls {
 		position: relative;
 		top: -10px;
-		padding: var(--spacing-xl) var(--spacing-m);
+		padding: var(--spacing-l) var(--spacing-m);
 		margin: 0px var(--spacing-m);
 		border-radius: 0px 0px var(--spacing-xs) var(--spacing-xs);
 		display: flex;

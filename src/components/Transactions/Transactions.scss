@@ -14,6 +14,12 @@
             border-radius: var(--spacing-s);
             background: var(--surfaces-disabled);
             margin-right: var(--spacing-m);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            img{
+                width: 30px;
+            }
         }
         &-group{
             flex: 1;
@@ -77,6 +83,26 @@
         &-total{
             font-size: var(--font-size-16);
             font-weight: var(--font-weight-600);
+        }
+    }
+    &__content{
+        height: calc(100% - 200px);
+        &-noData{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 0px 30px;
+            font-size: var(--font-size-15);
+            font-weight: var(--font-weight-500);
+            text-align: center;
+            color: var(--text-disabled);
+            line-height: 25px;
+            img{
+                width: 150px;
+                margin-bottom: 10px;
+            }
         }
     }
 }
