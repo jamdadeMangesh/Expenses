@@ -221,7 +221,7 @@ export const TransactionsList = () => {
 							className="transactions__download"
 							data-testid="transactionsListWrapper__download"
 						>
-							<Button variant="success" onClick={exportFile}>
+							<Button variant="success" onClick={exportFile} disabled={filteredValues.length === 0}>
 								<FiDownload />
 							</Button>
 						</div>

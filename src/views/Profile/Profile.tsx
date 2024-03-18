@@ -71,7 +71,6 @@ export const Profile = () => {
 				.then(() => {
 					updatePassword(user as any, data?.newPassword)
 						.then(() => {
-							console.log("Password updated!");
 							setShowUpdatePasswordModal(false);
 							reset();
 							toast.success("Password updated successfully!");
