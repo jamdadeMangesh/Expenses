@@ -13,7 +13,6 @@ export const UserDataSlce = createSlice({
     initialState: userDataInitialState,
     reducers: {
         SET_USER_DATA: (state, action) => {
-            console.log('action:', action.payload)
             state.name = action?.payload?.name;
             state.email = action?.payload?.email;
             state.role = action?.payload?.role;

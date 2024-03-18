@@ -83,5 +83,18 @@
 	}
 	&__content {
 		padding: var(--spacing-n) var(--spacing-m);
+        height: calc(100% - 280px);
+        &-noData{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 0px 30px;
+            img{
+                width: 250px;
+                margin-bottom: 10px;
+            }
+        }
 	}
 }

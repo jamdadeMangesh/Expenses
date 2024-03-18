@@ -15,6 +15,7 @@ import { authentication } from "../../shared/firebase";
 import { useSelector } from "react-redux";
 import { selectUserData } from "../Login/LoginSlice";
 import { onAuthStateChanged } from "firebase/auth";
+import noData from "../../assets/icons/noData.jpg";
 
 export const Dashboard = () => {
 	const { name, role } = useSelector(selectUserData);
@@ -28,15 +29,14 @@ export const Dashboard = () => {
 				navigate("/login");
 			}
 		});
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
 		getAllUsers();
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [name]);
 	const getAllUsers = async () => {
-		//const doc_refs = await query(collection(database, "transactions"), where("personName", "==", name));
 		let filteredAdminData: any = [];
 		let filteredData: any = [];
 		getAllTransactions().then((res) => {
@@ -135,16 +135,24 @@ export const Dashboard = () => {
 					</div>
 				</div>
 				<div className="dashboard__content">
-					<div className="transactions">
-						<div className="transactions__header mb-3">Last 5 transactions</div>
+					<div className="transactions h-100">
+                    {transactionsData?.length > 0  && <div className="transactions__header mb-3">Last 5 transactions</div>}
 
-						{transactionsData.slice(0, 5).map((item: any) => (
-							<Transactions
-								data={item?.data}
-								key={item.id}
-								transactionId={item.id}
-							/>
-						))}
+						{transactionsData?.length === 0 ? (
+							<div className="dashboard__content-noData">
+								<img src={noData} alt="no results" />
+							</div>
+						) : (
+							transactionsData
+								.slice(0, 5)
+								.map((item: any) => (
+									<Transactions
+										data={item?.data}
+										key={item.id}
+										transactionId={item.id}
+									/>
+								))
+						)}
 					</div>
 				</div>
 			</div>
