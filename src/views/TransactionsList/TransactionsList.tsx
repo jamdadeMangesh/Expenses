@@ -16,6 +16,9 @@ import { onAuthStateChanged } from "firebase/auth";
 import { authentication } from "../../shared/firebase";
 import { useNavigate } from "react-router-dom";
 import noResult from "../../../src/assets/icons/no-results.png";
+import FileSaver from "file-saver";
+import XLSX from "sheetjs-style";
+
 export const TransactionsList = () => {
 	const { setTitle, setShowBackArrow } = useHeaderContext();
 	const { name, role } = useSelector(selectUserData);
@@ -54,6 +57,8 @@ export const TransactionsList = () => {
 			setTransactionsData(res);
 		});
 	}, []);
+
+	/* Fetch and update the state once */
 
 	// const filteredValues = useMemo(() => {
 	// 	let filteredDataArray: any = [];
@@ -150,6 +155,32 @@ export const TransactionsList = () => {
 		setSearchTerm(event);
 	};
 
+	const exportFile = () => {
+		const fileType =
+			"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF=8";
+		const fileExtension = ".xlsx";
+		const filename = financialYear
+			? "ExpensesData-" + financialYear
+			: "ExpensesData";
+
+		const excelData: any = [];
+		filteredValues.filter((item: any) =>
+			excelData.push({
+				"Person Name": item?.data?.personName,
+				"Category": item?.data?.category,
+				"Amount": parseFloat(item?.data?.amount),
+				"Transaction Date": item?.data?.transactionDate,
+				"Description": item?.data?.description,
+			})
+		);
+
+		const ws = XLSX.utils.json_to_sheet(excelData);
+		const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+		const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+		const data = new Blob([excelBuffer], { type: fileType });
+		FileSaver.saveAs(data, filename + fileExtension);
+	};
+
 	return (
 		<>
 			<div
@@ -190,7 +221,7 @@ export const TransactionsList = () => {
 							className="transactions__download"
 							data-testid="transactionsListWrapper__download"
 						>
-							<Button variant="success">
+							<Button variant="success" onClick={exportFile}>
 								<FiDownload />
 							</Button>
 						</div>

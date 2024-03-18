@@ -19,7 +19,6 @@ export const FilterDataSlice = createSlice({
 		},
         SET_FILTER_TYPE: (state, action) => {
             state.filterType = action.payload;
-            console.log('state.filterType:', state.filterType);
         },
         SET_CATEGORY_LIST: (state, action) => {
             state.selectedCategoryList = action.payload;

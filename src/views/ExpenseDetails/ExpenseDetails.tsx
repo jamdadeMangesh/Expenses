@@ -3,14 +3,14 @@ import "./ExpenseDetails.scss";
 import { useHeaderContext } from "../../context/HeaderContext";
 import { Button } from "react-bootstrap";
 import { LuIndianRupee } from "react-icons/lu";
-import { useLocation} from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import placeholder from "../../assets/placeholder.jpg";
 import { DateTime } from "luxon";
 export const ExpenseDetails = () => {
 	const { setTitle, setShowBackArrow } = useHeaderContext();
 	const location = useLocation();
 	const { data } = location.state;
-	
+
 	useEffect(() => {
 		setTitle("Expense details");
 		setShowBackArrow(true);
@@ -30,14 +30,16 @@ export const ExpenseDetails = () => {
 					</div>
 					<div className="expenseDetails__grid w-50">
 						<div className="expenseDetails__grid-header">Category</div>
-						<div className="expenseDetails__grid-description">{data?.category}</div>
+						<div className="expenseDetails__grid-description">
+							{data?.category}
+						</div>
 					</div>
 				</div>
 				<div className="expenseDetails__section">
 					<div className="expenseDetails__grid w-100">
 						<div className="expenseDetails__grid-header">Person name</div>
 						<div className="expenseDetails__grid-description">
-                            {data?.personName}
+							{data?.personName}
 						</div>
 					</div>
 				</div>
@@ -53,7 +55,7 @@ export const ExpenseDetails = () => {
 					<div className="expenseDetails__grid w-100">
 						<div className="expenseDetails__grid-header">Description</div>
 						<div className="expenseDetails__grid-description">
-                            {data?.description ? data?.description : "-"}
+							{data?.description ? data?.description : "-"}
 						</div>
 					</div>
 				</div>
