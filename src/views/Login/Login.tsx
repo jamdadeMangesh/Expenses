@@ -46,7 +46,6 @@ export const Login = () => {
 	} = useForm();
 
 	const onSubmit = async (data: any) => {
-		console.log(data);
 		if (data) {
 			try {
 				await signInWithEmailAndPassword(
@@ -58,7 +57,6 @@ export const Login = () => {
 				if (err) {
 					setFirebaseErrors(authenticationErrors(err.code) as string);
 					setShowErrors(true);
-					console.log("errors:", err);
 				}
 			}
 		}

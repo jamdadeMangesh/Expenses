@@ -7,7 +7,7 @@ import { Login } from "./views/Login/Login";
 import { ApplicationPages, ApplicationRoutes } from "./shared/constant";
 import { AppHeader } from "./components/AppHeader/AppHeader";
 import { Register } from "./views/Register/Register";
-import { Alert } from "react-bootstrap";
+import { Alert, Button } from "react-bootstrap";
 import { Dashboard } from "./views/Dashboard/Dashboard";
 import { AppNav } from "./components/AppNav/AppNav";
 import { TransactionsList } from "./views/TransactionsList/TransactionsList";
@@ -21,21 +21,40 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useDispatch } from "react-redux";
 import { Users } from "./views/Users/Users";
 import "react-toastify/dist/ReactToastify.css";
+import { useServiceWorker } from "./hooks/useServiceWorker";
+import { Slide, ToastContainer, toast } from "react-toastify";
 
 function App() {
 	const [width, setWidth] = useState(window.innerWidth);
 	const [user] = useAuthState(authentication);
-
+	const { waitingWorker, showReload, reloadPage } = useServiceWorker();
 	const dispatch = useDispatch();
 	const updateDimensions = () => {
 		setWidth(window.innerWidth);
 	};
 
+	// decides when to show the toast
+	useEffect(() => {
+		if (showReload && waitingWorker) {
+			toast(<Msg />, { transition: Slide });
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [waitingWorker, showReload, reloadPage]);
+
+	const Msg = () => (
+		<div className="pwa_update_notification">
+			<span>A new version of this app is available</span>
+			<Button onClick={() => reloadPage()} variant="primary" size="sm">
+				Refresh
+			</Button>
+		</div>
+	);
+
 	useEffect(() => {
 		if (user) {
 			(async () => {
 				const doc_refs = await getDoc(doc(database, "users", user.uid));
-                dispatch(SET_USER_DATA(doc_refs?.data()?.data));
+				dispatch(SET_USER_DATA(doc_refs?.data()?.data));
 			})();
 			return () => {
 				// this now gets called when the component unmounts
@@ -111,14 +130,18 @@ function App() {
 							/>
 							<Route
 								path={
-									routes.find((r) => r.page === ApplicationPages.Users)
-										?.route
+									routes.find((r) => r.page === ApplicationPages.Users)?.route
 								}
 								Component={Users}
 							/>
 						</Routes>
 						<AppNav />
 					</Router>
+					<ToastContainer
+						position="top-center"
+						autoClose={false}
+						transition={Slide}
+					/>
 				</>
 			) : (
 				<div className="desktopAlert">

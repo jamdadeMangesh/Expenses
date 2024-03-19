@@ -56,6 +56,10 @@ input.inputError{
     font-size: var(--font-size-20);
     margin: 0px var(--spacing-s);
 }
+.Toastify__toast-container.Toastify__toast-container--top-center {
+    width: 100%;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
 .Toastify__toast-container.Toastify__toast-container--bottom-center {
     width: 100%;
     left: 50%;
@@ -63,4 +67,17 @@ input.inputError{
     -webkit-transform: translateX(-50%);
     bottom: 100px;
     padding: 0px 16px;
+}
+.pwa_update_notification{
+    padding: 10px;
+    font-size: var(--font-size-15);
+    font-family: var(--font-family);
+    color: var(--text-primary);
+    font-weight: var(--font-weight-500);
+    display: flex;
+    align-items: center;
+    span{
+        flex: 1;
+        margin-right: var(--spacing-s);
+    }
 }
