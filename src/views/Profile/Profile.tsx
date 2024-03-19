@@ -113,7 +113,7 @@ export const Profile = () => {
 				<div className="userWrapper__section shadow-sm px-3 py-2">
 					<div className="userWrapper__grid d-flex justify-content-between">
 						<div className="userWrapper__grid-header">App version</div>
-						<div className="userWrapper__grid-description">0.0.0.1</div>
+						<div className="userWrapper__grid-description">dev.0.0.0.1</div>
 					</div>
 				</div>
 				{role === "admin" && (
