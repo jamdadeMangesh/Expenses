@@ -40,6 +40,9 @@
 	&__name {
 		font-size: var(--font-size-14);
 		font-weight: var(--font-weight-500);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
 	}
 	&__mobile {
 		font-size: var(--font-size-12);
