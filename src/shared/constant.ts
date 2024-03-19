@@ -160,7 +160,7 @@ export const getAllUsers = async () => {
 };
 
 export const getCategoryIcon = (categoryName: string) => {
-	switch (categoryName.toLowerCase()) {
+	switch (categoryName?.toLowerCase()) {
 		case "snacks":
 			return snacks;
 		case "travel":

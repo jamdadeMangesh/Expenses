@@ -6,12 +6,11 @@ import { useForm } from "react-hook-form";
 import { CgAsterisk } from "react-icons/cg";
 import { useHeaderContext } from "../../context/HeaderContext";
 import { GoCopy } from "react-icons/go";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import { authentication, database } from "../../shared/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { Alerts } from "../../components/Alerts/Alerts";
 import { authenticationErrors } from "../../shared/constant";
-import { useNavigate } from "react-router-dom";
 
 export const Register = () => {
 	const { setTitle, setShowBackArrow } = useHeaderContext();
@@ -20,8 +19,7 @@ export const Register = () => {
 	const [copyData, setCopyData] = useState("");
 	const [firebaseErrors, setFirebaseErrors] = useState<string>("");
 
-    const navigate = useNavigate();
-	React.useEffect(() => {
+    React.useEffect(() => {
 		setTitle("Create a new user");
 		setShowBackArrow(true);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -39,9 +37,10 @@ export const Register = () => {
 	password.current = watch("password", "");
 
 	const onSubmit = (data: any) => {
-		console.log(data);
-		var password = Math.random().toString(36).slice(-10);
-		//console.log("randomstring:", password);
+
+		const getFirstName = data?.name.split(" ")[0];
+        const mobileLastDigit = data?.mobileNumber.slice(-4);
+        const password = getFirstName+"@"+mobileLastDigit;
 		
         if (data) {
 			createUserWithEmailAndPassword(authentication, data?.email, password)
@@ -51,11 +50,10 @@ export const Register = () => {
 				})
                 .then(() => {
                     setCopyData("email: " + data.email + ", password: " + password);
-					//console.log(copyData);
 					setShowCopyToClipboard(true);
+                    signOut(authentication);
                     setTimeout(() => {
                         setShowCopyToClipboard(false);
-                        navigate("/users");
                     }, 20000);
                 })
 				.catch((error) => {
@@ -72,34 +70,7 @@ export const Register = () => {
 					);
 				});
 		}
-		// if (data) {
-		// 	createUserWithEmailAndPassword(authentication, data?.email, password)
-		// 		.then((userCredential) => {
-		// 			const user = userCredential.user;
-		// 			console.log("user:", user);
-		// 			setDoc(doc(database, "users", userCredential.user.uid), { data });
-		// 			console.log("successful");
-		// 			setCopyData("email: " + data.email + ", password: " + password);
-		// 			console.log(copyData);
-		// 			setShowCopyToClipboard(true);
-		// 		})
-		// 		.catch((error) => {
-		// 			if (error) {
-		// 				setFirebaseErrors(authenticationErrors(error.code) as string);
-		// 				setShowErrors(true);
-		// 				console.log("errors:", error);
-		// 			}
-		// 			console.log(
-		// 				"Error code:",
-		// 				error.code,
-		// 				"Error message:",
-		// 				error.message
-		// 			);
-		// 		});
-		// }
 	};
-
-	//console.log("copyData:", copyData);
 
 	return (
 		<>

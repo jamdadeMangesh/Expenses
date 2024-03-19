@@ -18,6 +18,7 @@ import { Alerts } from "../../components/Alerts/Alerts";
 import { useForm } from "react-hook-form";
 import { CgAsterisk } from "react-icons/cg";
 import { ToastContainer, toast } from "react-toastify";
+import { Loader } from "../../components/Loader/Loader";
 
 export const Profile = () => {
 	const { setTitle, setShowBackArrow } = useHeaderContext();
@@ -27,7 +28,7 @@ export const Profile = () => {
 	const [firebaseErrors, setFirebaseErrors] = useState<string>("");
 	const navigate = useNavigate();
 	const { name, email, mobileNumber, role } = useSelector(selectUserData);
-	const [user] = useAuthState(authentication);
+	const [user, loading] = useAuthState(authentication);
 
 	const {
 		register,
@@ -48,7 +49,7 @@ export const Profile = () => {
 				navigate("/login");
 			}
 		});
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
@@ -77,7 +78,7 @@ export const Profile = () => {
 						})
 						.catch((error) => {
 							console.log(error);
-                            setFirebaseErrors("Something went wrong!");
+							setFirebaseErrors("Something went wrong!");
 							toast.error("Something went wrong!");
 						});
 				})
@@ -90,78 +91,86 @@ export const Profile = () => {
 	return (
 		<>
 			<div className="profileWrapper">
-				<div className="userWrapper__section shadow-sm px-3 py-2">
-					<div className="userWrapper__grid">
-						<div className="userWrapper__grid-header">Name</div>
-						<div className="userWrapper__grid-description">{name}</div>
-					</div>
-					<div className="userWrapper__grid">
-						<div className="userWrapper__grid-header">Email</div>
-						<div className="userWrapper__grid-description">{email}</div>
-					</div>
-					<div className="userWrapper__grid">
-						<div className="userWrapper__grid-header">Mobile Number</div>
-						<div className="userWrapper__grid-description">{mobileNumber}</div>
-					</div>
-					<div className="userWrapper__grid">
-						<div className="userWrapper__grid-header">Role</div>
-						<div className="userWrapper__grid-description">
-							{role === "admin" ? "Admin" : "User"}
-						</div>
-					</div>
-				</div>
-				<div className="userWrapper__section shadow-sm px-3 py-2">
-					<div className="userWrapper__grid d-flex justify-content-between">
-						<div className="userWrapper__grid-header">App version</div>
-						<div className="userWrapper__grid-description">dev.0.0.0.1</div>
-					</div>
-				</div>
-				{role === "admin" && (
-					<div className="userWrapper__section shadow-sm px-3 py-2">
-						<div className="userWrapper__grid d-flex justify-content-between">
-							<div className="userWrapper__grid-header">
-								Users (For admin only)
+				{loading ? (
+					<Loader />
+				) : (
+					<>
+						<div className="userWrapper__section shadow-sm px-3 py-2">
+							<div className="userWrapper__grid">
+								<div className="userWrapper__grid-header">Name</div>
+								<div className="userWrapper__grid-description">{name}</div>
 							</div>
-							<div className="userWrapper__grid-description">
-								<Button
-									variant="success"
-									size="sm"
-									onClick={() => navigate("/register")}
-								>
-									Add New User
-								</Button>
+							<div className="userWrapper__grid">
+								<div className="userWrapper__grid-header">Email</div>
+								<div className="userWrapper__grid-description">{email}</div>
+							</div>
+							<div className="userWrapper__grid">
+								<div className="userWrapper__grid-header">Mobile Number</div>
+								<div className="userWrapper__grid-description">
+									{mobileNumber}
+								</div>
+							</div>
+							<div className="userWrapper__grid">
+								<div className="userWrapper__grid-header">Role</div>
+								<div className="userWrapper__grid-description">
+									{role === "admin" ? "Admin" : "User"}
+								</div>
 							</div>
 						</div>
-					</div>
+						<div className="userWrapper__section shadow-sm px-3 py-2">
+							<div className="userWrapper__grid d-flex justify-content-between">
+								<div className="userWrapper__grid-header">App version</div>
+								<div className="userWrapper__grid-description">dev.0.0.0.2</div>
+							</div>
+						</div>
+						{role === "admin" && (
+							<div className="userWrapper__section shadow-sm px-3 py-2">
+								<div className="userWrapper__grid d-flex justify-content-between">
+									<div className="userWrapper__grid-header">
+										Users (For admin only)
+									</div>
+									<div className="userWrapper__grid-description">
+										<Button
+											variant="success"
+											size="sm"
+											onClick={() => navigate("/register")}
+										>
+											Add New User
+										</Button>
+									</div>
+								</div>
+							</div>
+						)}
+						<div className="userWrapper__section shadow-sm px-3 py-2">
+							<div className="userWrapper__grid d-flex justify-content-between">
+								<div className="userWrapper__grid-header">Passwords</div>
+								<div className="userWrapper__grid-description">
+									<Button
+										variant="secondary"
+										size="sm"
+										onClick={() => setShowUpdatePasswordModal(true)}
+									>
+										Reset Password
+									</Button>
+								</div>
+							</div>
+						</div>
+						<div className="userWrapper__section shadow-sm px-3 py-2">
+							<div className="userWrapper__grid d-flex justify-content-between">
+								<div className="userWrapper__grid-header">Account</div>
+								<div className="userWrapper__grid-description">
+									<Button
+										variant="danger"
+										size="sm"
+										onClick={() => setShowLogoutModal(true)}
+									>
+										Logout
+									</Button>
+								</div>
+							</div>
+						</div>
+					</>
 				)}
-				<div className="userWrapper__section shadow-sm px-3 py-2">
-					<div className="userWrapper__grid d-flex justify-content-between">
-						<div className="userWrapper__grid-header">Passwords</div>
-						<div className="userWrapper__grid-description">
-							<Button
-								variant="secondary"
-								size="sm"
-								onClick={() => setShowUpdatePasswordModal(true)}
-							>
-								Reset Password
-							</Button>
-						</div>
-					</div>
-				</div>
-				<div className="userWrapper__section shadow-sm px-3 py-2">
-					<div className="userWrapper__grid d-flex justify-content-between">
-						<div className="userWrapper__grid-header">Account</div>
-						<div className="userWrapper__grid-description">
-							<Button
-								variant="danger"
-								size="sm"
-								onClick={() => setShowLogoutModal(true)}
-							>
-								Logout
-							</Button>
-						</div>
-					</div>
-				</div>
 			</div>
 			{showLogoutModal && (
 				<Logout
