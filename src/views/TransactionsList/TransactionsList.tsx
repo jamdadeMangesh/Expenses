@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./TransactionsList.scss";
 import { useHeaderContext } from "../../context/HeaderContext";
-import { Button, Form } from "react-bootstrap";
+import { Badge, Button, Form } from "react-bootstrap";
 import { FiFilter } from "react-icons/fi";
 import { Transactions } from "../../components/Transactions/Transactions";
 import { FiDownload } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { selectUserData } from "../Login/LoginSlice";
 import { getAllTransactions, totalExpenses } from "../../shared/constant";
-import { LuIndianRupee } from "react-icons/lu";
+import { LuDot, LuIndianRupee } from "react-icons/lu";
 import { FilterData } from "../../components/FilterData/FilterData";
 import { selectFilterData } from "../../components/FilterData/FilterSlice";
 import { ToastContainer } from "react-toastify";
@@ -26,8 +26,9 @@ export const TransactionsList = () => {
 	const [openFilter, setOpenFilter] = useState<boolean>(false);
 	const [searchTerm, setSearchTerm] = useState<string>("");
 
-	const { financialYear } = useSelector(selectFilterData);
+	const { financialYear, updatedTransactionId } = useSelector(selectFilterData);
 	const navigate = useNavigate();
+
 	useEffect(() => {
 		onAuthStateChanged(authentication, (user) => {
 			if (user) {
@@ -40,6 +41,15 @@ export const TransactionsList = () => {
 	}, []);
 
 	useEffect(() => {
+		if (updatedTransactionId) {
+			navigate("/expenseDetails/" + updatedTransactionId, {
+				state: { id: updatedTransactionId },
+			});
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [navigate]);
+
+	useEffect(() => {
 		setTitle("All transactions");
 		setShowBackArrow(false);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -49,10 +59,7 @@ export const TransactionsList = () => {
 		//allTransactions();
 		getAllTransactions().then((res) => {
 			res.sort(function (a: any, b: any) {
-				return (
-					+new Date(b?.data?.transactionDate) -
-					+new Date(a.data?.transactionDate)
-				);
+				return +new Date(b?.data?.createdAt) - +new Date(a.data?.createdAt);
 			});
 			setTransactionsData(res);
 		});
@@ -112,31 +119,44 @@ export const TransactionsList = () => {
 			const yearStartDate = getMinYear + "-04-01";
 			const yearEndDate = getMaxYear + "-03-31";
 
-			return transactionsData?.filter(
-				(item: any) =>
-					item?.data?.transactionDate >= yearStartDate &&
-					item?.data?.transactionDate <= yearEndDate
-			);
+			switch (role) {
+				case "admin":
+					return transactionsData?.filter(
+						(item: any) =>
+							item?.data?.transactionDate >= yearStartDate &&
+							item?.data?.transactionDate <= yearEndDate
+					);
+
+				case "user":
+					return transactionsData?.filter(
+						(item: any) =>
+							item?.data?.personName === name &&
+							item?.data?.transactionDate >= yearStartDate &&
+							item?.data?.transactionDate <= yearEndDate
+					);
+			}
 		}
 		if (searchTerm) {
 			const lowercasedValue = searchTerm.toLowerCase().trim();
-			if (role === "admin") {
-				return transactionsData.filter((item: any) => {
-					const searchByName = item?.data?.personName
-						.toLowerCase()
-						.includes(lowercasedValue);
-					const searchByCategory = item?.data?.category
-						.toLowerCase()
-						.includes(lowercasedValue);
-					return searchByName || searchByCategory;
-				});
-			} else {
-				return transactionsData.filter((item: any) => {
-					const searchByCategory =
-						item?.data?.personName === name &&
-						item?.data?.category.toLowerCase().includes(lowercasedValue);
-					return searchByCategory;
-				});
+			switch (role) {
+				case "admin":
+					return transactionsData.filter((item: any) => {
+						const searchByName = item?.data?.personName
+							.toLowerCase()
+							.includes(lowercasedValue);
+						const searchByCategory = item?.data?.category
+							.toLowerCase()
+							.includes(lowercasedValue);
+						return searchByName || searchByCategory;
+					});
+
+				case "role":
+					return transactionsData.filter((item: any) => {
+						const searchByCategory =
+							item?.data?.personName === name &&
+							item?.data?.category.toLowerCase().includes(lowercasedValue);
+						return searchByCategory;
+					});
 			}
 		}
 		filteredData = transactionsData?.filter(
@@ -167,10 +187,10 @@ export const TransactionsList = () => {
 		filteredValues.filter((item: any) =>
 			excelData.push({
 				"Person Name": item?.data?.personName,
-				"Category": item?.data?.category,
-				"Amount": parseFloat(item?.data?.amount),
+				Category: item?.data?.category,
+				Amount: parseFloat(item?.data?.amount),
 				"Transaction Date": item?.data?.transactionDate,
-				"Description": item?.data?.description,
+				Description: item?.data?.description,
 			})
 		);
 
@@ -206,6 +226,14 @@ export const TransactionsList = () => {
 						data-testid="transactionsListWrapper_filter"
 					>
 						<FiFilter onClick={() => setOpenFilter(true)} />
+						{financialYear.length > 0 && (
+							<Badge
+								bg="primary"
+								className="transactions__search-filter--badge"
+							>
+								1
+							</Badge>
+						)}
 					</div>
 				</div>
 				<div
@@ -213,15 +241,20 @@ export const TransactionsList = () => {
 					data-testid="transactionsListWrapper_appliedFilterAmount"
 				>
 					<div className="transactions__appliedFilter-total">
-						Total Amount : <LuIndianRupee />
+						Amount : <LuIndianRupee />
 						{total}
+						<LuDot /> Total: {filteredValues.length}
 					</div>
 					{role === "admin" && (
 						<div
 							className="transactions__download"
 							data-testid="transactionsListWrapper__download"
 						>
-							<Button variant="success" onClick={exportFile} disabled={filteredValues.length === 0}>
+							<Button
+								variant="success"
+								onClick={exportFile}
+								disabled={filteredValues.length === 0}
+							>
 								<FiDownload />
 							</Button>
 						</div>
@@ -260,20 +293,6 @@ export const TransactionsList = () => {
 							/>
 						))
 					)}
-					{/* {filteredValues?.map((item: any) =>
-						filteredValues.length > 0 ? (
-							<Transactions
-								data={item?.data}
-								key={item.id}
-								transactionId={item.id}
-							/>
-						) : (
-							<div className="transactions__content-noData">
-								<img src={noResult} alt="no results" />
-								Data not found. Add new data or search with different keywords!
-							</div>
-						)
-					)} */}
 				</div>
 			</div>
 			{openFilter && (

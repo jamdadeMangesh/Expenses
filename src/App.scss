@@ -45,7 +45,7 @@ input.inputError{
     margin: 1.5rem 0px;
 }
 .btn.buttonHeight{
-    padding: 0.75rem 0.75rem;
+    padding: 0.5rem 0.5rem;
 }
 .pageWrapper{
     height: 100%;
@@ -80,4 +80,7 @@ input.inputError{
         flex: 1;
         margin-right: var(--spacing-s);
     }
+}
+.modal-body{
+    font-family: var(--font-family);
 }

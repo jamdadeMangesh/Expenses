@@ -1,27 +1,23 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./AddExpense.scss";
+import "../AddNew/AddExpense.scss";
 import { useHeaderContext } from "../../context/HeaderContext";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { CgAsterisk } from "react-icons/cg";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { LuImagePlus } from "react-icons/lu";
-import { authentication, database, storage } from "../../shared/firebase";
-import { addDoc, collection } from "firebase/firestore";
-import { useSelector } from "react-redux";
+import { database, storage } from "../../shared/firebase";
+import { doc, updateDoc } from "firebase/firestore";
+import { useDispatch, useSelector } from "react-redux";
 import { selectUserData } from "../Login/LoginSlice";
 import { DateTime } from "luxon";
 import { FiTrash2 } from "react-icons/fi";
-import {
-	getDownloadURL,
-	ref,
-	uploadBytesResumable,
-} from "firebase/storage";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { ToastContainer, toast } from "react-toastify";
-import { onAuthStateChanged } from "firebase/auth";
 import { categories, onDeleteImage } from "../../shared/constant";
+import { SET_UPDATED_TRANSACTION_ID } from "../../components/FilterData/FilterSlice";
 
-export const AddExpense = () => {
+export const EditExpense = () => {
 	const { name } = useSelector(selectUserData);
 	const navigate = useNavigate();
 	const { setTitle, setShowBackArrow } = useHeaderContext();
@@ -29,26 +25,34 @@ export const AddExpense = () => {
 	const [imageUrl, setImageUrl] = useState("");
 	const [percent, setPercent] = useState(0);
 	const [imageLoading, setImageLoading] = useState(false);
-
+	const dispatch = useDispatch();
+	const location = useLocation();
+	const { data, id } = location.state;
 	const hiddenFileInput: any = useRef(null); // ADDED
 
 	const handleClick = () => {
 		hiddenFileInput && hiddenFileInput?.current?.click(); // ADDED
 	};
 
-	useEffect(() => {
-		onAuthStateChanged(authentication, (user) => {
-			if (user) {
-				navigate("/addExpense");
-			} else {
-				navigate("/login");
-			}
-		});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	//check if transaction receipt is uploaded
+	const isReceiptUploaded = data?.receipt.length > 0 && data?.receipt !== "";
+
+	//variable for old image url delete
+	const oldReceiptUrl = data?.receipt;
+
+	// useEffect(() => {
+	// 	onAuthStateChanged(authentication, (user) => {
+	// 		if (user) {
+	// 			navigate("/addExpense");
+	// 		} else {
+	// 			navigate("/login");
+	// 		}
+	// 	});
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, []);
 
 	useEffect(() => {
-		setTitle("Add new transaction");
+		setTitle(data?.category);
 		setShowBackArrow(true);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -58,7 +62,15 @@ export const AddExpense = () => {
 		handleSubmit,
 		formState: { errors, isSubmitting },
 		reset,
+		setValue,
 	} = useForm();
+
+	useEffect(() => {
+		setValue("amount", data?.amount);
+		setValue("category", data?.category);
+		setValue("transactionDate", data?.transactionDate);
+		setValue("description", data?.description);
+	}, [data, setValue]);
 
 	const onClearAddExpense = () => {
 		reset();
@@ -68,7 +80,6 @@ export const AddExpense = () => {
 		setFile(event?.target.files[0]);
 	};
 	const handleUpload = () => {
-		
 		if (file) {
 			const storageRef = ref(
 				storage,
@@ -101,10 +112,7 @@ export const AddExpense = () => {
 
 	const onDeleteReceipt = (url: string) => {
 		if (url) {
-			//const desertRef = ref(storage, imageUrl);
-            
-			//deleteObject(desertRef)
-            onDeleteImage(url)
+			onDeleteImage(url)
 				.then(() => {
 					setFile("");
 					setImageUrl("");
@@ -122,21 +130,33 @@ export const AddExpense = () => {
 		data["receipt"] = imageUrl ? imageUrl : "";
 		data["amount"] = data?.amount as number;
 
+		const taskDocRef = doc(database, "transactions", id);
 		if (data) {
-			await addDoc(collection(database, "transactions"), { data })
-				.then((res) => {
-					reset();
-                    setFile("");
-                    setImageLoading(false);
-					toast.success("New transaction created successfully!", {
+			updateDoc(taskDocRef, { data })
+				.then(() => {
+					if (isReceiptUploaded) {
+						onDeleteImage(oldReceiptUrl)
+							.then(() => {})
+							.catch((error) => {
+								console.log("delete Error:", error);
+							});
+					}
+					setImageLoading(false);
+					toast.success("Transaction updated successfully!", {
 						autoClose: 4000,
 					});
 					setTimeout(() => {
-						navigate("/transactionsList");
+						//navigate("/transactionsList");
+						dispatch(SET_UPDATED_TRANSACTION_ID(id));
+						navigate("/transactionsList/");
 					}, 5000);
 				})
 				.catch((error: any) => {
-					console.error("Error adding document: ", error);
+					if (error) {
+						toast.error("Transaction has not been updated successfully!", {
+							autoClose: 4000,
+						});
+					}
 				});
 		}
 	};
@@ -192,9 +212,11 @@ export const AddExpense = () => {
 								autoComplete="off"
 							>
 								<option value="">Select category</option>
-                                {categories.map((category: string) => (
-                                    <option key={category} value={category}>{category}</option>    
-                                ))}
+								{categories.map((category: string) => (
+									<option key={category} value={category}>
+										{category}
+									</option>
+								))}
 							</Form.Select>
 
 							{errors.category && (
@@ -261,7 +283,7 @@ export const AddExpense = () => {
 									onChange={onChangeFileUpload}
 									ref={hiddenFileInput}
 									accept="image/*"
-                                    disabled={imageLoading}
+									disabled={imageLoading}
 								/>
 								<div className="customImageUploader">
 									<div
@@ -286,16 +308,25 @@ export const AddExpense = () => {
 									<LuImagePlus />
 								</Button>
 							</div>
-                            <div className="d-flex justify-content-between  gap-3">
-							    <Form.Text muted>Upload only jpeg, png format images</Form.Text>
-                                <div className="pt-1">{imageLoading && percent+"%"}</div>
-                            </div>
+							<div className="d-flex justify-content-between  gap-3">
+								<Form.Text muted>Upload only jpeg, png format images</Form.Text>
+								<div className="pt-1">{imageLoading && percent + "%"}</div>
+							</div>
 							{errors.receipt && (
 								<p className="loginWrapper__errorMsg">
 									{errors?.receipt?.message?.toString()}
 								</p>
 							)}
 						</Form.Group>
+						{isReceiptUploaded && (
+							<>
+								<div className="loginWrapper__form-group mb-4">
+									<div className="receiptUploaded">
+										<img src={data?.receipt} alt="receipt" />
+									</div>
+								</div>
+							</>
+						)}
 					</div>
 
 					<div className="loginWrapper__submit">
@@ -304,7 +335,7 @@ export const AddExpense = () => {
 							type="button"
 							className="w-100 buttonHeight"
 							onClick={() => onClearAddExpense()}
-                            size="sm"
+							size="sm"
 						>
 							Clear
 						</Button>
@@ -313,7 +344,7 @@ export const AddExpense = () => {
 							type="submit"
 							className="w-100 buttonHeight"
 							disabled={isSubmitting}
-                            size="sm"
+							size="sm"
 						>
 							{isSubmitting ? "Sending data..." : "Submit"}
 						</Button>

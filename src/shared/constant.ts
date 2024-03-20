@@ -1,5 +1,5 @@
-import { query, collection, getDocs } from "firebase/firestore";
-import { database } from "./firebase";
+import { query, collection, getDocs, getDoc, doc } from "firebase/firestore";
+import { database, storage } from "./firebase";
 import snacks from "../assets/icons/snacks.png";
 import travel from "../assets/icons/travel.png";
 import transport from "../assets/icons/transport.png";
@@ -10,6 +10,7 @@ import rope from "../assets/icons/rope.png";
 import dhol from "../assets/icons/dhol.png";
 import tasha from "../assets/icons/tasha.png";
 import flowers from "../assets/icons/flowers.png";
+import { ref, deleteObject } from "firebase/storage";
 
 // List of pages
 export enum ApplicationPages {
@@ -22,6 +23,7 @@ export enum ApplicationPages {
 	ExpenseDetails = "ExpenseDetails",
 	Profile = "Profile",
 	Users = "Users",
+	EditExpense = "EditExpense",
 }
 
 // Interface to define route options
@@ -86,6 +88,12 @@ export const ApplicationRoutes: ApplicationRoutesOptions[] = [
 		route: "/users",
 		showHeader: true,
 		showNav: true,
+	},
+    {
+		page: ApplicationPages.EditExpense,
+		route: "/editExpense",
+		showHeader: true,
+		showNav: false,
 	},
 ];
 //Get greeting message according to time
@@ -159,6 +167,19 @@ export const getAllUsers = async () => {
 	return doc_refs;
 };
 
+export const getCurrentUser = async (uid: string) => {
+	const doc_refs = await getDoc(doc(database, "users", uid));
+	return doc_refs;
+};
+
+export const onDeleteImage = (imageUrl: string) => {
+    //if (imageUrl) {
+        const desertRef = ref(storage, imageUrl);
+
+        const deleteDocRef = deleteObject(desertRef)
+        return deleteDocRef;
+    //}
+};
 export const getCategoryIcon = (categoryName: string) => {
 	switch (categoryName?.toLowerCase()) {
 		case "snacks":
