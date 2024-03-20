@@ -24,7 +24,8 @@ export const AppNav = () => {
 			splitUrl === "/" ||
 			splitUrl === "/login" ||
 			splitUrl === "/register" ||
-			splitUrl === "/expenseDetails"
+			splitUrl === "/expenseDetails" ||
+			splitUrl === "/editExpense"
 				? r.route === splitUrl
 				: r.route === location.pathname
 		)?.showNav ?? true;

@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import { selectUserData } from "../Login/LoginSlice";
 import { onAuthStateChanged } from "firebase/auth";
 import noData from "../../assets/icons/noData.jpg";
+import { DateTime } from "luxon";
 
 export const Dashboard = () => {
 	const { name, role } = useSelector(selectUserData);
@@ -59,7 +60,21 @@ export const Dashboard = () => {
 		});
 	};
 
+    //get total amount of the user
 	const total = totalExpenses(transactionsData);
+
+    //get total amount of the user for current month
+	const currentMonthTransactions = () => {
+		const getCurrentMonth = DateTime.now().month;
+
+		let tempArray: any = [];
+		tempArray = transactionsData?.filter(
+			(item: any) =>
+				DateTime.fromISO(item?.data?.transactionDate).month === getCurrentMonth
+		);
+
+		return totalExpenses(tempArray);
+	};
 
 	return (
 		<>
@@ -108,9 +123,9 @@ export const Dashboard = () => {
 						className="dashboard__stats-monthlyAmount mt-3"
 						data-testid="dashboard__stats_monthlyAmount"
 					>
-						Last month's transactions :{" "}
+						Current month's transactions :{" "}
 						<span>
-							<LuIndianRupee /> 12654
+							<LuIndianRupee /> {currentMonthTransactions()}
 						</span>
 					</div>
 				</div>
@@ -136,7 +151,11 @@ export const Dashboard = () => {
 				</div>
 				<div className="dashboard__content">
 					<div className="transactions h-100">
-                    {transactionsData?.length > 0  && <div className="transactions__header mb-3">Last 5 transactions</div>}
+						{transactionsData?.length > 0 && (
+							<div className="transactions__header mb-3">
+								Last 5 transactions
+							</div>
+						)}
 
 						{transactionsData?.length === 0 ? (
 							<div className="dashboard__content-noData">

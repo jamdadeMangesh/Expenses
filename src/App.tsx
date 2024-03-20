@@ -4,7 +4,11 @@ import "./base.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Home } from "./views/Home/Home";
 import { Login } from "./views/Login/Login";
-import { ApplicationPages, ApplicationRoutes } from "./shared/constant";
+import {
+	ApplicationPages,
+	ApplicationRoutes,
+	getCurrentUser,
+} from "./shared/constant";
 import { AppHeader } from "./components/AppHeader/AppHeader";
 import { Register } from "./views/Register/Register";
 import { Alert, Button } from "react-bootstrap";
@@ -14,8 +18,7 @@ import { TransactionsList } from "./views/TransactionsList/TransactionsList";
 import { AddExpense } from "./views/AddNew/AddExpense";
 import { Profile } from "./views/Profile/Profile";
 import { ExpenseDetails } from "./views/ExpenseDetails/ExpenseDetails";
-import { doc, getDoc } from "firebase/firestore";
-import { authentication, database } from "./shared/firebase";
+import { authentication } from "./shared/firebase";
 import { SET_USER_DATA } from "./views/Login/LoginSlice";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useDispatch } from "react-redux";
@@ -23,6 +26,7 @@ import { Users } from "./views/Users/Users";
 import "react-toastify/dist/ReactToastify.css";
 import { useServiceWorker } from "./hooks/useServiceWorker";
 import { Slide, ToastContainer, toast } from "react-toastify";
+import { EditExpense } from "./views/EditExpense/EditExpense";
 
 function App() {
 	const [width, setWidth] = useState(window.innerWidth);
@@ -53,8 +57,13 @@ function App() {
 	useEffect(() => {
 		if (user) {
 			(async () => {
-				const doc_refs = await getDoc(doc(database, "users", user.uid));
-				dispatch(SET_USER_DATA(doc_refs?.data()?.data));
+				getCurrentUser(user.uid)
+					.then((doc_refs) => {
+						dispatch(SET_USER_DATA(doc_refs?.data()?.data));
+					})
+					.catch((error) => {
+						console.log("network errors:", error);
+					});
 			})();
 			return () => {
 				// this now gets called when the component unmounts
@@ -133,6 +142,13 @@ function App() {
 									routes.find((r) => r.page === ApplicationPages.Users)?.route
 								}
 								Component={Users}
+							/>
+							<Route
+								path={
+									routes.find((r) => r.page === ApplicationPages.EditExpense)
+										?.route + "/:id"
+								}
+								Component={EditExpense}
 							/>
 						</Routes>
 						<AppNav />

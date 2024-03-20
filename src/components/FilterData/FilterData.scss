@@ -53,9 +53,9 @@
 	}
 	&__gridButton {
 		display: flex;
-		padding: 20px 10px;
+		padding: var(--spacing-s) var(--spacing-m);
 		border-top: 1px solid #e7dfdf;
-		gap: 10px;
+		gap: 20px;
 	}
 	&__button {
 		width: 50%;
