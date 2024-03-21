@@ -22,6 +22,7 @@ export const Dashboard = () => {
 	const { name, role } = useSelector(selectUserData);
 	const [transactionsData, setTransactionsData] = useState([]);
 	const navigate = useNavigate();
+
 	useEffect(() => {
 		onAuthStateChanged(authentication, (user) => {
 			if (user) {
@@ -43,8 +44,8 @@ export const Dashboard = () => {
 		getAllTransactions().then((res) => {
 			filteredAdminData = res?.sort(function (a: any, b: any) {
 				return (
-					+new Date(b?.data?.transactionDate) -
-					+new Date(a.data?.transactionDate)
+					+new Date(b?.data?.createdAt) -
+					+new Date(a.data?.createdAt)
 				);
 			});
 

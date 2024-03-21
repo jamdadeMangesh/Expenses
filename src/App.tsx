@@ -11,7 +11,7 @@ import {
 } from "./shared/constant";
 import { AppHeader } from "./components/AppHeader/AppHeader";
 import { Register } from "./views/Register/Register";
-import { Alert, Button } from "react-bootstrap";
+import { Alert, Button, Modal } from "react-bootstrap";
 import { Dashboard } from "./views/Dashboard/Dashboard";
 import { AppNav } from "./components/AppNav/AppNav";
 import { TransactionsList } from "./views/TransactionsList/TransactionsList";
@@ -27,9 +27,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { useServiceWorker } from "./hooks/useServiceWorker";
 import { Slide, ToastContainer, toast } from "react-toastify";
 import { EditExpense } from "./views/EditExpense/EditExpense";
+import { ReactComponent as NoConnectionImg} from "../src/assets/noConnection.svg";
 
 function App() {
 	const [width, setWidth] = useState(window.innerWidth);
+	const [isOnline, setIsOnline] = useState(navigator.onLine);
 	const [user] = useAuthState(authentication);
 	const { waitingWorker, showReload, reloadPage } = useServiceWorker();
 	const dispatch = useDispatch();
@@ -74,6 +76,26 @@ function App() {
 		window.addEventListener("resize", updateDimensions);
 		return () => window.removeEventListener("resize", updateDimensions);
 	}, []);
+
+	//check if network is offline
+    useEffect(() => {
+		// Update network status
+		const handleStatusChange = () => {
+			setIsOnline(navigator.onLine);
+		};
+
+		// Listen to the online status
+		window.addEventListener("online", handleStatusChange);
+
+		// Listen to the offline status
+		window.addEventListener("offline", handleStatusChange);
+
+		// Specify how to clean up after this effect for performance improvment
+		return () => {
+			window.removeEventListener("online", handleStatusChange);
+			window.removeEventListener("offline", handleStatusChange);
+		};
+	}, [isOnline]);
 
 	const routes = ApplicationRoutes;
 	return (
@@ -172,6 +194,25 @@ function App() {
 					</Alert>
 				</div>
 			)}
+
+			<Modal
+				show={!isOnline}
+				//onHide={isOnline}
+				backdrop="static"
+				keyboard={false}
+				centered
+			>
+				<Modal.Body>
+					<div className="noConnection">
+						<div className="noConnection__img">
+							<NoConnectionImg />
+						</div>
+						<div className="noConnection__text">
+							You are offline. Please check your internet connection.
+						</div>
+					</div>
+				</Modal.Body>
+			</Modal>
 		</div>
 	);
 }

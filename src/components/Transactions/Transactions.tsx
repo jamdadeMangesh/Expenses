@@ -28,7 +28,7 @@ export const Transactions = ({ data, transactionId }: TransactionType) => {
 				data-testid="transactions__grid"
 			>
 				<div
-					className="transactions__grid-icon shadow"
+					className="transactions__grid-icon shadow-sm"
 					data-testid="transactions__grid_icon"
 				>
 					<img src={getCategoryIcon(data.category)} alt={data.category} />
