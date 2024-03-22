@@ -28,6 +28,7 @@ export const TransactionsList = () => {
 
 	const { financialYear, updatedTransactionId } = useSelector(selectFilterData);
 	const navigate = useNavigate();
+    
 
 	useEffect(() => {
 		onAuthStateChanged(authentication, (user) => {
@@ -41,13 +42,12 @@ export const TransactionsList = () => {
 	}, []);
 
 	useEffect(() => {
-		if (updatedTransactionId) {
-			navigate("/expenseDetails/" + updatedTransactionId, {
+		if (updatedTransactionId !== "") {
+            navigate("/expenseDetails/" + updatedTransactionId, {
 				state: { id: updatedTransactionId },
-			});
+            });
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [navigate]);
+	},[ navigate, updatedTransactionId]);
 
 	useEffect(() => {
 		setTitle("All transactions");
@@ -56,7 +56,6 @@ export const TransactionsList = () => {
 	}, []);
 
 	useEffect(() => {
-		//allTransactions();
 		getAllTransactions().then((res) => {
 			res.sort(function (a: any, b: any) {
 				return +new Date(b?.data?.createdAt) - +new Date(a.data?.createdAt);
@@ -66,50 +65,6 @@ export const TransactionsList = () => {
 	}, []);
 
 	/* Fetch and update the state once */
-
-	// const filteredValues = useMemo(() => {
-	// 	let filteredDataArray: any = [];
-	// 	let filteredData: any = [];
-	// 	switch (filterType) {
-	// 		case "personName": {
-	// 			filteredDataArray = transactionsData?.filter(
-	// 				(item: any) => item?.data?.personName === selectedFilteredUsername
-	// 			);
-	// 			return filteredDataArray;
-	// 		}
-	//         case "category": {
-	//             // filteredDataArray = transactionsData?.filter(
-	// 			// 	(item: any) => item?.category?.includes(selectedCategoryList)
-	// 			// );
-	//             // filteredDataArray = transactionsData.filter(
-	//             //     function(e) {
-	//             //       return selectedCategoryList.indexOf(e) < 0;
-	//             //     }
-	//             // );
-
-	//             filteredDataArray = transactionsData.filter((itemX: any) => selectedCategoryList.includes(itemX?.data.category));
-	// 			return filteredDataArray;
-	//         }
-	// 		default: {
-	//             if(searchTerm) {
-	//                 const lowercasedValue = searchTerm.toLowerCase().trim();
-	//                 return transactionsData.filter((item: any) => {
-	//                     const searchByName = item?.data?.personName.toLowerCase().includes(lowercasedValue);
-	//                     const searchByCategory = item?.data?.category.toLowerCase().includes(lowercasedValue);
-	//                     return searchByName || searchByCategory;
-	//                 })
-	//             }
-	// 			filteredData = transactionsData?.filter(
-	// 				(item: any) => item?.data?.personName === name
-	// 			);
-	// 			if (role === "admin") {
-	// 				return transactionsData;
-	// 			} else {
-	// 				return filteredData;
-	// 			}
-	//         }
-	// 	}
-	// }, [filterType, selectedFilteredUsername, transactionsData, searchTerm, selectedCategoryList]);
 
 	const filteredValues = useMemo(() => {
 		let filteredData: any = [];
