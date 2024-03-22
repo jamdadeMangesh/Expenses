@@ -11,6 +11,8 @@ import { deleteDoc, doc, getDoc } from "firebase/firestore";
 import { toast, ToastContainer } from "react-toastify";
 import { Loader } from "../../components/Loader/Loader";
 import { onDeleteImage } from "../../shared/constant";
+import { SET_UPDATED_TRANSACTION_ID } from "../../components/FilterData/FilterSlice";
+import { useDispatch } from "react-redux";
 export const ExpenseDetails = () => {
 	const { setTitle, setShowBackArrow } = useHeaderContext();
 	const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
@@ -20,6 +22,7 @@ export const ExpenseDetails = () => {
 	const location = useLocation();
 	const { id } = location.state;
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
 	const docRef = doc(database, "transactions", id);
 
@@ -33,6 +36,10 @@ export const ExpenseDetails = () => {
 		getUserDetails();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id]);
+
+	useEffect(() => {
+		dispatch(SET_UPDATED_TRANSACTION_ID(""));
+	}, [dispatch]);
 
 	const getUserDetails = () => {
 		setIsDataLoading(true);
@@ -50,13 +57,15 @@ export const ExpenseDetails = () => {
 		deleteDoc(docRef)
 			.then(() => {
 				//delete image from storage when deleting  transaction
-				onDeleteImage(userDetailsData?.receipt)
-					.then(() => {})
-					.catch(() => {
-						toast.error("Something went wrong!!", {
-							autoClose: 4000,
+				if (userDetailsData?.receipt !== "") {
+					onDeleteImage(userDetailsData?.receipt)
+						.then(() => {})
+						.catch(() => {
+							toast.error("Something went wrong deleting image!!", {
+								autoClose: 4000,
+							});
 						});
-					});
+				}
 				setIsDeleting(true);
 				setShowConfirmModal(false);
 				toast.success("Transaction deleted successfully!", {
