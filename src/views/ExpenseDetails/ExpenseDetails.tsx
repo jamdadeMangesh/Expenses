@@ -12,7 +12,8 @@ import { toast, ToastContainer } from "react-toastify";
 import { Loader } from "../../components/Loader/Loader";
 import { onDeleteImage } from "../../shared/constant";
 import { SET_UPDATED_TRANSACTION_ID } from "../../components/FilterData/FilterSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUserData } from "../Login/LoginSlice";
 export const ExpenseDetails = () => {
 	const { setTitle, setShowBackArrow } = useHeaderContext();
 	const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
@@ -23,6 +24,8 @@ export const ExpenseDetails = () => {
 	const { id } = location.state;
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+
+	const { role } = useSelector(selectUserData);
 
 	const docRef = doc(database, "transactions", id);
 
@@ -162,24 +165,26 @@ export const ExpenseDetails = () => {
 							</div>
 						</div>
 					</div>
-					<div className="expenseDetailsDelete d-flex gap-3">
-						<Button
-							variant="danger"
-							className="w-100 btn-sm buttonHeight"
-							onClick={() => setShowConfirmModal(true)}
-							disabled={isDeleting}
-						>
-							Delete
-						</Button>
-						<Button
-							variant="primary"
-							className="w-100 btn-sm buttonHeight"
-							onClick={editTransaction}
-							disabled={isDeleting}
-						>
-							Edit
-						</Button>
-					</div>
+					{role === "admin" && (
+						<div className="expenseDetailsDelete d-flex gap-3">
+							<Button
+								variant="danger"
+								className="w-100 btn-sm buttonHeight"
+								onClick={() => setShowConfirmModal(true)}
+								disabled={isDeleting}
+							>
+								Delete
+							</Button>
+							<Button
+								variant="primary"
+								className="w-100 btn-sm buttonHeight"
+								onClick={editTransaction}
+								disabled={isDeleting}
+							>
+								Edit
+							</Button>
+						</div>
+					)}
 				</>
 			)}
 			<ToastContainer position="bottom-center" autoClose={false} />

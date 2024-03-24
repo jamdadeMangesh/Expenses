@@ -12,11 +12,7 @@ import { useSelector } from "react-redux";
 import { selectUserData } from "../Login/LoginSlice";
 import { DateTime } from "luxon";
 import { FiTrash2 } from "react-icons/fi";
-import {
-	getDownloadURL,
-	ref,
-	uploadBytesResumable,
-} from "firebase/storage";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { ToastContainer, toast } from "react-toastify";
 import { onAuthStateChanged } from "firebase/auth";
 import { categories, onDeleteImage } from "../../shared/constant";
@@ -24,7 +20,7 @@ import { categories, onDeleteImage } from "../../shared/constant";
 export const AddExpense = () => {
 	const { name } = useSelector(selectUserData);
 	const navigate = useNavigate();
-	const { setTitle, setShowBackArrow } = useHeaderContext();
+	const { setTitle, setShowBackArrow, setShowAddNewButton } = useHeaderContext();
 	const [file, setFile] = useState<any>("");
 	const [imageUrl, setImageUrl] = useState("");
 	const [percent, setPercent] = useState(0);
@@ -48,8 +44,9 @@ export const AddExpense = () => {
 	}, []);
 
 	useEffect(() => {
-		setTitle("Add new transaction");
+		setTitle("Add new expense");
 		setShowBackArrow(true);
+        setShowAddNewButton(true);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -68,7 +65,6 @@ export const AddExpense = () => {
 		setFile(event?.target.files[0]);
 	};
 	const handleUpload = () => {
-		
 		if (file) {
 			const storageRef = ref(
 				storage,
@@ -102,9 +98,9 @@ export const AddExpense = () => {
 	const onDeleteReceipt = (url: string) => {
 		if (url) {
 			//const desertRef = ref(storage, imageUrl);
-            
+
 			//deleteObject(desertRef)
-            onDeleteImage(url)
+			onDeleteImage(url)
 				.then(() => {
 					setFile("");
 					setImageUrl("");
@@ -126,8 +122,8 @@ export const AddExpense = () => {
 			await addDoc(collection(database, "transactions"), { data })
 				.then((res) => {
 					reset();
-                    setFile("");
-                    setImageLoading(false);
+					setFile("");
+					setImageLoading(false);
 					toast.success("New transaction created successfully!", {
 						autoClose: 4000,
 					});
@@ -192,9 +188,11 @@ export const AddExpense = () => {
 								autoComplete="off"
 							>
 								<option value="">Select category</option>
-                                {categories.map((category: string) => (
-                                    <option key={category} value={category}>{category}</option>    
-                                ))}
+								{categories.map((category: string) => (
+									<option key={category} value={category}>
+										{category}
+									</option>
+								))}
 							</Form.Select>
 
 							{errors.category && (
@@ -261,7 +259,7 @@ export const AddExpense = () => {
 									onChange={onChangeFileUpload}
 									ref={hiddenFileInput}
 									accept="image/*"
-                                    disabled={imageLoading}
+									disabled={imageLoading}
 								/>
 								<div className="customImageUploader">
 									<div
@@ -286,10 +284,10 @@ export const AddExpense = () => {
 									<LuImagePlus />
 								</Button>
 							</div>
-                            <div className="d-flex justify-content-between  gap-3">
-							    <Form.Text muted>Upload only jpeg, png format images</Form.Text>
-                                <div className="pt-1">{imageLoading && percent+"%"}</div>
-                            </div>
+							<div className="d-flex justify-content-between  gap-3">
+								<Form.Text muted>Upload only jpeg, png format images</Form.Text>
+								<div className="pt-1">{imageLoading && percent + "%"}</div>
+							</div>
 							{errors.receipt && (
 								<p className="loginWrapper__errorMsg">
 									{errors?.receipt?.message?.toString()}
@@ -304,7 +302,7 @@ export const AddExpense = () => {
 							type="button"
 							className="w-100 buttonHeight"
 							onClick={() => onClearAddExpense()}
-                            size="sm"
+							size="sm"
 						>
 							Clear
 						</Button>
@@ -313,7 +311,7 @@ export const AddExpense = () => {
 							type="submit"
 							className="w-100 buttonHeight"
 							disabled={isSubmitting}
-                            size="sm"
+							size="sm"
 						>
 							{isSubmitting ? "Sending data..." : "Submit"}
 						</Button>

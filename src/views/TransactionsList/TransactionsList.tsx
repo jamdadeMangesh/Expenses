@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import noResult from "../../../src/assets/icons/no-results.png";
 import FileSaver from "file-saver";
 import XLSX from "sheetjs-style";
+import { BiSolidCaretDownCircle, BiSolidCaretUpCircle } from "react-icons/bi";
 
 export const TransactionsList = () => {
 	const { setTitle, setShowBackArrow } = useHeaderContext();
@@ -28,7 +29,6 @@ export const TransactionsList = () => {
 
 	const { financialYear, updatedTransactionId } = useSelector(selectFilterData);
 	const navigate = useNavigate();
-    
 
 	useEffect(() => {
 		onAuthStateChanged(authentication, (user) => {
@@ -43,11 +43,11 @@ export const TransactionsList = () => {
 
 	useEffect(() => {
 		if (updatedTransactionId !== "") {
-            navigate("/expenseDetails/" + updatedTransactionId, {
+			navigate("/expenseDetails/" + updatedTransactionId, {
 				state: { id: updatedTransactionId },
-            });
+			});
 		}
-	},[ navigate, updatedTransactionId]);
+	}, [navigate, updatedTransactionId]);
 
 	useEffect(() => {
 		setTitle("All transactions");
@@ -105,7 +105,7 @@ export const TransactionsList = () => {
 						return searchByName || searchByCategory;
 					});
 
-				case "role":
+				case "user":
 					return transactionsData.filter((item: any) => {
 						const searchByCategory =
 							item?.data?.personName === name &&
@@ -162,6 +162,23 @@ export const TransactionsList = () => {
 				className="transactionsListWrapper"
 				data-testid="transactionsListWrapper"
 			>
+				{role === "admin" && (
+					<div className="transactions__content--balance">
+						<div className="transactions__content--balance-amt">
+							<BiSolidCaretUpCircle
+								style={{ color: "#2D864B", fontSize: "15px" }}
+							/>{" "}
+							{total} -{" "}
+							<BiSolidCaretDownCircle
+								style={{ color: "#d82c0d", fontSize: "15px" }}
+							/>{" "}
+							{total}
+						</div>
+						<div className="transactions__content--balance-total">
+							<LuIndianRupee style={{ fontSize: "13px" }} /> 30000
+						</div>
+					</div>
+				)}
 				<div
 					className="transactions__search mb-3"
 					data-testid="transactionsListWrapper_search"
