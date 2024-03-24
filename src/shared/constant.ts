@@ -10,6 +10,19 @@ import rope from "../assets/icons/rope.png";
 import dhol from "../assets/icons/dhol.png";
 import tasha from "../assets/icons/tasha.png";
 import flowers from "../assets/icons/flowers.png";
+import electrical from "../assets/icons/electrical.png";
+import flex from "../assets/icons/flex.png";
+import food from "../assets/icons/food.png";
+import rent from "../assets/icons/rent.png";
+import icard from "../assets/icons/icard.png";
+import user from "../assets/icons/user.png";
+import medical from "../assets/icons/medical.png";
+import pooja from "../assets/icons/pooja.png";
+import shed from "../assets/icons/shed.png";
+import uniform from "../assets/icons/uniform.png";
+import water from "../assets/icons/water.png";
+import xerox from "../assets/icons/xerox.png";
+import other from "../assets/icons/other.png";
 import { ref, deleteObject } from "firebase/storage";
 
 // List of pages
@@ -89,7 +102,7 @@ export const ApplicationRoutes: ApplicationRoutesOptions[] = [
 		showHeader: true,
 		showNav: true,
 	},
-    {
+	{
 		page: ApplicationPages.EditExpense,
 		route: "/editExpense",
 		showHeader: true,
@@ -173,12 +186,12 @@ export const getCurrentUser = async (uid: string) => {
 };
 
 export const onDeleteImage = (imageUrl: string) => {
-    //if (imageUrl) {
-        const desertRef = ref(storage, imageUrl);
+	//if (imageUrl) {
+	const desertRef = ref(storage, imageUrl);
 
-        const deleteDocRef = deleteObject(desertRef)
-        return deleteDocRef;
-    //}
+	const deleteDocRef = deleteObject(desertRef);
+	return deleteDocRef;
+	//}
 };
 export const getCategoryIcon = (categoryName: string) => {
 	switch (categoryName?.toLowerCase()) {
@@ -196,26 +209,67 @@ export const getCategoryIcon = (categoryName: string) => {
 			return coldCoffee;
 		case "rope":
 			return rope;
-		case "dhol material":
+		case "dhol material": 
+        case "dhol paan repair":
 			return dhol;
 		case "tasha material":
 			return tasha;
 		case "flowers":
 			return flowers;
+		case "electrical":
+			return electrical;
+		case "flex":
+			return flex;
+		case "food":
+			return food;
+		case "hall rent":
+			return rent;
+		case "icard":
+			return icard;
+		case "ligade kaka":
+		case "naik kaka":
+			return user;
+		case "medical":
+			return medical;
+		case "pooja material":
+			return pooja;
+		case "shed":
+			return shed;
+		case "uniform":
+			return uniform;
+		case "water":
+			return water;
+		case "xerox":
+			return xerox;
+		case "other":
+			return other;
 		default:
-			return "";
+			return other;
 	}
 };
 
 export const categories = [
-	"Snacks",
-	"Materials",
-	"Travel",
-	"Transport",
-	"Tea",
-	"Cold Coffee",
-	"Rope",
 	"Dhol Material",
-	"Tasha Material",
-	"Flowers",
+    "Dhol paan repair",
+    "Dhwaj material",
+    "Electrical",
+    "Flex",
+    "Flowers",
+    "Food",
+    "Hall rent",
+    "Icard",
+    "Ligade kaka",
+    "Medical",
+    "Naik kaka",
+    "Pooja material",
+    "Rope bundle",
+    "Shed",
+    "Snacks",
+    "Tasha Material",
+    "Tea",
+    "Transport",
+    "Uniform",
+    "Water",
+    "Xerox",
+	"Other",
 ];

@@ -1,6 +1,7 @@
 .appHeader{
     padding: var(--spacing-n) var(--spacing-m);
     display: flex;
+    justify-content: space-between;
     box-shadow: 0 3px 6px rgba(32, 32, 35, 0.08);
     z-index: 1;
     &__backArrow{
@@ -9,5 +10,13 @@
     &__title{
         font-size: var(--headingFontSize);
         font-weight: var(--font-weight-500);
+    }
+    &__grid{
+        display: flex;
+    }
+    &__addIncome{
+        svg{
+            font-size: 30px;
+        }
     }
 }
