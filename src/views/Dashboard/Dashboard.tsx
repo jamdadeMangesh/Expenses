@@ -44,17 +44,17 @@ export const Dashboard = () => {
 		getAllTransactions().then((res) => {
 			filteredAdminData = res?.sort(function (a: any, b: any) {
 				return (
-					+new Date(b?.data?.createdAt) -
-					+new Date(a.data?.createdAt)
+					+new Date(b?.createdAt) -
+					+new Date(a?.createdAt)
 				);
 			});
 
 			filteredData = res
-				?.filter((item: any) => item?.data?.personName === name)
+				?.filter((item: any) => item?.personName === name)
 				.sort(function (a: any, b: any) {
 					return (
-						+new Date(b?.data?.transactionDate) -
-						+new Date(a.data?.transactionDate)
+						+new Date(b?.transactionDate) -
+						+new Date(a?.transactionDate)
 					);
 				});
 			setTransactionsData(role === "admin" ? filteredAdminData : filteredData);
@@ -71,7 +71,7 @@ export const Dashboard = () => {
 		let tempArray: any = [];
 		tempArray = transactionsData?.filter(
 			(item: any) =>
-				DateTime.fromISO(item?.data?.transactionDate).month === getCurrentMonth
+				DateTime.fromISO(item?.transactionDate).month === getCurrentMonth
 		);
 
 		return totalExpenses(tempArray);
@@ -167,7 +167,7 @@ export const Dashboard = () => {
 								.slice(0, 5)
 								.map((item: any) => (
 									<Transactions
-										data={item?.data}
+										data={item}
 										key={item.id}
 										transactionId={item.id}
 									/>

@@ -20,7 +20,8 @@ import { categories, onDeleteImage } from "../../shared/constant";
 export const AddExpense = () => {
 	const { name } = useSelector(selectUserData);
 	const navigate = useNavigate();
-	const { setTitle, setShowBackArrow, setShowAddNewButton } = useHeaderContext();
+	const { setTitle, setShowBackArrow, setShowAddNewButton } =
+		useHeaderContext();
 	const [file, setFile] = useState<any>("");
 	const [imageUrl, setImageUrl] = useState("");
 	const [percent, setPercent] = useState(0);
@@ -46,7 +47,7 @@ export const AddExpense = () => {
 	useEffect(() => {
 		setTitle("Add new expense");
 		setShowBackArrow(true);
-        setShowAddNewButton(true);
+		setShowAddNewButton(true);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -117,9 +118,17 @@ export const AddExpense = () => {
 		data["personName"] = name;
 		data["receipt"] = imageUrl ? imageUrl : "";
 		data["amount"] = data?.amount as number;
-
+		console.log("data:", data);
 		if (data) {
-			await addDoc(collection(database, "transactions"), { data })
+			await addDoc(collection(database, "transactions"), {
+				amount: data?.amount,
+				category: data?.category,
+				transactionDate: data?.transactionDate,
+				description: data?.description,
+				receipt: data?.receipt,
+				createdAt: data?.createdAt,
+				personName: data?.personName,
+			})
 				.then((res) => {
 					reset();
 					setFile("");

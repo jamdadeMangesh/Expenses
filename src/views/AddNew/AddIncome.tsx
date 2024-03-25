@@ -1,59 +1,61 @@
 import React, { useEffect, useRef, useState } from "react";
-import "../AddNew/AddExpense.scss";
+import "./AddExpense.scss";
 import { useHeaderContext } from "../../context/HeaderContext";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { CgAsterisk } from "react-icons/cg";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { LuImagePlus } from "react-icons/lu";
-import { database, storage } from "../../shared/firebase";
-import { doc, updateDoc } from "firebase/firestore";
+import { authentication, database, storage } from "../../shared/firebase";
+import { addDoc, collection } from "firebase/firestore";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUserData } from "../Login/LoginSlice";
 import { DateTime } from "luxon";
 import { FiTrash2 } from "react-icons/fi";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { ToastContainer, toast } from "react-toastify";
-import { categories, onDeleteImage } from "../../shared/constant";
-import { SET_UPDATED_TRANSACTION_ID } from "../../components/FilterData/FilterSlice";
+import { onAuthStateChanged } from "firebase/auth";
+import {
+	incomeCategory,
+	onDeleteImage,
+} from "../../shared/constant";
+import {
+	SET_TYPE,
+	selectFilterData,
+} from "../../components/FilterData/FilterSlice";
 
-export const EditExpense = () => {
+export const AddIncome = () => {
 	const { name } = useSelector(selectUserData);
 	const navigate = useNavigate();
-	const { setTitle, setShowBackArrow } = useHeaderContext();
+	const { setTitle, setShowBackArrow, setShowAddNewButton } =
+		useHeaderContext();
 	const [file, setFile] = useState<any>("");
 	const [imageUrl, setImageUrl] = useState("");
 	const [percent, setPercent] = useState(0);
 	const [imageLoading, setImageLoading] = useState(false);
 	const dispatch = useDispatch();
-	const location = useLocation();
-	const { data, id } = location.state;
+	const { listType } = useSelector(selectFilterData);
 	const hiddenFileInput: any = useRef(null); // ADDED
 
 	const handleClick = () => {
 		hiddenFileInput && hiddenFileInput?.current?.click(); // ADDED
 	};
 
-	//check if transaction receipt is uploaded
-	const isReceiptUploaded = data?.receipt.length > 0 && data?.receipt !== "";
-
-	//variable for old image url delete
-	const oldReceiptUrl = data?.receipt;
-
-	// useEffect(() => {
-	// 	onAuthStateChanged(authentication, (user) => {
-	// 		if (user) {
-	// 			navigate("/addExpense");
-	// 		} else {
-	// 			navigate("/login");
-	// 		}
-	// 	});
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, []);
+	useEffect(() => {
+		onAuthStateChanged(authentication, (user) => {
+			if (user) {
+				navigate("/addIncome");
+			} else {
+				navigate("/login");
+			}
+		});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	useEffect(() => {
-		setTitle(data?.category);
+		setTitle("Add new income");
 		setShowBackArrow(true);
+		setShowAddNewButton(false);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -62,15 +64,11 @@ export const EditExpense = () => {
 		handleSubmit,
 		formState: { errors, isSubmitting },
 		reset,
-		setValue,
+		watch,
 	} = useForm();
 
-	useEffect(() => {
-		setValue("amount", data?.amount);
-		setValue("category", data?.category);
-		setValue("transactionDate", data?.transactionDate);
-		setValue("description", data?.description);
-	}, [data, setValue]);
+	const paymentModeValue = watch("paymentMode");
+	console.log("paymentModeValue:", paymentModeValue);
 
 	const onClearAddExpense = () => {
 		reset();
@@ -112,6 +110,9 @@ export const EditExpense = () => {
 
 	const onDeleteReceipt = (url: string) => {
 		if (url) {
+			//const desertRef = ref(storage, imageUrl);
+
+			//deleteObject(desertRef)
 			onDeleteImage(url)
 				.then(() => {
 					setFile("");
@@ -130,50 +131,43 @@ export const EditExpense = () => {
 		data["receipt"] = imageUrl ? imageUrl : "";
 		data["amount"] = data?.amount as number;
 
-		const taskDocRef = doc(database, "transactions", id);
 		if (data) {
-			updateDoc(taskDocRef, {
+			console.log("data:", data);
+			await addDoc(collection(database, "income"), {
 				amount: data?.amount,
-				category: data?.category,
+				receivedFrom: data?.receivedFrom,
 				transactionDate: data?.transactionDate,
+				incomeCategory: data?.incomeCategory,
+				paymentMode: data?.paymentMode,
+				bankName: data?.bankName,
 				description: data?.description,
 				receipt: data?.receipt,
 				createdAt: data?.createdAt,
 				personName: data?.personName,
 			})
-				.then(() => {
-					if (isReceiptUploaded) {
-						onDeleteImage(oldReceiptUrl)
-							.then(() => {})
-							.catch((error) => {
-								console.log("delete Error:", error);
-							});
-					}
+				.then((res) => {
+					reset();
+					setFile("");
 					setImageLoading(false);
-					toast.success("Transaction updated successfully!", {
+					toast.success("New income created successfully!", {
 						autoClose: 4000,
 					});
 					setTimeout(() => {
-						//navigate("/transactionsList");
-						dispatch(
-                            SET_UPDATED_TRANSACTION_ID({
-								updatedTransactionId: id,
-								transactionType: "Expense",
-							})
-                        );
-						navigate("/transactionsList/");
+						dispatch(SET_TYPE(!listType));
+						navigate("/transactionsList");
 					}, 5000);
 				})
 				.catch((error: any) => {
-					if (error) {
-						toast.error("Transaction has not been updated successfully!", {
-							autoClose: 4000,
-						});
-					}
+					console.error("Error adding new income document: ", error);
+					toast.error("Error adding new income!", {
+						autoClose: 4000,
+					});
 				});
 		}
 	};
 
+	const isValid = paymentModeValue === "" || paymentModeValue === "Cash";
+	console.log("isValid:", isValid);
 	return (
 		<>
 			<div className="addExpenseWrapper">
@@ -208,39 +202,37 @@ export const EditExpense = () => {
 						</Form.Group>
 						<Form.Group
 							className="loginWrapper__form-group"
-							controlId="category"
+							controlId="receivedFrom"
 						>
 							<Form.Label>
-								Category{" "}
+								Received from{" "}
 								<sup>
 									<span>
 										<CgAsterisk style={{ color: "#D82C0D" }} />
 									</span>
 								</sup>
 							</Form.Label>
-							<Form.Select
-								{...register("category", {
-									required: "Please enter category",
+							<Form.Control
+								type="text"
+								placeholder="Enter name"
+								{...register("receivedFrom", {
+									required: "Please enter full name",
+									pattern: {
+										value: /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/,
+										message: "Please enter a valid name",
+									},
 								})}
 								autoComplete="off"
-							>
-								<option value="">Select category</option>
-								{categories.map((category: string) => (
-									<option key={category} value={category}>
-										{category}
-									</option>
-								))}
-							</Form.Select>
-
-							{errors.category && (
+							/>
+							{errors.receivedFrom && (
 								<p className="loginWrapper__errorMsg">
-									{errors?.category?.message?.toString()}
+									{errors?.receivedFrom?.message?.toString()}
 								</p>
 							)}
 						</Form.Group>
 						<Form.Group
 							className="loginWrapper__form-group"
-							controlId="password"
+							controlId="transactionDate"
 						>
 							<Form.Label>
 								Transaction date
@@ -264,6 +256,106 @@ export const EditExpense = () => {
 								</p>
 							)}
 						</Form.Group>
+						<Form.Group
+							className="loginWrapper__form-group"
+							controlId="incomeCategory"
+						>
+							<Form.Label>
+								Income Category{" "}
+								<sup>
+									<span>
+										<CgAsterisk style={{ color: "#D82C0D" }} />
+									</span>
+								</sup>
+							</Form.Label>
+							<Form.Select
+								{...register("incomeCategory", {
+									required: "Please enter income category",
+								})}
+								autoComplete="off"
+							>
+								<option value="">Select income category</option>
+								{incomeCategory.map((category: string) => (
+									<option key={category} value={category}>
+										{category}
+									</option>
+								))}
+							</Form.Select>
+
+							{errors.incomeCategory && (
+								<p className="loginWrapper__errorMsg">
+									{errors?.incomeCategory?.message?.toString()}
+								</p>
+							)}
+						</Form.Group>
+						<Form.Group
+							className="loginWrapper__form-group"
+							controlId="paymentMode"
+						>
+							<Form.Label>
+								Payment Mode{" "}
+								<sup>
+									<span>
+										<CgAsterisk style={{ color: "#D82C0D" }} />
+									</span>
+								</sup>
+							</Form.Label>
+							<Form.Select
+								{...register("paymentMode", {
+									required: "Please enter payment mode",
+								})}
+								autoComplete="off"
+							>
+								<option value="">Select payment mode</option>
+								<option value="Cash">Cash</option>
+								<option value="Cheque">Cheque</option>
+								<option value="DD">DD</option>
+								<option value="Online">Online</option>
+							</Form.Select>
+
+							{errors.paymentMode && (
+								<p className="loginWrapper__errorMsg">
+									{errors?.paymentMode?.message?.toString()}
+								</p>
+							)}
+						</Form.Group>
+						<Form.Group
+							className="loginWrapper__form-group"
+							controlId="bankName"
+						>
+							<Form.Label>
+								Bank Name{" "}
+								<sup>
+									<span>
+										<CgAsterisk style={{ color: "#D82C0D" }} />
+									</span>
+								</sup>
+							</Form.Label>
+							<Form.Control
+								type="text"
+								placeholder="Enter bank name"
+								disabled={
+									paymentModeValue === "" || paymentModeValue === "Cash"
+								}
+								{...register("bankName", {
+									required: {
+										value: !isValid,
+										message: "Please enter bank name",
+									},
+									pattern: {
+										value: /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/,
+										message: "Please enter a valid bank name",
+									},
+								})}
+								autoComplete="off"
+							/>
+							{errors.bankName && (
+								<p className="loginWrapper__errorMsg">
+									{errors?.bankName?.message?.toString()}
+								</p>
+							)}
+						</Form.Group>
+
 						<Form.Group
 							className="loginWrapper__form-group"
 							controlId="Description"
@@ -331,15 +423,6 @@ export const EditExpense = () => {
 								</p>
 							)}
 						</Form.Group>
-						{isReceiptUploaded && (
-							<>
-								<div className="loginWrapper__form-group mb-4">
-									<div className="receiptUploaded">
-										<img src={data?.receipt} alt="receipt" />
-									</div>
-								</div>
-							</>
-						)}
 					</div>
 
 					<div className="loginWrapper__submit">

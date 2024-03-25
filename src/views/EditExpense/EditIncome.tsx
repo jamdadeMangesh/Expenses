@@ -14,25 +14,26 @@ import { DateTime } from "luxon";
 import { FiTrash2 } from "react-icons/fi";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { ToastContainer, toast } from "react-toastify";
-import { categories, onDeleteImage } from "../../shared/constant";
-import { SET_UPDATED_TRANSACTION_ID } from "../../components/FilterData/FilterSlice";
+import { incomeCategory, onDeleteImage } from "../../shared/constant";
+import {
+	SET_TYPE,
+	SET_UPDATED_TRANSACTION_ID,
+} from "../../components/FilterData/FilterSlice";
 
-export const EditExpense = () => {
+export const EditIncome = () => {
 	const { name } = useSelector(selectUserData);
 	const navigate = useNavigate();
-	const { setTitle, setShowBackArrow } = useHeaderContext();
+	const { setTitle, setShowBackArrow, setShowAddNewButton } =
+		useHeaderContext();
 	const [file, setFile] = useState<any>("");
 	const [imageUrl, setImageUrl] = useState("");
 	const [percent, setPercent] = useState(0);
 	const [imageLoading, setImageLoading] = useState(false);
 	const dispatch = useDispatch();
-	const location = useLocation();
-	const { data, id } = location.state;
 	const hiddenFileInput: any = useRef(null); // ADDED
 
-	const handleClick = () => {
-		hiddenFileInput && hiddenFileInput?.current?.click(); // ADDED
-	};
+	const location = useLocation();
+	const { data, id } = location.state;
 
 	//check if transaction receipt is uploaded
 	const isReceiptUploaded = data?.receipt.length > 0 && data?.receipt !== "";
@@ -40,10 +41,14 @@ export const EditExpense = () => {
 	//variable for old image url delete
 	const oldReceiptUrl = data?.receipt;
 
+	const handleClick = () => {
+		hiddenFileInput && hiddenFileInput?.current?.click(); // ADDED
+	};
+
 	// useEffect(() => {
 	// 	onAuthStateChanged(authentication, (user) => {
 	// 		if (user) {
-	// 			navigate("/addExpense");
+	// 			navigate("/addIncome");
 	// 		} else {
 	// 			navigate("/login");
 	// 		}
@@ -52,8 +57,9 @@ export const EditExpense = () => {
 	// }, []);
 
 	useEffect(() => {
-		setTitle(data?.category);
+		setTitle(data?.incomeCategory);
 		setShowBackArrow(true);
+		setShowAddNewButton(false);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -62,15 +68,21 @@ export const EditExpense = () => {
 		handleSubmit,
 		formState: { errors, isSubmitting },
 		reset,
+		watch,
 		setValue,
 	} = useForm();
 
 	useEffect(() => {
 		setValue("amount", data?.amount);
-		setValue("category", data?.category);
-		setValue("transactionDate", data?.transactionDate);
+		setValue("bankName", data?.bankName);
 		setValue("description", data?.description);
+		setValue("incomeCategory", data?.incomeCategory);
+		setValue("paymentMode", data?.paymentMode);
+		setValue("receivedFrom", data?.receivedFrom);
+		setValue("transactionDate", data?.transactionDate);
 	}, [data, setValue]);
+
+	const paymentModeValue = watch("paymentMode");
 
 	const onClearAddExpense = () => {
 		reset();
@@ -112,6 +124,9 @@ export const EditExpense = () => {
 
 	const onDeleteReceipt = (url: string) => {
 		if (url) {
+			//const desertRef = ref(storage, imageUrl);
+
+			//deleteObject(desertRef)
 			onDeleteImage(url)
 				.then(() => {
 					setFile("");
@@ -130,12 +145,15 @@ export const EditExpense = () => {
 		data["receipt"] = imageUrl ? imageUrl : "";
 		data["amount"] = data?.amount as number;
 
-		const taskDocRef = doc(database, "transactions", id);
+		const taskDocRef = doc(database, "income", id);
 		if (data) {
 			updateDoc(taskDocRef, {
 				amount: data?.amount,
-				category: data?.category,
+				receivedFrom: data?.receivedFrom,
 				transactionDate: data?.transactionDate,
+				incomeCategory: data?.incomeCategory,
+				paymentMode: data?.paymentMode,
+				bankName: data?.bankName,
 				description: data?.description,
 				receipt: data?.receipt,
 				createdAt: data?.createdAt,
@@ -150,29 +168,32 @@ export const EditExpense = () => {
 							});
 					}
 					setImageLoading(false);
-					toast.success("Transaction updated successfully!", {
+					toast.success("Income updated successfully!", {
 						autoClose: 4000,
 					});
 					setTimeout(() => {
 						//navigate("/transactionsList");
 						dispatch(
-                            SET_UPDATED_TRANSACTION_ID({
+							SET_UPDATED_TRANSACTION_ID({
 								updatedTransactionId: id,
-								transactionType: "Expense",
+								transactionType: "Income",
 							})
-                        );
+						);
+						dispatch(SET_TYPE(true));
 						navigate("/transactionsList/");
 					}, 5000);
 				})
 				.catch((error: any) => {
 					if (error) {
-						toast.error("Transaction has not been updated successfully!", {
+						toast.error("Income has not been updated successfully!", {
 							autoClose: 4000,
 						});
 					}
 				});
 		}
 	};
+
+	const isValid = paymentModeValue === "" || paymentModeValue === "Cash";
 
 	return (
 		<>
@@ -208,39 +229,37 @@ export const EditExpense = () => {
 						</Form.Group>
 						<Form.Group
 							className="loginWrapper__form-group"
-							controlId="category"
+							controlId="receivedFrom"
 						>
 							<Form.Label>
-								Category{" "}
+								Received from{" "}
 								<sup>
 									<span>
 										<CgAsterisk style={{ color: "#D82C0D" }} />
 									</span>
 								</sup>
 							</Form.Label>
-							<Form.Select
-								{...register("category", {
-									required: "Please enter category",
+							<Form.Control
+								type="text"
+								placeholder="Enter name"
+								{...register("receivedFrom", {
+									required: "Please enter full name",
+									pattern: {
+										value: /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/,
+										message: "Please enter a valid name",
+									},
 								})}
 								autoComplete="off"
-							>
-								<option value="">Select category</option>
-								{categories.map((category: string) => (
-									<option key={category} value={category}>
-										{category}
-									</option>
-								))}
-							</Form.Select>
-
-							{errors.category && (
+							/>
+							{errors.receivedFrom && (
 								<p className="loginWrapper__errorMsg">
-									{errors?.category?.message?.toString()}
+									{errors?.receivedFrom?.message?.toString()}
 								</p>
 							)}
 						</Form.Group>
 						<Form.Group
 							className="loginWrapper__form-group"
-							controlId="password"
+							controlId="transactionDate"
 						>
 							<Form.Label>
 								Transaction date
@@ -264,6 +283,106 @@ export const EditExpense = () => {
 								</p>
 							)}
 						</Form.Group>
+						<Form.Group
+							className="loginWrapper__form-group"
+							controlId="incomeCategory"
+						>
+							<Form.Label>
+								Income Category{" "}
+								<sup>
+									<span>
+										<CgAsterisk style={{ color: "#D82C0D" }} />
+									</span>
+								</sup>
+							</Form.Label>
+							<Form.Select
+								{...register("incomeCategory", {
+									required: "Please enter income category",
+								})}
+								autoComplete="off"
+							>
+								<option value="">Select income category</option>
+								{incomeCategory.map((category: string) => (
+									<option key={category} value={category}>
+										{category}
+									</option>
+								))}
+							</Form.Select>
+
+							{errors.incomeCategory && (
+								<p className="loginWrapper__errorMsg">
+									{errors?.incomeCategory?.message?.toString()}
+								</p>
+							)}
+						</Form.Group>
+						<Form.Group
+							className="loginWrapper__form-group"
+							controlId="paymentMode"
+						>
+							<Form.Label>
+								Payment Mode{" "}
+								<sup>
+									<span>
+										<CgAsterisk style={{ color: "#D82C0D" }} />
+									</span>
+								</sup>
+							</Form.Label>
+							<Form.Select
+								{...register("paymentMode", {
+									required: "Please enter payment mode",
+								})}
+								autoComplete="off"
+							>
+								<option value="">Select payment mode</option>
+								<option value="Cash">Cash</option>
+								<option value="Cheque">Cheque</option>
+								<option value="DD">DD</option>
+								<option value="Online">Online</option>
+							</Form.Select>
+
+							{errors.paymentMode && (
+								<p className="loginWrapper__errorMsg">
+									{errors?.paymentMode?.message?.toString()}
+								</p>
+							)}
+						</Form.Group>
+						<Form.Group
+							className="loginWrapper__form-group"
+							controlId="bankName"
+						>
+							<Form.Label>
+								Bank Name{" "}
+								<sup>
+									<span>
+										<CgAsterisk style={{ color: "#D82C0D" }} />
+									</span>
+								</sup>
+							</Form.Label>
+							<Form.Control
+								type="text"
+								placeholder="Enter bank name"
+								disabled={
+									paymentModeValue === "" || paymentModeValue === "Cash"
+								}
+								{...register("bankName", {
+									required: {
+										value: !isValid,
+										message: "Please enter bank name",
+									},
+									pattern: {
+										value: /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/,
+										message: "Please enter a valid bank name",
+									},
+								})}
+								autoComplete="off"
+							/>
+							{errors.bankName && (
+								<p className="loginWrapper__errorMsg">
+									{errors?.bankName?.message?.toString()}
+								</p>
+							)}
+						</Form.Group>
+
 						<Form.Group
 							className="loginWrapper__form-group"
 							controlId="Description"

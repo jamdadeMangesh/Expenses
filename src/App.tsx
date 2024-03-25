@@ -28,6 +28,9 @@ import { useServiceWorker } from "./hooks/useServiceWorker";
 import { Slide, ToastContainer, toast } from "react-toastify";
 import { EditExpense } from "./views/EditExpense/EditExpense";
 import { ReactComponent as NoConnectionImg} from "../src/assets/noConnection.svg";
+import { AddIncome } from "./views/AddNew/AddIncome";
+import { IncomeDetails } from "./views/ExpenseDetails/IncomeDetails";
+import { EditIncome } from "./views/EditExpense/EditIncome";
 
 function App() {
 	const [width, setWidth] = useState(window.innerWidth);
@@ -161,9 +164,22 @@ function App() {
 							/>
 							<Route
 								path={
+									routes.find((r) => r.page === ApplicationPages.IncomeDetails)
+										?.route + "/:id"
+								}
+								Component={IncomeDetails}
+							/>
+							<Route
+								path={
 									routes.find((r) => r.page === ApplicationPages.Users)?.route
 								}
 								Component={Users}
+							/>
+							<Route
+								path={
+									routes.find((r) => r.page === ApplicationPages.AddIncome)?.route
+								}
+								Component={AddIncome}
 							/>
 							<Route
 								path={
@@ -171,6 +187,13 @@ function App() {
 										?.route + "/:id"
 								}
 								Component={EditExpense}
+							/>
+							<Route
+								path={
+									routes.find((r) => r.page === ApplicationPages.EditIncome)
+										?.route + "/:id"
+								}
+								Component={EditIncome}
 							/>
 						</Routes>
 						<AppNav />

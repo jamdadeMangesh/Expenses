@@ -23,6 +23,9 @@ import uniform from "../assets/icons/uniform.png";
 import water from "../assets/icons/water.png";
 import xerox from "../assets/icons/xerox.png";
 import other from "../assets/icons/other.png";
+import donation from "../assets/icons/donation.png";
+import sell from "../assets/icons/sell.png";
+import dhwaj from "../assets/icons/dhwaj.png";
 import { ref, deleteObject } from "firebase/storage";
 
 // List of pages
@@ -32,11 +35,14 @@ export enum ApplicationPages {
 	Register = "Regsiter",
 	Dashboard = "Dashboard",
 	AddExpense = "AddExpense",
+	AddIncome = "AddIncome",
 	TransactionsList = "TransactionsList",
 	ExpenseDetails = "ExpenseDetails",
+	IncomeDetails = "IncomeDetails",
 	Profile = "Profile",
 	Users = "Users",
 	EditExpense = "EditExpense",
+	EditIncome = "EditIncome",
 }
 
 // Interface to define route options
@@ -84,9 +90,21 @@ export const ApplicationRoutes: ApplicationRoutesOptions[] = [
 		showHeader: true,
 		showNav: false,
 	},
+    {
+		page: ApplicationPages.AddIncome,
+		route: "/addIncome",
+		showHeader: true,
+		showNav: false,
+	},
 	{
 		page: ApplicationPages.ExpenseDetails,
 		route: "/expenseDetails",
+		showHeader: true,
+		showNav: false,
+	},
+	{
+		page: ApplicationPages.IncomeDetails,
+		route: "/incomeDetails",
 		showHeader: true,
 		showNav: false,
 	},
@@ -105,6 +123,12 @@ export const ApplicationRoutes: ApplicationRoutesOptions[] = [
 	{
 		page: ApplicationPages.EditExpense,
 		route: "/editExpense",
+		showHeader: true,
+		showNav: false,
+	},
+	{
+		page: ApplicationPages.EditIncome,
+		route: "/editIncome",
 		showHeader: true,
 		showNav: false,
 	},
@@ -150,7 +174,7 @@ export const totalExpenses = (transactionsData: any) => {
 	let totalAmountArr: any = [];
 	let total = 0;
 	Object.values(transactionsData).map((a: any) =>
-		totalAmountArr.push(parseFloat(a?.data?.amount))
+		totalAmountArr.push(parseFloat(a?.amount))
 	);
 	for (let price of Object.values(totalAmountArr)) {
 		total += price as number;
@@ -162,6 +186,22 @@ export const totalExpenses = (transactionsData: any) => {
 export const getAllTransactions = async () => {
 	//const doc_refs = await query(collection(database, "transactions"), where("personName", "==", name));
 	const doc_refs = query(collection(database, "transactions"));
+	const querySnapshot = await getDocs(doc_refs);
+
+	const res: any = [];
+
+	querySnapshot.forEach((item) => {
+		res.push({
+			id: item.id,
+			...item.data(),
+		});
+	});
+	return res;
+};
+
+export const getAllIncomeTransactions = async () => {
+	//const doc_refs = await query(collection(database, "transactions"), where("personName", "==", name));
+	const doc_refs = query(collection(database, "income"));
 	const querySnapshot = await getDocs(doc_refs);
 
 	const res: any = [];
@@ -241,6 +281,13 @@ export const getCategoryIcon = (categoryName: string) => {
 			return water;
 		case "xerox":
 			return xerox;
+		case "donation":
+        case "miravnuk charges":
+			return donation;
+        case "material sell":
+			return sell;
+        case "dhwaj material":
+			return dhwaj;
 		case "other":
 			return other;
 		default:
@@ -273,3 +320,11 @@ export const categories = [
     "Xerox",
 	"Other",
 ];
+
+export const incomeCategory = [
+    "Miravnuk Charges",
+    "Donation",
+    "Uniform",
+    "ICard",
+    "Material Sell"
+]
