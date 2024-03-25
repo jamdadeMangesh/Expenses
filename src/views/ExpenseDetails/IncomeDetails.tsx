@@ -14,11 +14,11 @@ import { onDeleteImage } from "../../shared/constant";
 import { SET_UPDATED_TRANSACTION_ID } from "../../components/FilterData/FilterSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUserData } from "../Login/LoginSlice";
-export const ExpenseDetails = () => {
+export const IncomeDetails = () => {
 	const { setTitle, setShowBackArrow } = useHeaderContext();
 	const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
 	const [isDeleting, setIsDeleting] = useState<boolean>(false);
-	const [userDetailsData, setUserDetailsData] = useState<any>([]);
+	const [incomeDetails, setIncomeDetails] = useState<any>([]);
 	const [isDataLoading, setIsDataLoading] = useState<boolean>(true);
 	const location = useLocation();
 	const { id } = location.state;
@@ -27,15 +27,14 @@ export const ExpenseDetails = () => {
 
 	const { role } = useSelector(selectUserData);
 
-	const docRef = doc(database, "transactions", id);
-
+	const docRef = doc(database, "income", id);
+    console.log('inside income details');
 	useEffect(() => {
-		setTitle("Expense details");
+		setTitle("Income details");
 		setShowBackArrow(true);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-    console.log('inside edit details');
 	useEffect(() => {
 		getUserDetails();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -49,20 +48,21 @@ export const ExpenseDetails = () => {
 		setIsDataLoading(true);
 		getDoc(docRef)
 			.then((res) => {
-				setUserDetailsData(res?.data());
+				setIncomeDetails(res?.data());
 				setIsDataLoading(false);
 			})
 			.catch((error) => {
 				console.log("error fetching user details");
 			});
 	};
+
 	const deleteTransaction = () => {
 		//const desertRef = ref(storage, userDetailsData?.receipt);
 		deleteDoc(docRef)
 			.then(() => {
 				//delete image from storage when deleting  transaction
-				if (userDetailsData?.receipt !== "") {
-					onDeleteImage(userDetailsData?.receipt)
+				if (incomeDetails?.receipt !== "") {
+					onDeleteImage(incomeDetails?.receipt)
 						.then(() => {})
 						.catch(() => {
 							toast.error("Something went wrong deleting image!!", {
@@ -89,8 +89,8 @@ export const ExpenseDetails = () => {
 	};
 
 	const editTransaction = () => {
-		navigate("/editExpense/" + id, {
-			state: { data: userDetailsData, id },
+		navigate("/editIncome/" + id, {
+			state: { data: incomeDetails, id },
 		});
 	};
 
@@ -104,25 +104,51 @@ export const ExpenseDetails = () => {
 						<div className="expenseDetails__section">
 							<div className="expenseDetails__grid w-50">
 								<div className="expenseDetails__grid-header">Amount</div>
-								<div className="expenseDetails__grid-description text-danger fw-bold">
+								<div className="expenseDetails__grid-description text-success fw-bold">
 									<LuIndianRupee
 										style={{ fontSize: "13px" }}
 									/>{" "}
-									{userDetailsData?.amount}
+									{incomeDetails?.amount}
 								</div>
 							</div>
 							<div className="expenseDetails__grid w-50">
 								<div className="expenseDetails__grid-header">Category</div>
 								<div className="expenseDetails__grid-description">
-									{userDetailsData?.category}
+									{incomeDetails?.incomeCategory}
+								</div>
+							</div>
+						</div>
+						<div className="expenseDetails__section">
+							<div className="expenseDetails__grid">
+								<div className="expenseDetails__grid-header">Payment Mode</div>
+								<div className="expenseDetails__grid-description">
+									{incomeDetails?.paymentMode}
+								</div>
+							</div>
+						</div>
+						<div className="expenseDetails__section">
+							<div className="expenseDetails__grid">
+								<div className="expenseDetails__grid-header">Bank Name</div>
+								<div className="expenseDetails__grid-description">
+									{incomeDetails?.bankName ? incomeDetails?.bankName : "-"}
 								</div>
 							</div>
 						</div>
 						<div className="expenseDetails__section">
 							<div className="expenseDetails__grid w-100">
-								<div className="expenseDetails__grid-header">Person name</div>
+								<div className="expenseDetails__grid-header">Received from</div>
 								<div className="expenseDetails__grid-description">
-									{userDetailsData?.personName}
+									{incomeDetails?.receivedFrom}
+								</div>
+							</div>
+						</div>
+						<div className="expenseDetails__section">
+							<div className="expenseDetails__grid w-100">
+								<div className="expenseDetails__grid-header">
+									Person name (Income added)
+								</div>
+								<div className="expenseDetails__grid-description">
+									{incomeDetails?.personName}
 								</div>
 							</div>
 						</div>
@@ -132,7 +158,7 @@ export const ExpenseDetails = () => {
 									Transaction date
 								</div>
 								<div className="expenseDetails__grid-description">
-									{DateTime.fromISO(userDetailsData?.transactionDate).toFormat(
+									{DateTime.fromISO(incomeDetails?.transactionDate).toFormat(
 										"dd MMM yyyy"
 									)}
 								</div>
@@ -142,8 +168,8 @@ export const ExpenseDetails = () => {
 							<div className="expenseDetails__grid w-100">
 								<div className="expenseDetails__grid-header">Description</div>
 								<div className="expenseDetails__grid-description">
-									{userDetailsData?.description
-										? userDetailsData?.description
+									{incomeDetails?.description
+										? incomeDetails?.description
 										: "-"}
 								</div>
 							</div>
@@ -154,15 +180,26 @@ export const ExpenseDetails = () => {
 								<div className="expenseDetails__grid-description w-50">
 									<img
 										src={
-											userDetailsData?.receipt ||
-											userDetailsData?.receipt !== ""
-												? userDetailsData?.receipt
+											incomeDetails?.receipt || incomeDetails?.receipt !== ""
+												? incomeDetails?.receipt
 												: placeholder
 										}
 										alt="receiptimage"
 										className="img-fluid mt-2"
 									/>
 								</div>
+							</div>
+						</div>
+						<div className="divider__common"></div>
+						<div className="expenseDetails__section mt-4">
+							<div className="expenseDetails__grid w-100">
+								<Button
+									variant="success"
+									className="w-100 buttonHeight"
+									//onClick={() => setShowConfirmModal(true)}
+								>
+									Generate & Download Receipt
+								</Button>
 							</div>
 						</div>
 					</div>

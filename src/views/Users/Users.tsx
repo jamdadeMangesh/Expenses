@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { Loader } from "../../components/Loader/Loader";
 
 export const Users = () => {
-	const { setTitle, setShowBackArrow } = useHeaderContext();
+	const { setTitle, setShowBackArrow, setShowAddNewButton } = useHeaderContext();
 	const [usersData, setUsersData] = useState([]);
 	const [usersLoading, setUsersLoading] = useState<boolean>(true);
 	const navigate = useNavigate();
@@ -27,6 +27,7 @@ export const Users = () => {
 	useEffect(() => {
 		setTitle("All Users");
 		setShowBackArrow(true);
+        setShowAddNewButton(false);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 

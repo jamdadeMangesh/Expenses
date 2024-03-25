@@ -34,13 +34,16 @@ export const AppHeader = () => {
 						)}
 						<div className="appHeader__title">{title}</div>
 					</div>
-                    <div className="appHeader__grid-button">
-					{showAddNewButton && role === "admin" && (
-						<div className="appHeader__addIncome">
-							<BiSolidPlusCircle  style={{ color: "#2D864B" }} />
-						</div>
-					)}
-                    </div>
+					<div className="appHeader__grid-button">
+						{showAddNewButton && role === "admin" && (
+							<div className="appHeader__addIncome">
+								<BiSolidPlusCircle
+									style={{ color: "#2D864B" }}
+									onClick={() => navigate("/addIncome")}
+								/>
+							</div>
+						)}
+					</div>
 				</div>
 			)}
 		</>

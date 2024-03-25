@@ -21,7 +21,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { Loader } from "../../components/Loader/Loader";
 
 export const Profile = () => {
-	const { setTitle, setShowBackArrow } = useHeaderContext();
+	const { setTitle, setShowBackArrow, setShowAddNewButton } = useHeaderContext();
 	const [showLogoutModal, setShowLogoutModal] = useState(false);
 	const [showUpdatePasswordModal, setShowUpdatePasswordModal] = useState(false);
 	const [showErrors, setShowErrors] = useState(false);
@@ -55,6 +55,7 @@ export const Profile = () => {
 	useEffect(() => {
 		setTitle("Profile");
 		setShowBackArrow(false);
+        setShowAddNewButton(false);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 

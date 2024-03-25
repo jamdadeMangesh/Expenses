@@ -9,8 +9,8 @@
 		align-items: center;
 		border-bottom: 1px solid var(--border-primary);
 		&-icon {
-			width: 60px;
-			height: 60px;
+			width: 55px;
+			height: 55px;
 			border-radius: var(--spacing-s);
 			background: var(--surfaces-disabled);
 			margin-right: var(--spacing-m);
@@ -26,12 +26,12 @@
 			&--name {
 				color: var(--text-primary);
 				font-weight: var(--font-weight-500);
-				font-size: var(--font-size-16);
+				font-size: var(--font-size-15);
 				margin-bottom: var(--spacing-xxs);
 			}
 			&--date {
 				color: var(--text-disabled);
-				font-size: var(--font-size-12);
+				font-size: var(--font-size-11);
 				font-weight: var(--font-weight-500);
 			}
 		}
@@ -39,6 +39,9 @@
 			font-weight: var(--font-weight-600);
 			color: var(--text-error);
 			font-size: var(--font-size-16);
+            &--income{
+                color: var(--surfaces-success);
+            }
 		}
 		&:last-child {
 			border-bottom: 0px;
@@ -129,4 +132,14 @@
             }
 		}
 	}
+}
+.showComponent{
+    font-size: 30px;
+    margin-right: 10px;
+    &__income{
+        fill: #2D864B;
+    }
+    &__expense{
+        fill: #d82c0d;
+    }
 }
