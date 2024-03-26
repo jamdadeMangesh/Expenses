@@ -10,10 +10,14 @@ import { database } from "../../shared/firebase";
 import { deleteDoc, doc, getDoc } from "firebase/firestore";
 import { toast, ToastContainer } from "react-toastify";
 import { Loader } from "../../components/Loader/Loader";
-import { onDeleteImage } from "../../shared/constant";
+import { convertNumberToWords, onDeleteImage } from "../../shared/constant";
 import { SET_UPDATED_TRANSACTION_ID } from "../../components/FilterData/FilterSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUserData } from "../Login/LoginSlice";
+import { BlobProvider, PDFDownloadLink } from "@react-pdf/renderer";
+import Invoice from "../../components/Invoice/Invoice";
+import { FiDownload, FiEye } from "react-icons/fi";
+
 export const IncomeDetails = () => {
 	const { setTitle, setShowBackArrow } = useHeaderContext();
 	const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
@@ -28,7 +32,7 @@ export const IncomeDetails = () => {
 	const { role } = useSelector(selectUserData);
 
 	const docRef = doc(database, "income", id);
-    console.log('inside income details');
+
 	useEffect(() => {
 		setTitle("Income details");
 		setShowBackArrow(true);
@@ -41,7 +45,12 @@ export const IncomeDetails = () => {
 	}, [id]);
 
 	useEffect(() => {
-		dispatch(SET_UPDATED_TRANSACTION_ID({updatedTransactionId:"", transactionType: ""}));
+		dispatch(
+			SET_UPDATED_TRANSACTION_ID({
+				updatedTransactionId: "",
+				transactionType: "",
+			})
+		);
 	}, [dispatch]);
 
 	const getUserDetails = () => {
@@ -94,6 +103,30 @@ export const IncomeDetails = () => {
 		});
 	};
 
+    //get current year from transaction date
+	function getFinancialYear() {
+		return DateTime.fromISO(incomeDetails?.transactionDate).toFormat("yyyy/MM");
+	}
+
+    //create random 4 digit for receipt no
+	function getRandomDigit() {
+		return Math.floor(1000 + Math.random() * 9000);
+	}
+
+    //send props to generate invoice
+	const reciept_data = {
+		invoice_no: getFinancialYear() + "/" + getRandomDigit(),
+		transactionDate: DateTime.fromISO(incomeDetails?.transactionDate).toFormat(
+			"dd/MM/yyyy"
+		),
+		receivedFrom: incomeDetails?.receivedFrom,
+		amountInWords: convertNumberToWords(incomeDetails?.amount as any),
+		towards: incomeDetails?.incomeCategory,
+		paymentMode: incomeDetails?.paymentMode,
+		bankName: incomeDetails?.bankName ? incomeDetails?.bankName : "-",
+		amount: incomeDetails?.amount,
+	};
+
 	return (
 		<>
 			{isDataLoading ? (
@@ -105,9 +138,7 @@ export const IncomeDetails = () => {
 							<div className="expenseDetails__grid w-50">
 								<div className="expenseDetails__grid-header">Amount</div>
 								<div className="expenseDetails__grid-description text-success fw-bold">
-									<LuIndianRupee
-										style={{ fontSize: "13px" }}
-									/>{" "}
+									<LuIndianRupee style={{ fontSize: "13px" }} />{" "}
 									{incomeDetails?.amount}
 								</div>
 							</div>
@@ -192,14 +223,29 @@ export const IncomeDetails = () => {
 						</div>
 						<div className="divider__common"></div>
 						<div className="expenseDetails__section mt-4">
-							<div className="expenseDetails__grid w-100">
-								<Button
-									variant="success"
-									className="w-100 buttonHeight"
-									//onClick={() => setShowConfirmModal(true)}
-								>
-									Generate & Download Receipt
-								</Button>
+							<div className="expenseDetails__invoice">
+								<div className="expenseDetails__invoice--title">Invoice</div>
+								<div className="expenseDetails__invoice--button">
+									<PDFDownloadLink
+										document={<Invoice data={reciept_data} />}
+										fileName={
+											incomeDetails?.receivedFrom.replaceAll(" ", "_") + ".pdf"
+										}
+									>
+										<Button variant="secondary" className="btn-sm">
+											<FiDownload />
+										</Button>
+									</PDFDownloadLink>
+									<BlobProvider document={<Invoice data={reciept_data} />}>
+										{({ url, blob }) => (
+											<a href={url as string} target="_blank" rel="noreferrer">
+												<Button variant="dark" className="btn-sm ml-3">
+													<FiEye />
+												</Button>
+											</a>
+										)}
+									</BlobProvider>
+								</div>
 							</div>
 						</div>
 					</div>

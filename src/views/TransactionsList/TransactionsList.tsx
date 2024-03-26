@@ -52,7 +52,7 @@ export const TransactionsList = () => {
 		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-	console.log("transactionType:", transactionType);
+
 	useEffect(() => {
 		if (updatedTransactionId !== "" && transactionType === "Income") {
 			navigate("/incomeDetails/" + updatedTransactionId, {

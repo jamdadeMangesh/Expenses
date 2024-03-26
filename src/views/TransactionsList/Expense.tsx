@@ -8,7 +8,6 @@ import { selectUserData } from "../Login/LoginSlice";
 import { getAllTransactions, totalExpenses } from "../../shared/constant";
 import { LuDot, LuIndianRupee } from "react-icons/lu";
 import { selectFilterData } from "../../components/FilterData/FilterSlice";
-import { useNavigate } from "react-router-dom";
 import noResult from "../../../src/assets/icons/no-results.png";
 import FileSaver from "file-saver";
 import XLSX from "sheetjs-style";
@@ -16,17 +15,7 @@ export const Expense = () => {
 	const { name, role } = useSelector(selectUserData);
 	const [transactionsData, setTransactionsData] = useState([]);
 
-	const { financialYear, updatedTransactionId, searchTerm } =
-		useSelector(selectFilterData);
-	const navigate = useNavigate();
-
-	useEffect(() => {
-		if (updatedTransactionId !== "") {
-			navigate("/expenseDetails/" + updatedTransactionId, {
-				state: { id: updatedTransactionId },
-			});
-		}
-	}, [navigate, updatedTransactionId]);
+	const { financialYear, searchTerm } = useSelector(selectFilterData);
 
 	useEffect(() => {
 		getAllTransactions().then((res) => {

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./TransactionsList.scss";
-import {  Button } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { FiDownload } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { selectUserData } from "../Login/LoginSlice";
@@ -10,9 +10,7 @@ import {
 	totalExpenses,
 } from "../../shared/constant";
 import { LuDot, LuIndianRupee } from "react-icons/lu";
-import {
-	selectFilterData,
-} from "../../components/FilterData/FilterSlice";
+import { selectFilterData } from "../../components/FilterData/FilterSlice";
 import { useNavigate } from "react-router-dom";
 import noResult from "../../../src/assets/icons/no-results.png";
 import FileSaver from "file-saver";
@@ -23,17 +21,8 @@ export const Income = () => {
 	const { name, role } = useSelector(selectUserData);
 	const [transactionsData, setTransactionsData] = useState([]);
 
-	const { financialYear, updatedTransactionId, searchTerm } =
-		useSelector(selectFilterData);
+	const { financialYear, searchTerm } = useSelector(selectFilterData);
 	const navigate = useNavigate();
-
-	useEffect(() => {
-		if (updatedTransactionId !== "") {
-			navigate("/expenseDetails/" + updatedTransactionId, {
-				state: { id: updatedTransactionId },
-			});
-		}
-	}, [navigate, updatedTransactionId]);
 
 	useEffect(() => {
 		getAllIncomeTransactions().then((res) => {
@@ -103,17 +92,20 @@ export const Income = () => {
 			"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF=8";
 		const fileExtension = ".xlsx";
 		const filename = financialYear
-			? "ExpensesData-" + financialYear
-			: "ExpensesData";
+			? "IncomeData-" + financialYear
+			: "IncomeData";
 
 		const excelData: any = [];
 		filteredValues.filter((item: any) =>
 			excelData.push({
-				"Person Name": item?.data?.personName,
-				Category: item?.data?.category,
-				Amount: parseFloat(item?.data?.amount),
-				"Transaction Date": item?.data?.transactionDate,
-				Description: item?.data?.description,
+				"Received From": item?.receivedFrom,
+				"Payment mode": item?.paymentMode,
+				Amount: parseFloat(item?.amount),
+				Category: item?.incomeCategory,
+				"Bank Name": item?.bankName,
+				"Transaction Date": item?.transactionDate,
+				"Person Name": item?.personName,
+				Description: item?.description,
 			})
 		);
 
@@ -124,7 +116,7 @@ export const Income = () => {
 		FileSaver.saveAs(data, filename + fileExtension);
 	};
 
-    const onClickIncome = (id: string) => {
+	const onClickIncome = (id: string) => {
 		navigate("/incomeDetails/" + id, {
 			state: { id: id },
 		});
