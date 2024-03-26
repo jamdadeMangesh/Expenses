@@ -90,7 +90,7 @@ export const ApplicationRoutes: ApplicationRoutesOptions[] = [
 		showHeader: true,
 		showNav: false,
 	},
-    {
+	{
 		page: ApplicationPages.AddIncome,
 		route: "/addIncome",
 		showHeader: true,
@@ -249,8 +249,8 @@ export const getCategoryIcon = (categoryName: string) => {
 			return coldCoffee;
 		case "rope":
 			return rope;
-		case "dhol material": 
-        case "dhol paan repair":
+		case "dhol material":
+		case "dhol paan repair":
 			return dhol;
 		case "tasha material":
 			return tasha;
@@ -282,11 +282,11 @@ export const getCategoryIcon = (categoryName: string) => {
 		case "xerox":
 			return xerox;
 		case "donation":
-        case "miravnuk charges":
+		case "miravnuk charges":
 			return donation;
-        case "material sell":
+		case "material sell":
 			return sell;
-        case "dhwaj material":
+		case "dhwaj material":
 			return dhwaj;
 		case "other":
 			return other;
@@ -297,34 +297,93 @@ export const getCategoryIcon = (categoryName: string) => {
 
 export const categories = [
 	"Dhol Material",
-    "Dhol paan repair",
-    "Dhwaj material",
-    "Electrical",
-    "Flex",
-    "Flowers",
-    "Food",
-    "Hall rent",
-    "Icard",
-    "Ligade kaka",
-    "Medical",
-    "Naik kaka",
-    "Pooja material",
-    "Rope bundle",
-    "Shed",
-    "Snacks",
-    "Tasha Material",
-    "Tea",
-    "Transport",
-    "Uniform",
-    "Water",
-    "Xerox",
+	"Dhol paan repair",
+	"Dhwaj material",
+	"Electrical",
+	"Flex",
+	"Flowers",
+	"Food",
+	"Hall rent",
+	"Icard",
+	"Ligade kaka",
+	"Medical",
+	"Naik kaka",
+	"Pooja material",
+	"Rope bundle",
+	"Shed",
+	"Snacks",
+	"Tasha Material",
+	"Tea",
+	"Transport",
+	"Uniform",
+	"Water",
+	"Xerox",
 	"Other",
 ];
 
 export const incomeCategory = [
-    "Miravnuk Charges",
-    "Donation",
-    "Uniform",
-    "ICard",
-    "Material Sell"
-]
+	"Miravnuk Charges",
+	"Donation",
+	"Uniform",
+	"ICard",
+	"Material Sell",
+];
+
+const a = [
+    '',
+    'One ',
+    'Two ',
+    'Three ',
+    'Four ',
+    'Five ',
+    'Six ',
+    'Seven ',
+    'Eight ',
+    'Nine ',
+    'Ten ',
+    'Eleven ',
+    'Twelve ',
+    'Thirteen ',
+    'Fourteen ',
+    'Fifteen ',
+    'Sixteen ',
+    'Seventeen ',
+    'Eighteen ',
+    'Nineteen '];
+const b = [
+    '',
+    '',
+    'Twenty',
+    'Thirty',
+    'Forty',
+    'Fifty',
+    'Sixty',
+    'Seventy',
+    'Eighty',
+    'Ninety'];
+
+export function convertNumberToWords(value: any): any {
+    if (value) {
+        let number = parseFloat(value).toFixed(2).split(".")
+        let num = parseInt(number[0]);
+        let digit = parseInt(number[1]);
+        if (num) {
+            if ((num.toString()).length > 9)  { return ''; }
+            const n: any = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+            const d: any = ('00' + digit).substr(-2).match(/^(\d{2})$/);
+            if (!n) {return ''; }
+            let str = '';
+            str += (Number(n[1]) !== 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : '';
+            str += (Number(n[2]) !== 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : '';
+            str += (Number(n[3]) !== 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : '';
+            str += (Number(n[4]) !== 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : '';
+            str += (Number(n[5]) !== 0) ? (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) + 'Rupee ' : '';        
+            str += (Number(d[1]) !== 0) ? ((str !== '' ) ? "and " : '') + (a[Number(d[1])] || b[d[1][0]] + ' ' + a[d[1][1]]) + 'Paise Only' : 'Only';
+            return str;
+        } else {
+            return '';
+        }
+    } else {
+        return '';
+    }
+}
