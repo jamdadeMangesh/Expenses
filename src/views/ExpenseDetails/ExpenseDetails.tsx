@@ -35,7 +35,6 @@ export const ExpenseDetails = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-    console.log('inside edit details');
 	useEffect(() => {
 		getUserDetails();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -57,7 +56,6 @@ export const ExpenseDetails = () => {
 			});
 	};
 	const deleteTransaction = () => {
-		//const desertRef = ref(storage, userDetailsData?.receipt);
 		deleteDoc(docRef)
 			.then(() => {
 				//delete image from storage when deleting  transaction

@@ -33,6 +33,9 @@ input.form-control, select.form-select,  textarea.form-control{
         color: var(--text-disabled);
     }
 }
+input.form-control::file-selector-button {
+    display: none;
+}
 input.inputError{
     border-color: var(--border-error);
 }

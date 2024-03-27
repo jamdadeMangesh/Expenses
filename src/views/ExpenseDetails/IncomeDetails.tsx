@@ -66,7 +66,6 @@ export const IncomeDetails = () => {
 	};
 
 	const deleteTransaction = () => {
-		//const desertRef = ref(storage, userDetailsData?.receipt);
 		deleteDoc(docRef)
 			.then(() => {
 				//delete image from storage when deleting  transaction
@@ -81,7 +80,7 @@ export const IncomeDetails = () => {
 				}
 				setIsDeleting(true);
 				setShowConfirmModal(false);
-				toast.success("Transaction deleted successfully!", {
+				toast.success("Income deleted successfully!", {
 					autoClose: 4000,
 				});
 				setTimeout(() => {

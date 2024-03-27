@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./AddExpense.scss";
 import { useHeaderContext } from "../../context/HeaderContext";
 import { Button, Form } from "react-bootstrap";
@@ -6,16 +6,19 @@ import { useForm } from "react-hook-form";
 import { CgAsterisk } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import { LuImagePlus } from "react-icons/lu";
-import { authentication, database, storage } from "../../shared/firebase";
+import { authentication, database } from "../../shared/firebase";
 import { addDoc, collection } from "firebase/firestore";
 import { useSelector } from "react-redux";
 import { selectUserData } from "../Login/LoginSlice";
 import { DateTime } from "luxon";
 import { FiTrash2 } from "react-icons/fi";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { ToastContainer, toast } from "react-toastify";
 import { onAuthStateChanged } from "firebase/auth";
-import { categories, onDeleteImage } from "../../shared/constant";
+import {
+	categories,
+	onDeleteImage,
+	uploadImageToStorage,
+} from "../../shared/constant";
 
 export const AddExpense = () => {
 	const { name } = useSelector(selectUserData);
@@ -24,14 +27,7 @@ export const AddExpense = () => {
 		useHeaderContext();
 	const [file, setFile] = useState<any>("");
 	const [imageUrl, setImageUrl] = useState("");
-	const [percent, setPercent] = useState(0);
 	const [imageLoading, setImageLoading] = useState(false);
-
-	const hiddenFileInput: any = useRef(null); // ADDED
-
-	const handleClick = () => {
-		hiddenFileInput && hiddenFileInput?.current?.click(); // ADDED
-	};
 
 	useEffect(() => {
 		onAuthStateChanged(authentication, (user) => {
@@ -65,42 +61,20 @@ export const AddExpense = () => {
 	const onChangeFileUpload = (event: any) => {
 		setFile(event?.target.files[0]);
 	};
-	const handleUpload = () => {
-		if (file) {
-			const storageRef = ref(
-				storage,
-				`/files/${
-					name.replace(/ /g, "_") + "_" + DateTime.now().toUnixInteger()
-				}`
-			);
 
-			const uploadTask = uploadBytesResumable(storageRef, file);
-
-			uploadTask.on(
-				"state_changed",
-				(snapshot) => {
-					const percent = Math.round(
-						(snapshot.bytesTransferred / snapshot.totalBytes) * 100
-					);
-					setImageLoading(true);
-					// update progress
-					setPercent(percent);
-				},
-				(err) => console.log(err),
-				() => {
-					getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-						setImageUrl(url);
-					});
-				}
-			);
-		}
+	const handleUpload = async () => {
+		setImageLoading(true);
+		await uploadImageToStorage(file, name)
+			.then((res: any) => {
+				setImageUrl(res);
+			})
+			.catch((error) => {
+				console.log("error while uploading image:", error);
+			});
 	};
 
 	const onDeleteReceipt = (url: string) => {
 		if (url) {
-			//const desertRef = ref(storage, imageUrl);
-
-			//deleteObject(desertRef)
 			onDeleteImage(url)
 				.then(() => {
 					setFile("");
@@ -118,7 +92,6 @@ export const AddExpense = () => {
 		data["personName"] = name;
 		data["receipt"] = imageUrl ? imageUrl : "";
 		data["amount"] = data?.amount as number;
-		console.log("data:", data);
 		if (data) {
 			await addDoc(collection(database, "transactions"), {
 				amount: data?.amount,
@@ -258,32 +231,31 @@ export const AddExpense = () => {
 							className="loginWrapper__form-group mb-4"
 							controlId="password"
 						>
-							<Form.Label>Receipt</Form.Label>
+							<Form.Label>
+								Receipt
+								<sup>
+									<span>
+										<CgAsterisk style={{ color: "#D82C0D" }} />
+									</span>
+								</sup>
+							</Form.Label>
 							<div className="d-flex  gap-3">
 								<Form.Control
 									type="file"
-									placeholder="Enter transaction date"
-									{...register("receipt")}
-									className="mr-2 d-none"
+									{...register("receipt", {
+										validate: {
+											required: (value) => {
+												if (imageUrl === "")
+													return "Please upload transaction receipt";
+											},
+										},
+										required: "Please upload transaction receipt",
+									})}
+									className="mr-2"
 									onChange={onChangeFileUpload}
-									ref={hiddenFileInput}
 									accept="image/*"
 									disabled={imageLoading}
 								/>
-								<div className="customImageUploader">
-									<div
-										className="customImageUploader__text"
-										onClick={handleClick}
-									>
-										{file ? file?.name : "Upload image"}
-									</div>
-									<div
-										className="customImageUploader__delete"
-										onClick={() => onDeleteReceipt(imageUrl)}
-									>
-										{imageUrl && <FiTrash2 style={{ color: "#d82c0d" }} />}
-									</div>
-								</div>
 								<Button
 									variant="primary"
 									className="buttonHeight ml-3 px-3"
@@ -295,9 +267,20 @@ export const AddExpense = () => {
 							</div>
 							<div className="d-flex justify-content-between  gap-3">
 								<Form.Text muted>Upload only jpeg, png format images</Form.Text>
-								<div className="pt-1">{imageLoading && percent + "%"}</div>
+								<div className="pt-1">
+									{imageUrl !== "" && (
+										<>
+											<div
+												className="customImageUploader__delete"
+												onClick={() => onDeleteReceipt(imageUrl)}
+											>
+												{imageUrl && <FiTrash2 style={{ color: "#d82c0d" }} />}
+											</div>
+										</>
+									)}
+								</div>
 							</div>
-							{errors.receipt && (
+							{errors.receipt && imageUrl === "" && (
 								<p className="loginWrapper__errorMsg">
 									{errors?.receipt?.message?.toString()}
 								</p>
