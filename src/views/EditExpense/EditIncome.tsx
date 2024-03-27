@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../AddNew/AddExpense.scss";
 import { useHeaderContext } from "../../context/HeaderContext";
 import { Button, Form } from "react-bootstrap";
@@ -6,15 +6,15 @@ import { useForm } from "react-hook-form";
 import { CgAsterisk } from "react-icons/cg";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LuImagePlus } from "react-icons/lu";
-import { database, storage } from "../../shared/firebase";
+import { database } from "../../shared/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUserData } from "../Login/LoginSlice";
 import { DateTime } from "luxon";
 import { FiTrash2 } from "react-icons/fi";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+
 import { ToastContainer, toast } from "react-toastify";
-import { incomeCategory, onDeleteImage } from "../../shared/constant";
+import { incomeCategory, onDeleteImage, uploadImageToStorage } from "../../shared/constant";
 import {
 	SET_TYPE,
 	SET_UPDATED_TRANSACTION_ID,
@@ -27,11 +27,9 @@ export const EditIncome = () => {
 		useHeaderContext();
 	const [file, setFile] = useState<any>("");
 	const [imageUrl, setImageUrl] = useState("");
-	const [percent, setPercent] = useState(0);
 	const [imageLoading, setImageLoading] = useState(false);
 	const dispatch = useDispatch();
-	const hiddenFileInput: any = useRef(null); // ADDED
-
+	
 	const location = useLocation();
 	const { data, id } = location.state;
 
@@ -40,21 +38,6 @@ export const EditIncome = () => {
 
 	//variable for old image url delete
 	const oldReceiptUrl = data?.receipt;
-
-	const handleClick = () => {
-		hiddenFileInput && hiddenFileInput?.current?.click(); // ADDED
-	};
-
-	// useEffect(() => {
-	// 	onAuthStateChanged(authentication, (user) => {
-	// 		if (user) {
-	// 			navigate("/addIncome");
-	// 		} else {
-	// 			navigate("/login");
-	// 		}
-	// 	});
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, []);
 
 	useEffect(() => {
 		setTitle(data?.incomeCategory);
@@ -91,42 +74,19 @@ export const EditIncome = () => {
 	const onChangeFileUpload = (event: any) => {
 		setFile(event?.target.files[0]);
 	};
-	const handleUpload = () => {
-		if (file) {
-			const storageRef = ref(
-				storage,
-				`/files/${
-					name.replace(/ /g, "_") + "_" + DateTime.now().toUnixInteger()
-				}`
-			);
-
-			const uploadTask = uploadBytesResumable(storageRef, file);
-
-			uploadTask.on(
-				"state_changed",
-				(snapshot) => {
-					const percent = Math.round(
-						(snapshot.bytesTransferred / snapshot.totalBytes) * 100
-					);
-					setImageLoading(true);
-					// update progress
-					setPercent(percent);
-				},
-				(err) => console.log(err),
-				() => {
-					getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-						setImageUrl(url);
-					});
-				}
-			);
-		}
+	const handleUpload = async() => {
+		setImageLoading(true);
+		await uploadImageToStorage(file, name)
+			.then((res: any) => {
+				setImageUrl(res);
+			})
+			.catch((error) => {
+				console.log("error while uploading image:", error);
+			});
 	};
 
 	const onDeleteReceipt = (url: string) => {
 		if (url) {
-			//const desertRef = ref(storage, imageUrl);
-
-			//deleteObject(desertRef)
 			onDeleteImage(url)
 				.then(() => {
 					setFile("");
@@ -142,7 +102,7 @@ export const EditIncome = () => {
 	const onSubmit = async (data: any) => {
 		data["createdAt"] = DateTime.now().toISO();
 		data["personName"] = name;
-		data["receipt"] = imageUrl ? imageUrl : "";
+		data["receipt"] = imageUrl ? imageUrl : oldReceiptUrl;
 		data["amount"] = data?.amount as number;
 
 		const taskDocRef = doc(database, "income", id);
@@ -160,7 +120,8 @@ export const EditIncome = () => {
 				personName: data?.personName,
 			})
 				.then(() => {
-					if (isReceiptUploaded) {
+                    // If image is already uploded and user wants to replace it wih new image then check for this condition
+					if (isReceiptUploaded && imageUrl !== "") {
 						onDeleteImage(oldReceiptUrl)
 							.then(() => {})
 							.catch((error) => {
@@ -172,7 +133,6 @@ export const EditIncome = () => {
 						autoClose: 4000,
 					});
 					setTimeout(() => {
-						//navigate("/transactionsList");
 						dispatch(
 							SET_UPDATED_TRANSACTION_ID({
 								updatedTransactionId: id,
@@ -409,28 +369,23 @@ export const EditIncome = () => {
 							<div className="d-flex  gap-3">
 								<Form.Control
 									type="file"
-									placeholder="Enter transaction date"
-									{...register("receipt")}
-									className="mr-2 d-none"
+									{...register("receipt", {
+										validate: {
+											required: (value) => {
+												if (imageUrl === "" && !isReceiptUploaded)
+													return "Please upload income receipt!!";
+											},
+										},
+										required: {
+											value: isReceiptUploaded ? false : true,
+											message: "Please upload income receipt!",
+										},
+									})}
+									className="mr-2"
 									onChange={onChangeFileUpload}
-									ref={hiddenFileInput}
 									accept="image/*"
 									disabled={imageLoading}
 								/>
-								<div className="customImageUploader">
-									<div
-										className="customImageUploader__text"
-										onClick={handleClick}
-									>
-										{file ? file?.name : "Upload image"}
-									</div>
-									<div
-										className="customImageUploader__delete"
-										onClick={() => onDeleteReceipt(imageUrl)}
-									>
-										{imageUrl && <FiTrash2 style={{ color: "#d82c0d" }} />}
-									</div>
-								</div>
 								<Button
 									variant="primary"
 									className="buttonHeight ml-3 px-3"
@@ -442,9 +397,20 @@ export const EditIncome = () => {
 							</div>
 							<div className="d-flex justify-content-between  gap-3">
 								<Form.Text muted>Upload only jpeg, png format images</Form.Text>
-								<div className="pt-1">{imageLoading && percent + "%"}</div>
+								<div className="pt-1">
+									{imageUrl !== "" && (
+										<>
+											<div
+												className="customImageUploader__delete"
+												onClick={() => onDeleteReceipt(imageUrl)}
+											>
+												{imageUrl && <FiTrash2 style={{ color: "#d82c0d" }} />}
+											</div>
+										</>
+									)}
+								</div>
 							</div>
-							{errors.receipt && (
+							{errors.receipt && imageUrl === "" && (
 								<p className="loginWrapper__errorMsg">
 									{errors?.receipt?.message?.toString()}
 								</p>
