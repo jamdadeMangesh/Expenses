@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, ToggleButton } from "react-bootstrap";
 import { IoMdClose } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import {
+    SET_CATEGORY_LIST,
 	SET_FILTER_TYPE,
 	SET_FINANCIAL_YEAR,
 	selectFilterData,
 } from "./FilterSlice";
 import "./FilterData.scss";
+import { categories } from "../../shared/constant";
 
 type FilterDataProps = {
 	openFilter: boolean;
@@ -15,10 +17,9 @@ type FilterDataProps = {
 };
 export const FilterData = ({ openFilter, setOpenFilter }: FilterDataProps) => {
 	const [selectedYear, setSelectedYear] = useState<string>("");
-
 	const dispatch = useDispatch();
-	const { financialYear } = useSelector(selectFilterData);
-
+	const { financialYear, selectedCategoryList } = useSelector(selectFilterData);
+    const [selected, setSelected] = useState<any>(selectedCategoryList);
 	const onFinancialYearChangeHandler = (event: any) => {
 		setSelectedYear(event.target.value);
 	};
@@ -28,12 +29,28 @@ export const FilterData = ({ openFilter, setOpenFilter }: FilterDataProps) => {
 			dispatch(SET_FINANCIAL_YEAR(selectedYear));
 			dispatch(SET_FILTER_TYPE("financialYear"));
 		}
+        if(selected) {
+            //dispatch(SET_FILTER_TYPE('category'))
+            dispatch(SET_CATEGORY_LIST(selected));
+        }
 		setOpenFilter();
 	};
 	const clearFilter = () => {
 		setSelectedYear("");
+        setSelected([]);
 		dispatch(SET_FINANCIAL_YEAR(""));
 		dispatch(SET_FILTER_TYPE(""));
+        dispatch(SET_CATEGORY_LIST([]));
+	};
+
+	const chooseCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const value = event.target.value;
+		const index: any = selected?.indexOf(value);
+		if (index > -1) {
+			setSelected([...selected.slice(0, index), ...selected.slice(index + 1)]);
+		} else {
+			setSelected([...selected, ...[value]]);
+		}
 	};
 
 	return (
@@ -58,6 +75,24 @@ export const FilterData = ({ openFilter, setOpenFilter }: FilterDataProps) => {
 							<option value="2023-2024">2023-2024</option>
 							<option value="2024-2025">2024-2025</option>
 						</Form.Select>
+					</div>
+					<div className="filterPanel__grid">
+						<div className="filterPanel__filter-name">Category</div>
+                        <div>
+						{categories.map((category: string) => (
+							<ToggleButton
+								className="filterPanel__checkbox mb-2"
+								id={category}
+								type="checkbox"
+								variant="outline-primary"
+								value={category}
+								checked={selected.includes(category) ? true : false}
+								onChange={chooseCheckbox}
+							>
+								{category}
+							</ToggleButton>
+						))}
+                        </div>
 					</div>
 				</div>
 				<div className="filterPanel__gridButton mt-4">

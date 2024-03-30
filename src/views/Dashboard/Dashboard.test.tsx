@@ -84,6 +84,6 @@ describe("Should render Dashboard component without crashing", () => {
 		expect(dashboard__stats_monthlyAmount).toBeInTheDocument();
 
 		const { getByText } = within(dashboard__stats_monthlyAmount);
-		expect(getByText("Last month's transactions :")).toBeInTheDocument();
+		expect(getByText("Current month's transactions :")).toBeInTheDocument();
 	});
 });

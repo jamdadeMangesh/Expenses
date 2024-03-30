@@ -6,9 +6,11 @@ import { getAllUsers } from "../../shared/constant";
 import { onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { Loader } from "../../components/Loader/Loader";
+import { FaCircleCheck, FaCircleXmark } from "react-icons/fa6";
 
 export const Users = () => {
-	const { setTitle, setShowBackArrow, setShowAddNewButton } = useHeaderContext();
+	const { setTitle, setShowBackArrow, setShowAddNewButton } =
+		useHeaderContext();
 	const [usersData, setUsersData] = useState([]);
 	const [usersLoading, setUsersLoading] = useState<boolean>(true);
 	const navigate = useNavigate();
@@ -27,7 +29,7 @@ export const Users = () => {
 	useEffect(() => {
 		setTitle("All Users");
 		setShowBackArrow(true);
-        setShowAddNewButton(false);
+		setShowAddNewButton(false);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -49,6 +51,10 @@ export const Users = () => {
 		});
 	};
 
+	const onUserClick = (data: any) => {
+		navigate("/userDetails/" + data?.id, { state: { data, id: data?.id } });
+	};
+
 	return (
 		<>
 			<div className="loginWrapper" data-testid="loginWrapper">
@@ -56,10 +62,21 @@ export const Users = () => {
 					<Loader />
 				) : (
 					usersData.map((item: any) => (
-						<div className="usersList" key={item.id}>
+						<div
+							className="usersList"
+							key={item.id}
+							onClick={() => onUserClick(item)}
+						>
 							<div className="usersList__grid">
 								<div className="usersList__name">
-									{item?.data?.name}{" "}
+									<div className="usersList__name-grid">
+										{item?.data?.name}{" "}
+										{item?.data?.canAccess ? (
+											<FaCircleCheck style={{ color: "#2D864B" }} />
+										) : (
+											<FaCircleXmark style={{ color: "#d82c0d" }} />
+										)}
+									</div>
 									<div
 										className={`usersList__role ${
 											item?.data?.role === "admin"
@@ -71,8 +88,8 @@ export const Users = () => {
 									</div>
 								</div>
 								<div className="usersList__mobile">{item?.data?.email}</div>
-								<div className="usersList__mobile">
-									{item?.data?.mobileNumber}
+								<div className="usersList__mobile d-flex justify-content-between">
+									<div>{item?.data?.mobileNumber} </div>
 								</div>
 							</div>
 						</div>
