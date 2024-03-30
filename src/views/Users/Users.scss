@@ -3,7 +3,7 @@
 	align-items: center;
 	border-bottom: 1px solid #e7dfdf;
 	padding: 20px 16px;
-    &__image {
+	&__image {
 		padding: 0px 10px;
 		border: 1px solid #dfd8d8;
 		height: 53px;
@@ -26,23 +26,28 @@
 	}
 	&__role {
 		font-size: var(--font-size-12);
-        
-        padding: var(--spacing-xxs) var(--spacing-xs);
-        border-radius: var(--spacing-xxs);
-        color: var(--surfaces-primary);
-        &-admin{
-            background-color: var(--surfaces-info);
-        }
-        &-user{
-            background-color: var(--surfaces-success);
-        }
+
+		padding: var(--spacing-xxs) var(--spacing-xs);
+		border-radius: var(--spacing-xxs);
+		color: var(--surfaces-primary);
+		&-admin {
+			background-color: var(--surfaces-info);
+		}
+		&-user {
+			background-color: var(--surfaces-success);
+		}
 	}
 	&__name {
 		font-size: var(--font-size-14);
 		font-weight: var(--font-weight-500);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		&-grid {
+			svg {
+				margin-top: -3px;
+			}
+		}
 	}
 	&__mobile {
 		font-size: var(--font-size-12);

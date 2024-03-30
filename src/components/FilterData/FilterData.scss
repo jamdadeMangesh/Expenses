@@ -65,6 +65,11 @@
         justify-content: space-between;
     }
 }
+.btn.filterPanel__checkbox{
+    font-size: var(--font-size-10);
+    padding: 3px 6px;
+    font-weight: var(--font-weight-500);
+}
 .btn.filterPanel__filter-category{
     font-size: var(--font-size-12);
 }

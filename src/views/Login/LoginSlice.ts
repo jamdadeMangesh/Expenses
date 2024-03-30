@@ -5,7 +5,8 @@ const userDataInitialState = {
     email: "",
     role: "",
     mobileNumber: "",
-    allUserNameList: []
+    allUserNameList: [],
+    canAccess: true
 };
 
 export const UserDataSlce = createSlice({
@@ -17,6 +18,7 @@ export const UserDataSlce = createSlice({
             state.email = action?.payload?.email;
             state.role = action?.payload?.role;
             state.mobileNumber = action?.payload?.mobileNumber;
+            state.canAccess = action?.payload?.canAccess;
         },
         USERS_LIST: (state,action) => {
             state.allUserNameList = action.payload.allUserNameList

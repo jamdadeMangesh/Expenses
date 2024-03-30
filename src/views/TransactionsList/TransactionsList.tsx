@@ -38,7 +38,7 @@ export const TransactionsList = () => {
 	const [incomeData, setIncomeData] = useState([]);
 	const [openFilter, setOpenFilter] = useState<boolean>(false);
 
-	const { financialYear, updatedTransactionId, listType, transactionType } =
+	const { financialYear, updatedTransactionId, listType, transactionType, selectedCategoryList } =
 		useSelector(selectFilterData);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -152,7 +152,7 @@ export const TransactionsList = () => {
 						data-testid="transactionsListWrapper_filter"
 					>
 						<FiFilter onClick={() => setOpenFilter(true)} />
-						{financialYear.length > 0 && (
+						{(financialYear.length > 0 || selectedCategoryList.length) > 0 && (
 							<Badge
 								bg="primary"
 								className="transactions__search-filter--badge"

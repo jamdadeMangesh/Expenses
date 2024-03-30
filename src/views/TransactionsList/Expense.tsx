@@ -15,7 +15,8 @@ export const Expense = () => {
 	const { name, role } = useSelector(selectUserData);
 	const [transactionsData, setTransactionsData] = useState([]);
 
-	const { financialYear, searchTerm } = useSelector(selectFilterData);
+	const { financialYear, searchTerm, selectedCategoryList } =
+		useSelector(selectFilterData);
 
 	useEffect(() => {
 		getAllTransactions().then((res) => {
@@ -27,6 +28,8 @@ export const Expense = () => {
 	}, []);
 
 	/* Fetch and update the state once */
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// const selectedCategory = ['Pooja material', 'Flex', 'Snacks'];
 
 	const filteredValues = useMemo(() => {
 		let filteredData: any = [];
@@ -53,6 +56,17 @@ export const Expense = () => {
 					);
 			}
 		}
+        if (selectedCategoryList.length > 0) {
+            return transactionsData.filter((el: any) => {
+                return selectedCategoryList.some((f: any) => {
+                    return f === el.category;
+                });
+            });
+			// switch (role) {
+			// 	case "admin":
+					
+			// }
+		}
 		if (searchTerm) {
 			const lowercasedValue = searchTerm.toLowerCase().trim();
 			switch (role) {
@@ -76,6 +90,7 @@ export const Expense = () => {
 					});
 			}
 		}
+		
 		filteredData = transactionsData?.filter(
 			(item: any) => item?.personName === name
 		);
@@ -84,7 +99,14 @@ export const Expense = () => {
 		} else {
 			return filteredData;
 		}
-	}, [financialYear, name, role, searchTerm, transactionsData]);
+	}, [
+		financialYear,
+		name,
+		role,
+		searchTerm,
+		transactionsData,
+		selectedCategoryList,
+	]);
 
 	const total = totalExpenses(filteredValues);
 

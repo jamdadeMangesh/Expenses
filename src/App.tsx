@@ -19,9 +19,9 @@ import { AddExpense } from "./views/AddNew/AddExpense";
 import { Profile } from "./views/Profile/Profile";
 import { ExpenseDetails } from "./views/ExpenseDetails/ExpenseDetails";
 import { authentication } from "./shared/firebase";
-import { SET_USER_DATA } from "./views/Login/LoginSlice";
+import { SET_USER_DATA, selectUserData } from "./views/Login/LoginSlice";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Users } from "./views/Users/Users";
 import "react-toastify/dist/ReactToastify.css";
 import { useServiceWorker } from "./hooks/useServiceWorker";
@@ -31,13 +31,15 @@ import { ReactComponent as NoConnectionImg} from "../src/assets/noConnection.svg
 import { AddIncome } from "./views/AddNew/AddIncome";
 import { IncomeDetails } from "./views/ExpenseDetails/IncomeDetails";
 import { EditIncome } from "./views/EditExpense/EditIncome";
-
+import noAccess from "../src/assets/noAccess.jpg";
+import { UserDetails } from "./views/Users/UserDetails";
 function App() {
 	const [width, setWidth] = useState(window.innerWidth);
 	const [isOnline, setIsOnline] = useState(navigator.onLine);
 	const [user] = useAuthState(authentication);
 	const { waitingWorker, showReload, reloadPage } = useServiceWorker();
 	const dispatch = useDispatch();
+    const { canAccess } = useSelector(selectUserData);
 	const updateDimensions = () => {
 		setWidth(window.innerWidth);
 	};
@@ -101,6 +103,7 @@ function App() {
 	}, [isOnline]);
 
 	const routes = ApplicationRoutes;
+
 	return (
 		<div className="App">
 			{width < 600 ? (
@@ -195,6 +198,13 @@ function App() {
 								}
 								Component={EditIncome}
 							/>
+                            <Route
+								path={
+									routes.find((r) => r.page === ApplicationPages.UserDetails)
+										?.route + "/:id"
+								}
+								Component={UserDetails}
+							/>
 						</Routes>
 						<AppNav />
 					</Router>
@@ -232,6 +242,24 @@ function App() {
 						</div>
 						<div className="noConnection__text">
 							You are offline. Please check your internet connection.
+						</div>
+					</div>
+				</Modal.Body>
+			</Modal>
+			<Modal
+				show={!canAccess}
+				//onHide={isOnline}
+				backdrop="static"
+				keyboard={false}
+				centered
+			>
+				<Modal.Body>
+					<div className="noConnection">
+						<div className="noConnection__img">
+							<img src={noAccess} alt="No access" />
+						</div>
+						<div className="noConnection__text">
+							You don't have permission to access this app. Please contact administrator.
 						</div>
 					</div>
 				</Modal.Body>

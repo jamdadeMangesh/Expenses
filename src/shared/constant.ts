@@ -50,6 +50,7 @@ export enum ApplicationPages {
 	Users = "Users",
 	EditExpense = "EditExpense",
 	EditIncome = "EditIncome",
+	UserDetails = "UserDetails",
 }
 
 // Interface to define route options
@@ -136,6 +137,12 @@ export const ApplicationRoutes: ApplicationRoutesOptions[] = [
 	{
 		page: ApplicationPages.EditIncome,
 		route: "/editIncome",
+		showHeader: true,
+		showNav: false,
+	},
+	{
+		page: ApplicationPages.UserDetails,
+		route: "/userDetails",
 		showHeader: true,
 		showNav: false,
 	},
