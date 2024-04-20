@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectUserData } from "../Login/LoginSlice";
 import { BlobProvider, PDFDownloadLink } from "@react-pdf/renderer";
 import Invoice from "../../components/Invoice/Invoice";
-import { FiDownload, FiEye } from "react-icons/fi";
+import { FiDownload, FiEye, FiX } from "react-icons/fi";
 
 export const IncomeDetails = () => {
 	const { setTitle, setShowBackArrow } = useHeaderContext();
@@ -24,6 +24,8 @@ export const IncomeDetails = () => {
 	const [isDeleting, setIsDeleting] = useState<boolean>(false);
 	const [incomeDetails, setIncomeDetails] = useState<any>([]);
 	const [isDataLoading, setIsDataLoading] = useState<boolean>(true);
+	const [showReceiptImage, setShowReceiptImage] = useState<boolean>(false);
+
 	const location = useLocation();
 	const { id } = location.state;
 	const navigate = useNavigate();
@@ -71,7 +73,7 @@ export const IncomeDetails = () => {
 				//delete image from storage when deleting  transaction
 				if (incomeDetails?.receipt !== "") {
 					onDeleteImage(incomeDetails?.receipt)
-						.then(() => {})
+						.then(() => { })
 						.catch(() => {
 							toast.error("Something went wrong deleting image!!", {
 								autoClose: 4000,
@@ -102,17 +104,17 @@ export const IncomeDetails = () => {
 		});
 	};
 
-    //get current year from transaction date
+	//get current year from transaction date
 	function getFinancialYear() {
 		return DateTime.fromISO(incomeDetails?.transactionDate).toFormat("yyyy/MM");
 	}
 
-    //create random 4 digit for receipt no
+	//create random 4 digit for receipt no
 	function getRandomDigit() {
 		return Math.floor(1000 + Math.random() * 9000);
 	}
 
-    //send props to generate invoice
+	//send props to generate invoice
 	const reciept_data = {
 		invoice_no: getFinancialYear() + "/" + getRandomDigit(),
 		transactionDate: DateTime.fromISO(incomeDetails?.transactionDate).toFormat(
@@ -216,6 +218,7 @@ export const IncomeDetails = () => {
 										}
 										alt="receiptimage"
 										className="img-fluid mt-2"
+										onClick={() => incomeDetails?.receipt !== "" && setShowReceiptImage(true)}
 									/>
 								</div>
 							</div>
@@ -298,6 +301,15 @@ export const IncomeDetails = () => {
 					</Button>
 				</Modal.Footer>
 			</Modal>
+
+			{showReceiptImage && <div className="imageViewer">
+				<div className="imageViewer__close" onClick={() => setShowReceiptImage(false)}><FiX /></div>
+				<img
+					src={incomeDetails?.receipt}
+					alt="receiptimage"
+					className="img-fluid mt-2"
+				/>
+			</div>}
 		</>
 	);
 };

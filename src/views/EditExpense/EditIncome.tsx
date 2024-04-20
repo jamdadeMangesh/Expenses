@@ -29,7 +29,7 @@ export const EditIncome = () => {
 	const [imageUrl, setImageUrl] = useState("");
 	const [imageLoading, setImageLoading] = useState(false);
 	const dispatch = useDispatch();
-	
+
 	const location = useLocation();
 	const { data, id } = location.state;
 
@@ -74,7 +74,7 @@ export const EditIncome = () => {
 	const onChangeFileUpload = (event: any) => {
 		setFile(event?.target.files[0]);
 	};
-	const handleUpload = async() => {
+	const handleUpload = async () => {
 		setImageLoading(true);
 		await uploadImageToStorage(file, name)
 			.then((res: any) => {
@@ -120,10 +120,10 @@ export const EditIncome = () => {
 				personName: data?.personName,
 			})
 				.then(() => {
-                    // If image is already uploded and user wants to replace it wih new image then check for this condition
+					// If image is already uploded and user wants to replace it wih new image then check for this condition
 					if (isReceiptUploaded && imageUrl !== "") {
 						onDeleteImage(oldReceiptUrl)
-							.then(() => {})
+							.then(() => { })
 							.catch((error) => {
 								console.log("delete Error:", error);
 							});
@@ -180,6 +180,7 @@ export const EditIncome = () => {
 									},
 								})}
 								autoComplete="off"
+								className={errors.amount && "loginWrapper__form-error"}
 							/>
 							{errors.amount && (
 								<p className="loginWrapper__errorMsg">
@@ -210,6 +211,7 @@ export const EditIncome = () => {
 									},
 								})}
 								autoComplete="off"
+								className={errors.receivedFrom && "loginWrapper__form-error"}
 							/>
 							{errors.receivedFrom && (
 								<p className="loginWrapper__errorMsg">
@@ -236,6 +238,7 @@ export const EditIncome = () => {
 								{...register("transactionDate", {
 									required: "Please enter transaction date",
 								})}
+								className={errors.transactionDate && "loginWrapper__form-error"}
 							/>
 							{errors.transactionDate && (
 								<p className="loginWrapper__errorMsg">
@@ -260,6 +263,7 @@ export const EditIncome = () => {
 									required: "Please enter income category",
 								})}
 								autoComplete="off"
+								className={errors.incomeCategory && "loginWrapper__form-error"}
 							>
 								<option value="">Select income category</option>
 								{incomeCategory.map((category: string) => (
@@ -292,6 +296,7 @@ export const EditIncome = () => {
 									required: "Please enter payment mode",
 								})}
 								autoComplete="off"
+								className={errors.paymentMode && "loginWrapper__form-error"}
 							>
 								<option value="">Select payment mode</option>
 								<option value="Cash">Cash</option>
@@ -335,6 +340,7 @@ export const EditIncome = () => {
 									},
 								})}
 								autoComplete="off"
+								className={errors.bankName && "loginWrapper__form-error"}
 							/>
 							{errors.bankName && (
 								<p className="loginWrapper__errorMsg">
@@ -381,7 +387,7 @@ export const EditIncome = () => {
 											message: "Please upload income receipt!",
 										},
 									})}
-									className="mr-2"
+									className={`mr-2 ${errors.receipt && "loginWrapper__form-error"}`}
 									onChange={onChangeFileUpload}
 									accept="image/*"
 									disabled={imageLoading}

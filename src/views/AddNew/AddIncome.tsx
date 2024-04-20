@@ -136,7 +136,7 @@ export const AddIncome = () => {
 	};
 
 	const isValid = paymentModeValue === "" || paymentModeValue === "Cash";
-	
+
 	return (
 		<>
 			<div className="addExpenseWrapper">
@@ -162,6 +162,7 @@ export const AddIncome = () => {
 									},
 								})}
 								autoComplete="off"
+								className={errors.amount && "loginWrapper__form-error"}
 							/>
 							{errors.amount && (
 								<p className="loginWrapper__errorMsg">
@@ -192,6 +193,7 @@ export const AddIncome = () => {
 									},
 								})}
 								autoComplete="off"
+								className={errors.receivedFrom && "loginWrapper__form-error"}
 							/>
 							{errors.receivedFrom && (
 								<p className="loginWrapper__errorMsg">
@@ -218,6 +220,7 @@ export const AddIncome = () => {
 								{...register("transactionDate", {
 									required: "Please enter transaction date",
 								})}
+								className={errors.transactionDate && "loginWrapper__form-error"}
 							/>
 							{errors.transactionDate && (
 								<p className="loginWrapper__errorMsg">
@@ -242,6 +245,7 @@ export const AddIncome = () => {
 									required: "Please enter income category",
 								})}
 								autoComplete="off"
+								className={errors.incomeCategory && "loginWrapper__form-error"}
 							>
 								<option value="">Select income category</option>
 								{incomeCategory.map((category: string) => (
@@ -274,6 +278,7 @@ export const AddIncome = () => {
 									required: "Please enter payment mode",
 								})}
 								autoComplete="off"
+								className={errors.paymentMode && "loginWrapper__form-error"}
 							>
 								<option value="">Select payment mode</option>
 								<option value="Cash">Cash</option>
@@ -317,6 +322,7 @@ export const AddIncome = () => {
 									},
 								})}
 								autoComplete="off"
+								className={errors.bankName && "loginWrapper__form-error"}
 							/>
 							{errors.bankName && (
 								<p className="loginWrapper__errorMsg">
@@ -367,7 +373,7 @@ export const AddIncome = () => {
 										},
 										required: "Please upload transaction receipt",
 									})}
-									className="mr-2"
+									className={`mr-2 ${errors.receipt && "loginWrapper__form-error"}`}
 									onChange={onChangeFileUpload}
 									accept="image/*"
 									disabled={imageLoading}

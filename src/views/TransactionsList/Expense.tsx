@@ -56,16 +56,12 @@ export const Expense = () => {
 					);
 			}
 		}
-        if (selectedCategoryList.length > 0) {
-            return transactionsData.filter((el: any) => {
-                return selectedCategoryList.some((f: any) => {
-                    return f === el.category;
-                });
-            });
-			// switch (role) {
-			// 	case "admin":
-					
-			// }
+		if (selectedCategoryList.length > 0) {
+			return transactionsData.filter((el: any) => {
+				return selectedCategoryList.some((f: any) => {
+					return f === el.category;
+				});
+			});
 		}
 		if (searchTerm) {
 			const lowercasedValue = searchTerm.toLowerCase().trim();
@@ -90,7 +86,7 @@ export const Expense = () => {
 					});
 			}
 		}
-		
+
 		filteredData = transactionsData?.filter(
 			(item: any) => item?.personName === name
 		);

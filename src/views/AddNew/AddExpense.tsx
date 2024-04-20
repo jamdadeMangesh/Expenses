@@ -121,10 +121,10 @@ export const AddExpense = () => {
 
 	return (
 		<>
-			<div className="addExpenseWrapper">
-				<form onSubmit={handleSubmit(onSubmit)} className="loginWrapper__form">
-					<div className="loginWrapper__form-content">
-						<Form.Group className="loginWrapper__form-group" controlId="amount">
+			<div className='addExpenseWrapper'>
+				<form onSubmit={handleSubmit(onSubmit)} className='loginWrapper__form'>
+					<div className='loginWrapper__form-content'>
+						<Form.Group className='loginWrapper__form-group' controlId='amount'>
 							<Form.Label>
 								Amount{" "}
 								<sup>
@@ -134,8 +134,8 @@ export const AddExpense = () => {
 								</sup>
 							</Form.Label>
 							<Form.Control
-								type="number"
-								placeholder="Enter amount"
+								type='number'
+								placeholder='Enter amount'
 								{...register("amount", {
 									required: "Please enter amount",
 									pattern: {
@@ -143,17 +143,18 @@ export const AddExpense = () => {
 										message: "Please enter a valid amount",
 									},
 								})}
-								autoComplete="off"
+								autoComplete='off'
+								className={errors.amount && "loginWrapper__form-error"}
 							/>
 							{errors.amount && (
-								<p className="loginWrapper__errorMsg">
+								<p className='loginWrapper__errorMsg'>
 									{errors?.amount?.message?.toString()}
 								</p>
 							)}
 						</Form.Group>
 						<Form.Group
-							className="loginWrapper__form-group"
-							controlId="category"
+							className='loginWrapper__form-group'
+							controlId='category'
 						>
 							<Form.Label>
 								Category{" "}
@@ -167,9 +168,10 @@ export const AddExpense = () => {
 								{...register("category", {
 									required: "Please enter category",
 								})}
-								autoComplete="off"
+								autoComplete='off'
+								className={errors.category && "loginWrapper__form-error"}
 							>
-								<option value="">Select category</option>
+								<option value=''>Select category</option>
 								{categories.map((category: string) => (
 									<option key={category} value={category}>
 										{category}
@@ -178,14 +180,14 @@ export const AddExpense = () => {
 							</Form.Select>
 
 							{errors.category && (
-								<p className="loginWrapper__errorMsg">
+								<p className='loginWrapper__errorMsg'>
 									{errors?.category?.message?.toString()}
 								</p>
 							)}
 						</Form.Group>
 						<Form.Group
-							className="loginWrapper__form-group"
-							controlId="password"
+							className='loginWrapper__form-group'
+							controlId='password'
 						>
 							<Form.Label>
 								Transaction date
@@ -196,40 +198,41 @@ export const AddExpense = () => {
 								</sup>
 							</Form.Label>
 							<Form.Control
-								type="date"
-								placeholder="Enter transaction date"
+								type='date'
+								placeholder='Enter transaction date'
 								max={new Date().toISOString().slice(0, 10)}
 								{...register("transactionDate", {
 									required: "Please enter transaction date",
 								})}
+								className={errors.transactionDate && "loginWrapper__form-error"}
 							/>
 							{errors.transactionDate && (
-								<p className="loginWrapper__errorMsg">
+								<p className='loginWrapper__errorMsg'>
 									{errors?.transactionDate?.message?.toString()}
 								</p>
 							)}
 						</Form.Group>
 						<Form.Group
-							className="loginWrapper__form-group"
-							controlId="Description"
+							className='loginWrapper__form-group'
+							controlId='Description'
 						>
 							<Form.Label>Description </Form.Label>
 							<Form.Control
-								as="textarea"
+								as='textarea'
 								rows={3}
-								placeholder="Enter description"
+								placeholder='Enter description'
 								{...register("description")}
-								autoComplete="off"
+								autoComplete='off'
 							/>
 							{errors.description && (
-								<p className="loginWrapper__errorMsg">
+								<p className='loginWrapper__errorMsg'>
 									{errors?.description?.message?.toString()}
 								</p>
 							)}
 						</Form.Group>
 						<Form.Group
-							className="loginWrapper__form-group mb-4"
-							controlId="password"
+							className='loginWrapper__form-group mb-4'
+							controlId='password'
 						>
 							<Form.Label>
 								Receipt
@@ -239,9 +242,9 @@ export const AddExpense = () => {
 									</span>
 								</sup>
 							</Form.Label>
-							<div className="d-flex  gap-3">
+							<div className='d-flex  gap-3'>
 								<Form.Control
-									type="file"
+									type='file'
 									{...register("receipt", {
 										validate: {
 											required: (value) => {
@@ -251,27 +254,27 @@ export const AddExpense = () => {
 										},
 										required: "Please upload transaction receipt",
 									})}
-									className="mr-2"
+									className={`mr-2 ${errors.receipt && "loginWrapper__form-error"}`}
 									onChange={onChangeFileUpload}
-									accept="image/*"
+									accept='image/*'
 									disabled={imageLoading}
 								/>
 								<Button
-									variant="primary"
-									className="buttonHeight ml-3 px-3"
+									variant='primary'
+									className='buttonHeight ml-3 px-3'
 									disabled={!file || imageLoading}
 									onClick={handleUpload}
 								>
 									<LuImagePlus />
 								</Button>
 							</div>
-							<div className="d-flex justify-content-between  gap-3">
+							<div className='d-flex justify-content-between  gap-3'>
 								<Form.Text muted>Upload only jpeg, png format images</Form.Text>
-								<div className="pt-1">
+								<div className='pt-1'>
 									{imageUrl !== "" && (
 										<>
 											<div
-												className="customImageUploader__delete"
+												className='customImageUploader__delete'
 												onClick={() => onDeleteReceipt(imageUrl)}
 											>
 												{imageUrl && <FiTrash2 style={{ color: "#d82c0d" }} />}
@@ -281,36 +284,36 @@ export const AddExpense = () => {
 								</div>
 							</div>
 							{errors.receipt && imageUrl === "" && (
-								<p className="loginWrapper__errorMsg">
+								<p className='loginWrapper__errorMsg'>
 									{errors?.receipt?.message?.toString()}
 								</p>
 							)}
 						</Form.Group>
 					</div>
 
-					<div className="loginWrapper__submit">
+					<div className='loginWrapper__submit'>
 						<Button
-							variant="outline-danger"
-							type="button"
-							className="w-100 buttonHeight"
+							variant='outline-danger'
+							type='button'
+							className='w-100 buttonHeight'
 							onClick={() => onClearAddExpense()}
-							size="sm"
+							size='sm'
 						>
 							Clear
 						</Button>
 						<Button
-							variant="primary"
-							type="submit"
-							className="w-100 buttonHeight"
+							variant='primary'
+							type='submit'
+							className='w-100 buttonHeight'
 							disabled={isSubmitting}
-							size="sm"
+							size='sm'
 						>
 							{isSubmitting ? "Sending data..." : "Submit"}
 						</Button>
 					</div>
 				</form>
 			</div>
-			<ToastContainer position="bottom-center" autoClose={false} />
+			<ToastContainer position='bottom-center' autoClose={false} />
 		</>
 	);
 };

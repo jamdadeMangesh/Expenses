@@ -21,7 +21,7 @@ export const Income = () => {
 	const { name, role } = useSelector(selectUserData);
 	const [transactionsData, setTransactionsData] = useState([]);
 
-	const { financialYear, searchTerm } = useSelector(selectFilterData);
+	const { financialYear, searchTerm, selectedCategoryList } = useSelector(selectFilterData);
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -60,6 +60,13 @@ export const Income = () => {
 					);
 			}
 		}
+		if (selectedCategoryList.length > 0) {
+			return transactionsData.filter((el: any) => {
+				return selectedCategoryList.some((f: any) => {
+					return f === el.incomeCategory;
+				});
+			});
+		}
 		if (searchTerm) {
 			const lowercasedValue = searchTerm.toLowerCase().trim();
 			switch (role) {
@@ -83,7 +90,7 @@ export const Income = () => {
 		} else {
 			return filteredData;
 		}
-	}, [financialYear, name, role, searchTerm, transactionsData]);
+	}, [financialYear, name, role, searchTerm, transactionsData, selectedCategoryList]);
 
 	const total = totalExpenses(filteredValues);
 
