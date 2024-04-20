@@ -14,12 +14,15 @@ import { onDeleteImage } from "../../shared/constant";
 import { SET_UPDATED_TRANSACTION_ID } from "../../components/FilterData/FilterSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUserData } from "../Login/LoginSlice";
+import { FiX } from "react-icons/fi";
+
 export const ExpenseDetails = () => {
 	const { setTitle, setShowBackArrow } = useHeaderContext();
 	const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
 	const [isDeleting, setIsDeleting] = useState<boolean>(false);
 	const [userDetailsData, setUserDetailsData] = useState<any>([]);
 	const [isDataLoading, setIsDataLoading] = useState<boolean>(true);
+	const [showReceiptImage, setShowReceiptImage] = useState<boolean>(false);
 	const location = useLocation();
 	const { id } = location.state;
 	const navigate = useNavigate();
@@ -41,7 +44,7 @@ export const ExpenseDetails = () => {
 	}, [id]);
 
 	useEffect(() => {
-		dispatch(SET_UPDATED_TRANSACTION_ID({updatedTransactionId:"", transactionType: ""}));
+		dispatch(SET_UPDATED_TRANSACTION_ID({ updatedTransactionId: "", transactionType: "" }));
 	}, [dispatch]);
 
 	const getUserDetails = () => {
@@ -61,7 +64,7 @@ export const ExpenseDetails = () => {
 				//delete image from storage when deleting  transaction
 				if (userDetailsData?.receipt !== "") {
 					onDeleteImage(userDetailsData?.receipt)
-						.then(() => {})
+						.then(() => { })
 						.catch(() => {
 							toast.error("Something went wrong deleting image!!", {
 								autoClose: 4000,
@@ -153,12 +156,13 @@ export const ExpenseDetails = () => {
 									<img
 										src={
 											userDetailsData?.receipt ||
-											userDetailsData?.receipt !== ""
+												userDetailsData?.receipt !== ""
 												? userDetailsData?.receipt
 												: placeholder
 										}
 										alt="receiptimage"
 										className="img-fluid mt-2"
+										onClick={() => userDetailsData?.receipt !== "" && setShowReceiptImage(true)}
 									/>
 								</div>
 							</div>
@@ -214,6 +218,15 @@ export const ExpenseDetails = () => {
 					</Button>
 				</Modal.Footer>
 			</Modal>
+
+			{showReceiptImage && <div className="imageViewer">
+				<div className="imageViewer__close" onClick={() => setShowReceiptImage(false)}><FiX /></div>
+				<img
+					src={userDetailsData?.receipt}
+					alt="receiptimage"
+					className="img-fluid mt-2"
+				/>
+			</div>}
 		</>
 	);
 };

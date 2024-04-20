@@ -13,6 +13,7 @@ import {
 import { LuIndianRupee } from "react-icons/lu";
 import { FilterData } from "../../components/FilterData/FilterData";
 import {
+	SET_CATEGORY_LIST,
 	SET_SEARCH_TERM,
 	SET_TYPE,
 	selectFilterData,
@@ -92,6 +93,10 @@ export const TransactionsList = () => {
 		dispatch(SET_SEARCH_TERM(event));
 	};
 
+	const changeList = () => {
+		dispatch(SET_TYPE(!listType));
+		dispatch(SET_CATEGORY_LIST([]));
+	}
 	return (
 		<>
 			<div
@@ -127,12 +132,12 @@ export const TransactionsList = () => {
 							{listType ? (
 								<BiSolidChevronUpCircle
 									className="showComponent showComponent__income"
-									onClick={() => dispatch(SET_TYPE(!listType))}
+									onClick={changeList}
 								/>
 							) : (
 								<BiSolidChevronDownCircle
 									className="showComponent showComponent__expense"
-									onClick={() => dispatch(SET_TYPE(!listType))}
+									onClick={changeList}
 								/>
 							)}
 						</div>

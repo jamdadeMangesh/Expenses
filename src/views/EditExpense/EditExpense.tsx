@@ -111,7 +111,7 @@ export const EditExpense = () => {
 					// If image is already uploded and user wants to replace it wih new image then check for this condition
 					if (isReceiptUploaded && imageUrl !== "") {
 						onDeleteImage(oldReceiptUrl)
-							.then(() => {})
+							.then(() => { })
 							.catch((error) => {
 								console.log("delete Error:", error);
 							});
@@ -165,6 +165,7 @@ export const EditExpense = () => {
 									},
 								})}
 								autoComplete="off"
+								className={errors.amount && "loginWrapper__form-error"}
 							/>
 							{errors.amount && (
 								<p className="loginWrapper__errorMsg">
@@ -189,6 +190,7 @@ export const EditExpense = () => {
 									required: "Please enter category",
 								})}
 								autoComplete="off"
+								className={errors.category && "loginWrapper__form-error"}
 							>
 								<option value="">Select category</option>
 								{categories.map((category: string) => (
@@ -223,6 +225,7 @@ export const EditExpense = () => {
 								{...register("transactionDate", {
 									required: "Please enter transaction date",
 								})}
+								className={errors.transactionDate && "loginWrapper__form-error"}
 							/>
 							{errors.transactionDate && (
 								<p className="loginWrapper__errorMsg">
@@ -275,7 +278,7 @@ export const EditExpense = () => {
 											message: "Please upload transaction receipt!",
 										},
 									})}
-									className="mr-2"
+									className={`mr-2 ${errors.receipt && "loginWrapper__form-error"}`}
 									onChange={onChangeFileUpload}
 									accept="image/*"
 									disabled={imageLoading}
