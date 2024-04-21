@@ -11,7 +11,7 @@ export const UserDetails = () => {
 		useHeaderContext();
 	const location = useLocation();
 	const { data, id } = location.state;
-	const userDetails = data?.data;
+	const userDetails = data;
 	const [changeAccess, setChangeAccess] = useState<boolean>(
 		userDetails?.canAccess
 	);
@@ -28,13 +28,11 @@ export const UserDetails = () => {
 		const taskDocRef = doc(database, "users", id);
 
 		updateDoc(taskDocRef, {
-			data: {
-				email: userDetails?.email,
-				name: userDetails?.name,
-				mobileNumber: userDetails?.mobileNumber,
-				role: userDetails?.role,
-				canAccess: changeAccess,
-			},
+			email: userDetails?.email,
+			name: userDetails?.name,
+			mobileNumber: userDetails?.mobileNumber,
+			role: userDetails?.role,
+			canAccess: changeAccess,
 		})
 			.then(() => {
 				toast.success("User info updated successfully!", {

@@ -18,7 +18,7 @@ export const Login = () => {
 
 	const { setTitle, setShowBackArrow } = useHeaderContext();
 
-    useEffect(() => {
+	useEffect(() => {
 		onAuthStateChanged(authentication, (user) => {
 			if (user) {
 				navigate("/dashboard");
@@ -26,18 +26,14 @@ export const Login = () => {
 				navigate("/login");
 			}
 		});
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-    
+
 	React.useEffect(() => {
 		setTitle("Sign In");
 		setShowBackArrow(true);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-
-	// useEffect(() => {
-	// 	if (user) navigate("/dashboard");
-	// }, [user]);
 
 	const {
 		register,
@@ -119,16 +115,6 @@ export const Login = () => {
 								placeholder="*****"
 								{...register("password", {
 									required: "Please enter your password",
-									// pattern: {
-									// 	value:
-									// 		/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
-									// 	message:
-									// 		"Password must have atleast a symbol, upper & lower case letter and number",
-									// },
-									// minLength: {
-									// 	value: 8,
-									// 	message: "Password must have at least 8 characters",
-									// },
 								})}
 								data-testid="loginWrapper__inputPassword"
 								className={errors.password && "inputError"}
@@ -143,7 +129,6 @@ export const Login = () => {
 						<div
 							className="login__forgotPassword mt- 3 mb-4 loginWrapper__form-group"
 							data-testid="loginWrapper__forgotPassword"
-							//	onClick={() => setShowResetModal(true)}
 						>
 							Forgot password?
 						</div>
@@ -154,8 +139,6 @@ export const Login = () => {
 							type="submit"
 							className="w-100 buttonHeight"
 							data-testid="loginWrapper__loginBtn"
-							//onClick={() => logInWithEmailAndPassword(email, password)}
-							//onClick={() => navigate("/dashboard")}
 						>
 							Login
 						</Button>

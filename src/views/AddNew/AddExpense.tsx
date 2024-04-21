@@ -19,9 +19,10 @@ import {
 	onDeleteImage,
 	uploadImageToStorage,
 } from "../../shared/constant";
+import { NoAccess } from "../../components/NoAccess/NoAccess";
 
 export const AddExpense = () => {
-	const { name } = useSelector(selectUserData);
+	const { name, canAccess } = useSelector(selectUserData);
 	const navigate = useNavigate();
 	const { setTitle, setShowBackArrow, setShowAddNewButton } =
 		useHeaderContext();
@@ -313,6 +314,7 @@ export const AddExpense = () => {
 					</div>
 				</form>
 			</div>
+			<NoAccess showNoAccess={canAccess} />
 			<ToastContainer position='bottom-center' autoClose={false} />
 		</>
 	);

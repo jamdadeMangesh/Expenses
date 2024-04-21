@@ -341,6 +341,7 @@ export const incomeCategory = [
 	"Uniform",
 	"ICard",
 	"Material Sell",
+	"Other"
 ];
 
 const a = [

@@ -19,7 +19,7 @@ export const Register = () => {
 	const [copyData, setCopyData] = useState("");
 	const [firebaseErrors, setFirebaseErrors] = useState<string>("");
 
-    React.useEffect(() => {
+	React.useEffect(() => {
 		setTitle("Create a new user");
 		setShowBackArrow(true);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -30,7 +30,7 @@ export const Register = () => {
 		handleSubmit,
 		formState: { errors, isSubmitting },
 		watch,
-        reset
+		reset
 	} = useForm();
 
 	const password = useRef({});
@@ -39,23 +39,31 @@ export const Register = () => {
 	const onSubmit = (data: any) => {
 
 		const getFirstName = data?.name.split(" ")[0];
-        const mobileLastDigit = data?.mobileNumber.slice(-4);
-        const password = getFirstName+"@"+mobileLastDigit;
-		
-        if (data) {
+		const mobileLastDigit = data?.mobileNumber.slice(-4);
+		const password = getFirstName + "@" + mobileLastDigit;
+		data['canAccess'] = true;
+
+		if (data) {
 			createUserWithEmailAndPassword(authentication, data?.email, password)
-				.then((userCredential) => {
-					setDoc(doc(database, "users", userCredential.user.uid), { data });
+				.then(async (userCredential) => {
+					await setDoc(doc(database, "users", userCredential.user.uid), {
+						canAccess: true,
+						email: data?.email,
+						mobileNumber: data?.mobileNumber,
+						name: data?.name,
+						role: data?.role
+					});
+					navigator.clipboard.writeText("email: " + data.email + ", password: " + password)
 					reset();
 				})
-                .then(() => {
-                    setCopyData("email: " + data.email + ", password: " + password);
+				.then(() => {
+					setCopyData("email: " + data.email + ", password: " + password);
 					setShowCopyToClipboard(true);
-                    signOut(authentication);
-                    setTimeout(() => {
-                        setShowCopyToClipboard(false);
-                    }, 20000);
-                })
+					signOut(authentication);
+					setTimeout(() => {
+						setShowCopyToClipboard(false);
+					}, 20000);
+				})
 				.catch((error) => {
 					if (error) {
 						setFirebaseErrors(authenticationErrors(error.code) as string);

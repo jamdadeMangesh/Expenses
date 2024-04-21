@@ -23,9 +23,11 @@ import {
 	SET_TYPE,
 	selectFilterData,
 } from "../../components/FilterData/FilterSlice";
+import { NoAccess } from "../../components/NoAccess/NoAccess";
+
 
 export const AddIncome = () => {
-	const { name } = useSelector(selectUserData);
+	const { name, canAccess } = useSelector(selectUserData);
 	const navigate = useNavigate();
 	const { setTitle, setShowBackArrow, setShowAddNewButton } =
 		useHeaderContext();
@@ -432,6 +434,7 @@ export const AddIncome = () => {
 					</div>
 				</form>
 			</div>
+			<NoAccess showNoAccess={canAccess} />
 			<ToastContainer position="bottom-center" autoClose={false} />
 		</>
 	);
