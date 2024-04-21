@@ -46,6 +46,7 @@ export const Users = () => {
 					...item.data(),
 				});
 			});
+
 			setUsersData(res);
 			setUsersLoading(false);
 		});
@@ -70,26 +71,25 @@ export const Users = () => {
 							<div className="usersList__grid">
 								<div className="usersList__name">
 									<div className="usersList__name-grid">
-										{item?.data?.name}{" "}
-										{item?.data?.canAccess ? (
+										{item?.name}{" "}
+										{item?.canAccess ? (
 											<FaCircleCheck style={{ color: "#2D864B" }} />
 										) : (
 											<FaCircleXmark style={{ color: "#d82c0d" }} />
 										)}
 									</div>
 									<div
-										className={`usersList__role ${
-											item?.data?.role === "admin"
-												? "usersList__role-admin"
-												: "usersList__role-user"
-										}`}
+										className={`usersList__role ${item?.role === "admin"
+											? "usersList__role-admin"
+											: "usersList__role-user"
+											}`}
 									>
-										{item?.data?.role === "admin" ? "Admin" : "User"}
+										{item?.role === "admin" ? "Admin" : "User"}
 									</div>
 								</div>
-								<div className="usersList__mobile">{item?.data?.email}</div>
+								<div className="usersList__mobile">{item?.email}</div>
 								<div className="usersList__mobile d-flex justify-content-between">
-									<div>{item?.data?.mobileNumber} </div>
+									<div>{item?.mobileNumber} </div>
 								</div>
 							</div>
 						</div>
