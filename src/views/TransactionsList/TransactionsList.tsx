@@ -5,15 +5,11 @@ import { Badge, Form } from "react-bootstrap";
 import { FiFilter } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUserData } from "../Login/LoginSlice";
-import {
-	getAllIncomeTransactions,
-	getAllTransactions,
-	totalExpenses,
-} from "../../shared/constant";
 import { LuIndianRupee } from "react-icons/lu";
 import { FilterData } from "../../components/FilterData/FilterData";
 import {
 	SET_CATEGORY_LIST,
+	SET_FINANCIAL_YEAR,
 	SET_SEARCH_TERM,
 	SET_TYPE,
 	selectFilterData,
@@ -35,14 +31,24 @@ export const TransactionsList = () => {
 	const { setTitle, setShowBackArrow, setShowAddNewButton } =
 		useHeaderContext();
 	const { role } = useSelector(selectUserData);
-	const [expenseData, setExpenseData] = useState([]);
-	const [incomeData, setIncomeData] = useState([]);
+	const { totalExpense, totalIncome } = useSelector(selectFilterData);
 	const [openFilter, setOpenFilter] = useState<boolean>(false);
 
-	const { financialYear, updatedTransactionId, listType, transactionType, selectedCategoryList } =
-		useSelector(selectFilterData);
+	const {
+		financialYear,
+		updatedTransactionId,
+		listType,
+		transactionType,
+		selectedCategoryList,
+	} = useSelector(selectFilterData);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+
+	useEffect(() => {
+		dispatch(SET_FINANCIAL_YEAR("2025-2026"));
+	}, [dispatch]);
+	console.log('financialYear:', financialYear);
+
 	useEffect(() => {
 		onAuthStateChanged(authentication, (user) => {
 			if (user) {
@@ -70,24 +76,11 @@ export const TransactionsList = () => {
 	useEffect(() => {
 		setTitle("All transactions");
 		setShowBackArrow(false);
-		setShowAddNewButton(false);
+		setShowAddNewButton(false)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	useEffect(() => {
-		getAllTransactions().then((res) => {
-			setExpenseData(res);
-		});
-	}, []);
 
-	useEffect(() => {
-		getAllIncomeTransactions().then((res) => {
-			setIncomeData(res);
-		});
-	}, []);
-
-	const totalExpense = totalExpenses(expenseData);
-	const totalIncome = totalExpenses(incomeData);
 	const totalBalance = totalIncome - totalExpense;
 	const filterBySearch = (event: any) => {
 		dispatch(SET_SEARCH_TERM(event));
@@ -96,7 +89,7 @@ export const TransactionsList = () => {
 	const changeList = () => {
 		dispatch(SET_TYPE(!listType));
 		dispatch(SET_CATEGORY_LIST([]));
-	}
+	};
 	return (
 		<>
 			<div
@@ -109,11 +102,11 @@ export const TransactionsList = () => {
 							<BiSolidCaretUpCircle
 								style={{ color: "#2D864B", fontSize: "15px" }}
 							/>{" "}
-							{totalIncome} -{" "}
+							{totalIncome === "" ? 0 : totalIncome} -{" "}
 							<BiSolidCaretDownCircle
 								style={{ color: "#d82c0d", fontSize: "15px" }}
 							/>{" "}
-							{totalExpense}
+							{totalExpense === "" ? 0 : totalExpense}
 						</div>
 						<div className="transactions__content--balance-total">
 							<LuIndianRupee style={{ fontSize: "13px" }} /> {totalBalance}

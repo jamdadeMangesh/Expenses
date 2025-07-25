@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import "./TransactionsList.scss";
 import { Button } from "react-bootstrap";
 import { FiDownload } from "react-icons/fi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectUserData } from "../Login/LoginSlice";
 import {
 	getAllIncomeTransactions,
@@ -10,7 +10,7 @@ import {
 	totalExpenses,
 } from "../../shared/constant";
 import { LuDot, LuIndianRupee } from "react-icons/lu";
-import { selectFilterData } from "../../components/FilterData/FilterSlice";
+import { selectFilterData, SET_TOTAL_INCOME } from "../../components/FilterData/FilterSlice";
 import { useNavigate } from "react-router-dom";
 import noResult from "../../../src/assets/icons/no-results.png";
 import FileSaver from "file-saver";
@@ -20,6 +20,7 @@ import { DateTime } from "luxon";
 export const Income = () => {
 	const { name, role } = useSelector(selectUserData);
 	const [transactionsData, setTransactionsData] = useState([]);
+	const dispatch = useDispatch();
 
 	const { financialYear, searchTerm, selectedCategoryList } = useSelector(selectFilterData);
 	const navigate = useNavigate();
@@ -94,6 +95,10 @@ export const Income = () => {
 
 	const total = totalExpenses(filteredValues);
 
+	useEffect(() => {
+		dispatch(SET_TOTAL_INCOME(totalExpenses(filteredValues)))
+	}, [dispatch, filteredValues]);
+
 	const exportFile = () => {
 		const fileType =
 			"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF=8";
@@ -166,11 +171,6 @@ export const Income = () => {
 					</div>
 				) : (
 					filteredValues?.map((item: any) => (
-						// <Transactions
-						// 	data={item?.data}
-						// 	key={item.id}
-						// 	transactionId={item.id}
-						// />
 						<div
 							className="transactions__grid"
 							key={item.id}

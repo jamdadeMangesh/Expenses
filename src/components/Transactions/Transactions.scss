@@ -4,7 +4,7 @@
 		font-weight: var(--font-weight-500);
 	}
 	&__grid {
-		padding: var(--spacing-m) 0px;
+		padding: var(--spacing-s) 0px;
 		display: flex;
 		align-items: center;
 		border-bottom: 1px solid var(--border-primary);
@@ -93,7 +93,7 @@
 			}
 		}
 		&-total {
-			font-size: var(--font-size-16);
+			font-size: var(--font-size-12);
 			font-weight: var(--font-weight-600);
 		}
 	}
@@ -130,6 +130,20 @@
                     margin-top: -3px;
                 }
             }
+		}
+	}
+	&__download{
+		button{
+			width: 24px;
+			height: 24px;
+			display: flex;
+			padding: 0;
+			justify-content: center;
+			align-items: center;
+			svg{
+				display: flex;
+				font-size: 14px;	
+			}
 		}
 	}
 }

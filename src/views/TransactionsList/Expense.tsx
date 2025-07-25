@@ -3,18 +3,18 @@ import "./TransactionsList.scss";
 import { Button } from "react-bootstrap";
 import { Transactions } from "../../components/Transactions/Transactions";
 import { FiDownload } from "react-icons/fi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectUserData } from "../Login/LoginSlice";
 import { getAllTransactions, totalExpenses } from "../../shared/constant";
 import { LuDot, LuIndianRupee } from "react-icons/lu";
-import { selectFilterData } from "../../components/FilterData/FilterSlice";
+import { selectFilterData, SET_TOTAL_EXPENSE } from "../../components/FilterData/FilterSlice";
 import noResult from "../../../src/assets/icons/no-results.png";
 import FileSaver from "file-saver";
 import XLSX from "sheetjs-style";
 export const Expense = () => {
 	const { name, role } = useSelector(selectUserData);
 	const [transactionsData, setTransactionsData] = useState([]);
-
+	const dispatch = useDispatch();
 	const { financialYear, searchTerm, selectedCategoryList } =
 		useSelector(selectFilterData);
 
@@ -105,6 +105,10 @@ export const Expense = () => {
 	]);
 
 	const total = totalExpenses(filteredValues);
+
+	useEffect(() => {
+		dispatch(SET_TOTAL_EXPENSE(totalExpenses(filteredValues)))
+	}, [dispatch, filteredValues]);
 
 	const exportFile = () => {
 		const fileType =

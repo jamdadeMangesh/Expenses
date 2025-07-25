@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form, ToggleButton } from "react-bootstrap";
 import { IoMdClose } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
@@ -71,9 +71,12 @@ export const FilterData = ({ openFilter, setOpenFilter }: FilterDataProps) => {
                             defaultValue={financialYear}
                         >
                             <option value=''>Please choose year</option>
-                            <option value='2022-2023'>2022-2023</option>
-                            <option value='2023-2024'>2023-2024</option>
-                            <option value='2024-2025'>2024-2025</option>
+                            <option value='2025-2026' selected>2025</option>
+                            <option value='2024-2025'>2024</option>
+                            <option value='2023-2024'>2023</option>
+                            <option value='2022-2023'>2022</option>
+
+
                         </Form.Select>
                     </div>
                     {listType ? <div className='filterPanel__grid'>
